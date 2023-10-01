@@ -17,6 +17,7 @@
   hardware.opengl.enable = true;
   programs.dconf.enable = true; 
   boot.supportedFilesystems = [ "ntfs" ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # =================================================================
   # GPU Passthrough 
@@ -75,7 +76,7 @@
   # System Setup
   # ==============================================================
   # Configure network
-  networking.hostName = "shady-desktop"; 
+  networking.hostName = "amd-desktop"; 
   # networking.wireless.enable = true;  
   networking.networkmanager.enable = true;  
 
