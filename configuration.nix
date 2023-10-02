@@ -34,7 +34,8 @@
     modprobe -i vfio-pci
   '';
   
-  boot.kernelParams = [ 
+  boot.kernelParams = [
+   "kvm.ignore_msrs=1"
    "amd_iommu=on" 
    "pcie_aspm=off"
    ];
