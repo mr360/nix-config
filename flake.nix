@@ -27,8 +27,8 @@
 		system = "x86_64-linux";
     		modules = [
 		    ./configuration.nix
-		    ./boot/ueif.nix
-		    ./host/amd-desktop.nix
+		    ./boot/uefi.nix
+		    ./host/amd_desktop.nix
 		    ./modules/common.nix
 		    ./modules/package.nix
 		    ./modules/user.nix
