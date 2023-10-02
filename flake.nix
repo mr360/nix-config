@@ -26,13 +26,7 @@
 	    "amd-desktop" = nixpkgs.lib.nixosSystem {
 		system = "x86_64-linux";
     		modules = [
-		    ./configuration.nix
-		    ./boot/uefi.nix
-		    ./host/amd_desktop.nix
-		    ./modules/common.nix
-		    ./modules/package.nix
-		    ./modules/user.nix
-		    ./modules/virt.nix
+		    ./host/amdpc/configuration.nix
         	];
 	    };
 	};

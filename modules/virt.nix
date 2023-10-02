@@ -31,7 +31,7 @@
 
   virtualisation.spiceUSBRedirection.enable = true;
 
-  programs.dconf.enable = true # Allow settings modf for Virt-Manager
+  programs.dconf.enable = true; # Allow settings modf for Virt-Manager
   environment.systemPackages = with pkgs; [
      looking-glass-client 
      scream               
@@ -53,4 +53,4 @@
     wantedBy = [ "multi-user.target" ];
     requires = [ "pulseaudio.service" ];
   };
-};
+})
