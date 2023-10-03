@@ -2,22 +2,22 @@
 NixOS configuration : simple system config for my everyday usage
 
 ## Structure
-boot
-- uefi.nix
-- efi.nix
+├── boot
+│   └── uefi.nix
+├── flake.lock
+├── flake.nix
+├── host
+│   └── amdpc
+│       ├── default.nix
+│       └── hardware-configuration.nix
+├── modules
+│   ├── common.nix
+│   ├── package.nix
+│   ├── user.nix
+│   └── virt.nix
+├── README.md
+└── win10-1080ti.virt.xml
 
-host
-- amd_desktop.nix
-
-modules
-- common.nix
-- user.nix
-- virt.nix
-
-vm
- - win10-1080ti.virt.xml
-
-TODO: dotfiles, cred, home-manager, nixpkg, ...
 
 ## Virtualisation (PCI-E Passthrough)
 - TODO: VM drive on physical disk/partition rather than raw image
@@ -25,3 +25,23 @@ TODO: dotfiles, cred, home-manager, nixpkg, ...
 ## Home Manager (User Settings)
 - TODO: 
 
+## Details
+defaults
+``` json
+options {
+ virtman {
+   enable = true,
+   user = "shady",
+   passthrough = true {
+    vendor = "amd",
+    pci_id = [ "xyz", "xyz"]
+   }
+ },
+ user {
+  name = "shady",
+ },
+ office2010 {
+  enable = true,
+ }
+}
+``` 
