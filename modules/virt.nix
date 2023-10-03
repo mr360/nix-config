@@ -1,6 +1,10 @@
 ({lib, pkgs, ...}: {
   # =================================================================
-  # GPU Passthrough 
+  # GPU Passthrough
+  # params: 
+  # 	list: 	pci_e_devices
+  #     string:	vendor
+  #     string: user
   # =================================================================
   boot.initrd.availableKernelModules = [ 
     "vfio-pci" 
@@ -53,4 +57,9 @@
     wantedBy = [ "multi-user.target" ];
     requires = [ "pulseaudio.service" ];
   };
+
+  users.users.shady = {
+    extraGroups = ["libvirtd" ];
+  };
+  	
 })

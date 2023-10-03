@@ -2,12 +2,13 @@
 ({lib, pkgs, ...}: {
   # =================================================================
   # Main User Setup
+  # param:
+  # 	string: user
   # =================================================================
    users.users.shady = {
     isNormalUser = true;
-     extraGroups = [ "wheel" "libvirtd" ];
+     extraGroups = [ "wheel" ];
      packages = with pkgs; [
-       firefox
        google-chrome
        vscode
      ];
