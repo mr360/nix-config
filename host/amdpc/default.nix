@@ -8,7 +8,7 @@
       ../../modules/common.nix
       ../../modules/package.nix
       ../../modules/user.nix
-      ../../modules/virt.nix	
+      ../../modules/libvirt.nix	
     ];
 
   # Open ports in the firewall.
