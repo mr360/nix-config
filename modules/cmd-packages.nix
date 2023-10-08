@@ -1,4 +1,6 @@
-({pkgs, ...}: {
+{pkgs, ...}: 
+
+{
    environment.systemPackages = with pkgs; [
      git
      neovim 
@@ -10,7 +12,6 @@
      p7zip
      python3
      gcc
-     bottles
      hexedit
    ];
-})
+}

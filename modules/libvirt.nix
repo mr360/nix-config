@@ -1,4 +1,6 @@
-({lib, pkgs, ...}: {
+{ config, lib, pkgs, ... }@args: 
+
+{
   # =================================================================
   # GPU Passthrough
   # params: 
@@ -61,5 +63,4 @@
   users.users.shady = {
     extraGroups = ["libvirtd" ];
   };
-  	
-})
+}
