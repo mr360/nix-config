@@ -54,8 +54,8 @@
     ];
 
     systemd.tmpfiles.rules = [
-      "f /dev/shm/scream 0660 shady qemu-libvirtd -"  ## USER
-      "f /dev/shm/looking-glass 0660 shady qemu-libvirtd -" ## USER
+      "f /dev/shm/scream 0660 ${config.custom.user.name} qemu-libvirtd -"
+      "f /dev/shm/looking-glass 0660 ${config.custom.user.name} qemu-libvirtd -"
     ];
 
     systemd.user.services.scream-ivshmem = {
