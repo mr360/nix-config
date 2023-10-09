@@ -1,6 +1,11 @@
 # nix-config
 NixOS configuration : simple system config for my everyday usage
 
+# TODO: 
+- Add SSH agent support (user.users.sshkey"
+- Home Manager
+- 
+
 ## Structure
 ├── boot
 │   └── uefi.nix
