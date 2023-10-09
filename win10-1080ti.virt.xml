@@ -8,9 +8,6 @@
   </metadata>
   <memory unit="KiB">16777216</memory>
   <currentMemory unit="KiB">16777216</currentMemory>
-  <memoryBacking>
-    <hugepages/>
-  </memoryBacking>
   <vcpu placement="static">12</vcpu>
   <iothreads>2</iothreads>
   <cputune>
@@ -27,9 +24,11 @@
     <iothreadpin iothread="2" cpuset="2-3"/>
   </cputune>
   <os>
-    <type arch="x86_64" machine="pc">hvm</type>
+    <type arch="x86_64" machine="pc-q35-8.0">hvm</type>
     <loader readonly="yes" type="pflash">/run/libvirt/nix-ovmf/OVMF_CODE.fd</loader>
+    <nvram template="/run/libvirt/nix-ovmf/OVMF_VARS.fd">/var/lib/libvirt/qemu/nvram/win10-1080ti_VARS.fd</nvram>
     <boot dev="hd"/>
+    <bootmenu enable="yes"/>
   </os>
   <features>
     <acpi/>
@@ -49,6 +48,7 @@
       <hidden state="on"/>
     </kvm>
     <vmport state="off"/>
+    <ioapic driver="kvm"/>
   </features>
   <cpu mode="host-passthrough" check="none" migratable="on">
     <topology sockets="1" dies="1" cores="6" threads="2"/>
@@ -75,32 +75,163 @@
   </pm>
   <devices>
     <emulator>/run/libvirt/nix-emulators/qemu-system-x86_64</emulator>
-    <disk type="file" device="cdrom">
+    <disk type="file" device="disk">
       <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/Win10_22H2_English_x64v1.iso"/>
-      <target dev="sdb" bus="sata"/>
-      <readonly/>
+      <source file="/var/lib/libvirt/images/win10-1080ti.img"/>
+      <target dev="vda" bus="virtio"/>
+      <address type="pci" domain="0x0000" bus="0x0e" slot="0x00" function="0x0"/>
     </disk>
-    <controller type="usb" model="qemu-xhci" ports="15"/>
+    <controller type="usb" index="0" model="qemu-xhci">
+      <address type="pci" domain="0x0000" bus="0x0c" slot="0x00" function="0x0"/>
+    </controller>
+    <controller type="sata" index="0">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x1f" function="0x2"/>
+    </controller>
+    <controller type="pci" index="0" model="pcie-root"/>
+    <controller type="pci" index="1" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="1" port="0x8"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x0" multifunction="on"/>
+    </controller>
+    <controller type="pci" index="2" model="pcie-to-pci-bridge">
+      <model name="pcie-pci-bridge"/>
+      <address type="pci" domain="0x0000" bus="0x01" slot="0x00" function="0x0"/>
+    </controller>
+    <controller type="pci" index="3" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="3"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x01" function="0x0"/>
+    </controller>
+    <controller type="pci" index="4" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="4"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x02" function="0x0"/>
+    </controller>
+    <controller type="pci" index="5" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="5"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x03" function="0x0"/>
+    </controller>
+    <controller type="pci" index="6" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="6"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x04" function="0x0"/>
+    </controller>
+    <controller type="pci" index="7" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="7"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x05" function="0x0"/>
+    </controller>
+    <controller type="pci" index="8" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="8"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x06" function="0x0"/>
+    </controller>
+    <controller type="pci" index="9" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="9"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x07" function="0x0"/>
+    </controller>
+    <controller type="pci" index="10" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="10"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x08" function="0x0"/>
+    </controller>
+    <controller type="pci" index="11" model="pci-bridge">
+      <model name="pci-bridge"/>
+      <target chassisNr="11"/>
+      <address type="pci" domain="0x0000" bus="0x02" slot="0x09" function="0x0"/>
+    </controller>
+    <controller type="pci" index="12" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="12" port="0x9"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x1"/>
+    </controller>
+    <controller type="pci" index="13" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="13" port="0xa"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x2"/>
+    </controller>
+    <controller type="pci" index="14" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="14" port="0xb"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x3"/>
+    </controller>
+    <controller type="pci" index="15" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="15" port="0xc"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x4"/>
+    </controller>
+    <controller type="pci" index="16" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="16" port="0xd"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x5"/>
+    </controller>
+    <controller type="pci" index="17" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="17" port="0xe"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x6"/>
+    </controller>
+    <controller type="pci" index="18" model="pcie-root-port">
+      <model name="pcie-root-port"/>
+      <target chassis="18" port="0xf"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x01" function="0x7"/>
+    </controller>
+    <controller type="virtio-serial" index="0">
+      <address type="pci" domain="0x0000" bus="0x0d" slot="0x00" function="0x0"/>
+    </controller>
     <interface type="network">
+      <mac address="52:54:00:9f:57:f8"/>
       <source network="default"/>
-      <mac address="52:54:00:1e:1f:2e"/>
-      <model type="e1000e"/>
+      <model type="virtio"/>
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x0e" function="0x0"/>
     </interface>
-    <console type="pty"/>
+    <serial type="pty">
+      <target type="isa-serial" port="0">
+        <model name="isa-serial"/>
+      </target>
+    </serial>
+    <console type="pty">
+      <target type="serial" port="0"/>
+    </console>
     <channel type="spicevmc">
       <target type="virtio" name="com.redhat.spice.0"/>
+      <address type="virtio-serial" controller="0" bus="0" port="1"/>
     </channel>
-    <input type="tablet" bus="usb"/>
-    <graphics type="spice" port="-1" tlsPort="-1" autoport="yes">
+    <input type="mouse" bus="ps2"/>
+    <input type="keyboard" bus="ps2"/>
+    <graphics type="spice" autoport="yes">
+      <listen type="address"/>
       <image compression="off"/>
     </graphics>
-    <sound model="ich9"/>
+    <sound model="ich9">
+      <address type="pci" domain="0x0000" bus="0x00" slot="0x0f" function="0x0"/>
+    </sound>
+    <audio id="1" type="spice"/>
     <video>
-      <model type="qxl"/>
+      <model type="virtio" heads="1" primary="yes"/>
+      <address type="pci" domain="0x0000" bus="0x11" slot="0x00" function="0x0"/>
     </video>
-    <redirdev bus="usb" type="spicevmc"/>
-    <redirdev bus="usb" type="spicevmc"/>
+    <hostdev mode="subsystem" type="pci" managed="yes">
+      <source>
+        <address domain="0x0000" bus="0x0c" slot="0x00" function="0x0"/>
+      </source>
+      <address type="pci" domain="0x0000" bus="0x0f" slot="0x00" function="0x0"/>
+    </hostdev>
+    <hostdev mode="subsystem" type="pci" managed="yes">
+      <source>
+        <address domain="0x0000" bus="0x0c" slot="0x00" function="0x1"/>
+      </source>
+      <address type="pci" domain="0x0000" bus="0x10" slot="0x00" function="0x0"/>
+    </hostdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="2"/>
+    </redirdev>
+    <redirdev bus="usb" type="spicevmc">
+      <address type="usb" bus="0" port="3"/>
+    </redirdev>
+    <watchdog model="itco" action="reset"/>
+    <memballoon model="none"/>
     <shmem name="looking-glass">
       <model type="ivshmem-plain"/>
       <size unit="M">64</size>
@@ -111,28 +242,5 @@
       <size unit="M">2</size>
       <address type="pci" domain="0x0000" bus="0x0b" slot="0x02" function="0x0"/>
     </shmem>
-    <hostdev mode="subsystem" type="pci" managed="yes">
-      <source>
-        <address domain="0" bus="12" slot="0" function="0"/>
-      </source>
-    </hostdev>
-    <hostdev mode="subsystem" type="pci" managed="yes">
-      <source>
-        <address domain="0" bus="12" slot="0" function="1"/>
-      </source>
-    </hostdev>
-    <memballoon model="none"/>
-    <disk type="file" device="disk">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/win10-1080ti.img"/>
-      <target dev="vda" bus="virtio"/>
-    </disk>
-    <disk type="file" device="cdrom">
-      <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/virtio-win-0.1.240.iso"/>
-      <target dev="sdc" bus="sata"/>
-      <readonly/>
-    </disk>
   </devices>
 </domain>
-
