@@ -9,26 +9,21 @@
       ../../modules/user.nix
       ../../modules/libvirt.nix
       ../../modules/gui.nix
-     # ../../modules/powersaver.nix
-     # ../../modules/stage.nix
+      ../../modules/powersaver.nix
     ];
 
- #  custom = {
- #    user = "shady";
- #    libvirt = {
- #      enable = true;
- #      passthrough = true;
- #      pci_e_devices = "";
- #      vendor = "amd";
- #    };
- #    gui.enable = true;
- #    cmdpkgs.enable = true;
- #    powersaver.enable = false,
- #    stage {
- #     xample = false;
- #   }
- #  };
-  
+   custom = {
+     user.name = "shady";
+     libvirt = {
+       enable = true;
+       pci_e_devices = "0000:0c:00.0 0000:0c:00.1";
+       vendor = "amd";
+      };
+     gui.enable = true;
+     cmdpkgs.enable = true;
+     powersaver.enable = false;
+   };
+
   # Mount attched ntfs hdd
   # ls -lha /dev/disk/by-uuid
   fileSystems."/mnt/a_drive" =

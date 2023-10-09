@@ -2,11 +2,29 @@
 {config, lib, pkgs, ...}: 
 
 {
-   users.users.shady = {
-    isNormalUser = true;
-     extraGroups = [ "wheel" ];
-     initialPassword = "1234";
-   };
+  options.custom.user =
+  {
+    name = lib.mkOption {
+      default = "shady";
+      example = "shady";
+      type = lib.types.str;
+      description = ''
+        Name of user to be created.
+      '';
+    };
+  };
 
-  users.mutableUsers = false;
+  config.users = {
+    mutableUsers = false;
+    users.${config.custom.user.name} = {
+      isNormalUser = true;
+      extraGroups = [ 
+        "wheel"
+        "networkmanager" 
+        ];
+        
+      initialPassword = "1234";
+    };
+  };
 }
+

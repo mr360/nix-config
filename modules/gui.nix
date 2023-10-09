@@ -1,33 +1,48 @@
 { config, lib, pkgs, ... }:
 
 {
-    # Enable the X11 windowing system.
-    services.xserver.enable = true;
+    options.custom.gui =
+    {
+        enable = lib.mkOption {
+        default = false;
+        example = true;
+        type = lib.types.bool;
+        description = ''
+            Enable LQXT GUI and associated apps.
+        '';
+        };
+    };
 
-    # Enable LXQT desktop (excl apps)
-    services.xserver.desktopManager.lxqt.enable = true;
-    services.xserver.excludePackages = [ 
-        pkgs.xterm
-    ];
-    environment.lxqt.excludePackages = [
-        pkgs.lxqt.lximage-qt
-        pkgs.lxqt.screengrab
-    ];
+    config = lib.mkIf config.custom.gui.enable
+    {
+        # Enable the X11 windowing system.
+        services.xserver.enable = true;
 
-    # Configure keymap in X11
-    services.xserver.layout = "us";
-    services.xserver.xkbOptions = "eurosign:e,caps:escape";
+        # Enable LXQT desktop (excl apps)
+        services.xserver.desktopManager.lxqt.enable = true;
+        services.xserver.excludePackages = [ 
+            pkgs.xterm
+        ];
+        environment.lxqt.excludePackages = [
+            pkgs.lxqt.lximage-qt
+            pkgs.lxqt.screengrab
+        ];
 
-    # Install GUI applications
-    environment.systemPackages = with pkgs; [
-        bottles
-	vscode
-	google-chrome
-	vlc
-     ];
+        # Configure keymap in X11
+        services.xserver.layout = "us";
+        services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
-    # Enable sound and printing
-    services.printing.enable = true;
-    hardware.pulseaudio.enable = true;
-    sound.enable = true;
+        # Install GUI applications
+        environment.systemPackages = with pkgs; [
+            bottles
+        vscode
+        google-chrome
+        vlc
+        ];
+
+        # Enable sound and printing
+        services.printing.enable = true;
+        hardware.pulseaudio.enable = true;
+        sound.enable = true;
+    };
 }
