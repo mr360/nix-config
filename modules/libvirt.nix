@@ -100,8 +100,26 @@
     ];
 
     users.users.${config.custom.user.name} = {
-      extraGroups = ["libvirtd" ]; 
+      extraGroups = [
+        "libvirtd"
+        "qemu-libvirtd" 
+        "kvm"
+        ]; 
     };
+
+    # Allow VM to run as non-root without ulimit 
+    security.pam.loginLimits = [{
+      domain = "${config.custom.user.name}";
+      type = "soft";
+      item = "memlock";
+      value = "20000000";
+    }
+    {
+      domain = "${config.custom.user.name}";
+      type = "hard";
+      item = "memlock";
+      value = "20000000";
+    }];
   })
 ];
 }

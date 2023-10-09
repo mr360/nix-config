@@ -26,7 +26,7 @@
   <os>
     <type arch="x86_64" machine="pc-q35-8.0">hvm</type>
     <loader readonly="yes" type="pflash">/run/libvirt/nix-ovmf/OVMF_CODE.fd</loader>
-    <nvram template="/run/libvirt/nix-ovmf/OVMF_VARS.fd">/var/lib/libvirt/qemu/nvram/win10-1080ti_VARS.fd</nvram>
+    <nvram template="/run/libvirt/nix-ovmf/OVMF_VARS.fd">/home/shady/.config/libvirt/qemu/nvram/win10-1080ti_VARS.fd</nvram>
     <boot dev="hd"/>
     <bootmenu enable="yes"/>
   </os>
@@ -77,7 +77,7 @@
     <emulator>/run/libvirt/nix-emulators/qemu-system-x86_64</emulator>
     <disk type="file" device="disk">
       <driver name="qemu" type="raw"/>
-      <source file="/var/lib/libvirt/images/win10-1080ti.img"/>
+      <source file="/home/shady/.local/share/images/win10-1080ti.img"/>
       <target dev="vda" bus="virtio"/>
       <address type="pci" domain="0x0000" bus="0x0e" slot="0x00" function="0x0"/>
     </disk>
@@ -180,9 +180,8 @@
     <controller type="virtio-serial" index="0">
       <address type="pci" domain="0x0000" bus="0x0d" slot="0x00" function="0x0"/>
     </controller>
-    <interface type="network">
+    <interface type="user">
       <mac address="52:54:00:9f:57:f8"/>
-      <source network="default"/>
       <model type="virtio"/>
       <address type="pci" domain="0x0000" bus="0x00" slot="0x0e" function="0x0"/>
     </interface>
