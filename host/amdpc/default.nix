@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, specialArgs, home-manager, ... }:
 
 {
   imports =
@@ -10,19 +10,17 @@
       ../../modules/libvirt.nix
       ../../modules/gui.nix
       ../../modules/powersaver.nix
+      home-manager.nixosModules.home-manager 
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.users.${specialArgs.custom.user.name} = 
+        import ../../home-manager/amdpc/default.nix;
+        #home-manager.extraSpecialArgs to pass arguments to home.nix
+      }
     ];
 
-   custom = {
-     user.name = "shady";
-     libvirt = {
-       enable = true;
-       pci_e_devices = "0000:0c:00.0 0000:0c:00.1";
-       vendor = "amd";
-      };
-     gui.enable = true;
-     cmdpkgs.enable = true;
-     powersaver.enable = false;
-   };
+  custom = specialArgs.custom;
 
   # Mount attched ntfs hdd
   # ls -lha /dev/disk/by-uuid
