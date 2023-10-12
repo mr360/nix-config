@@ -1,20 +1,50 @@
 { config, pkgs, ... }:
 
-# LXQT config settings
-#  = Window Snapping shortcuts 
-#  = General shortcuts 
-# Git config
-# Vscode config
-# QTerminal?? bash?
-# Neovim config
-
 {
+  home.username = "shady";
+  home.homeDirectory = "/home/shady";
+  home.packages = with pkgs; [
+    nnn
+  ];
+
+  xdg = {
+    enable = true;
+
+    # Openbox and LXQT desktop settings
+    configFile."lxqt" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/lxqt;
+      recursive = true;
+    };
+    configFile."openbox" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/openbox;
+      recursive = true;
+    };
+    
+    # Custom theme files
+    dataFile."fonts" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/fonts;
+      recursive = true;
+    };
+    dataFile."icons" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/icons;
+      recursive = true;
+    };
+    dataFile."lxqt" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/lxqt;
+      recursive = true;
+    };
+    dataFile."themes" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/themes;
+      recursive = true;
+    };
+  };
+  
+  # Git & Bash
   programs.git = {
     enable = true;
     userName = "mr360";
     userEmail = "qd0097@gmail.com";
   };
-
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -25,24 +55,9 @@
     };
   };
 
-  home.username = "shady";
-  home.homeDirectory = "/home/shady";
-  home.packages = with pkgs; [
-    nnn
-  ];
+  # Editors
+  # TODO vscode & neovim
 
-
-
-  # This value determines the home Manager release that your
-  # configuration is compatible with. This helps avoid breakage
-  # when a new home Manager release introduces backwards
-  # incompatible changes.
-  #
-  # You can update home Manager without changing this value. See
-  # the home Manager release notes for a list of state version
-  # changes in each release.
   home.stateVersion = "23.05";
-
-  # Let home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
