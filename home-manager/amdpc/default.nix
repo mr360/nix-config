@@ -20,7 +20,7 @@
       recursive = true;
     };
     
-    # Custom theme files
+    # LXQT Custom theme files
     dataFile."fonts" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/fonts;
       recursive = true;
@@ -35,6 +35,12 @@
     };
     dataFile."themes" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/themes;
+      recursive = true;
+    };
+
+    # QTerm settings
+    configFile."qterminal.org" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/qterminal.org;
       recursive = true;
     };
   };
@@ -55,8 +61,11 @@
     };
   };
 
+
   # Editors
   # TODO vscode & neovim
+
+  # TODO Shortcuts / Icons / Menues ect
 
   home.stateVersion = "23.05";
   programs.home-manager.enable = true;
