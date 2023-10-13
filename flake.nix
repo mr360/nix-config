@@ -26,7 +26,7 @@
       };
     };
 
-    outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+    outputs = { nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
         # sudo nixos-rebuild switch --flake .#amd-desktop
         "amd-desktop" = nixpkgs.lib.nixosSystem {

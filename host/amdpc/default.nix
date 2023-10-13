@@ -16,7 +16,6 @@
         home-manager.useUserPackages = true;
         home-manager.users.${specialArgs.custom.user.name} = 
         import ../../home-manager/amdpc/default.nix;
-        #home-manager.extraSpecialArgs to pass arguments to home.nix
       }
     ];
 
