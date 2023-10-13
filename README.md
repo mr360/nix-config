@@ -19,6 +19,8 @@ NixOS configuration: simple system config for my everyday usage
 │   ├── nixpkgs
 │   ├── powersaver.nix
 │   └── user.nix
+├── wallpaper
+│   └── wp9205370-wallpapers.jpg
 ├── README.md
 ├── libvirt.md
 └── win10-1080ti.virt.xml
@@ -26,15 +28,15 @@ NixOS configuration: simple system config for my everyday usage
 
 
 ## NixOS Flake: 
-- Required: Add SSH agent support using user.users.shady.authorizationssh
+- TODO: Add SSH agent support using user.users.shady.authorizationssh
 
 ## Home Manager (User Settings)
-- Required: Integrate and setup HM
+- Implement user settings for editors and refine window controls (iterative)
 
 ## Custom nixpkgs
-- Understand how to develop custom packages
+- TODO: Understand how to develop custom packages & overlays
 
 ## Virtualisation (PCI-E Passthrough)
-- Future Goal: VM drive on physical disk/partition rather than raw image
+- FUTURE: VM drive on physical disk/partition rather than raw image
 
 
