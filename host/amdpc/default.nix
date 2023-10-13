@@ -38,6 +38,15 @@
     options = ["r"];
   };
 
+  # Hack: XServer prefers DP over HDMI for primary monitor
+  # so set HDMI display as primary rather than secondary
+  systemd.user.services.resetDisplay = {
+      script = ''
+          sleep 1 && ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --off && ${pkgs.xorg.xrandr}/bin/xrandr --auto && ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --primary  --output DP-1  --right-of HDMI-1
+      '';
+      wantedBy = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+  };
 
   networking.hostName = "amd-desktop"; 
   networking.networkmanager.enable = true;  
