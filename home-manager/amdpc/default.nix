@@ -43,6 +43,12 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/qterminal.org;
       recursive = true;
     };
+
+    # PCManFM 
+    configFile."pcmanfm-qt" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/pcmanfm-qt;
+      recursive = true;
+    };
   };
   
   # Git & Bash
