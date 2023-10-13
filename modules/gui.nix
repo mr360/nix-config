@@ -18,6 +18,18 @@
         # Enable the X11 windowing system.
         services.xserver.enable = true;
 
+        # Enable display manager 
+        services.xserver.displayManager.lightdm = {
+            enable = true;
+            background = "/etc/nixos/wallpaper/wp8613307-black-and-white-minimal-mountains-wallpapers.png";
+            greeters.gtk = {
+                theme.name = "Adwaita";
+                extraConfig = ''
+                user-background=false
+                '';
+            };  
+        };
+
         # Enable LXQT desktop (excl apps)
         services.xserver.desktopManager.lxqt.enable = true;
         services.xserver.excludePackages = [ 
@@ -32,12 +44,11 @@
         services.xserver.layout = "us";
         services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
-        # Install GUI applications
+        # Install stateless GUI applications
         environment.systemPackages = with pkgs; [
             bottles
-        vscode
-        google-chrome
-        vlc
+            google-chrome
+            vlc
         ];
 
         # Enable sound and printing
