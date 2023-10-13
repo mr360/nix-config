@@ -37,7 +37,7 @@
     fsType = "ntfs-3g";
     options = ["r"];
   };
-
+  
   # Hack: XServer prefers DP over HDMI for primary monitor
   # so set HDMI display as primary rather than secondary
   systemd.user.services.resetDisplay = {
@@ -55,6 +55,21 @@
   hardware.opengl.enable = true;
   nixpkgs.config.allowUnfree = true;
 
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    rebootWindow = {
+      lower = "02:00";
+      upper = "04:00";
+    };
+    dates = "01:00";
+    flake = "github:mr360/nix-config";
+    flags = [ 
+      "--update-input" 
+      "nixpkgs" 
+      "--commit-lock-file" 
+      ];
+  };
   system.stateVersion = "23.05";
 }
 
