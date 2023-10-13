@@ -4,6 +4,10 @@
   home.username = "shady";
   home.homeDirectory = "/home/shady";
   home.packages = with pkgs; [
+    git
+    vscode
+    neovim
+    tmux
     nnn
   ];
 
@@ -67,11 +71,14 @@
     };
   };
 
+  # TODO Shortcut overlay + injection
 
   # Editors
-  # TODO vscode & neovim
+  # TODO vscode
 
-  # TODO Shortcuts / Icons / Menues ect
+  # TODO neovim
+  
+  # TODO tmux
 
   home.stateVersion = "23.05";
   programs.home-manager.enable = true;

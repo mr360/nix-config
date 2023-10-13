@@ -44,10 +44,9 @@
         services.xserver.layout = "us";
         services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
-        # Install GUI applications
+        # Install stateless GUI applications
         environment.systemPackages = with pkgs; [
             bottles
-            vscode
             google-chrome
             vlc
         ];

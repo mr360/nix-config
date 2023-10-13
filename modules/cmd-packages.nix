@@ -8,7 +8,7 @@
       example = true;
       type = lib.types.bool;
       description = ''
-          Enable CMD packages.
+          Enable global stateless CMD packages.
       '';
       };
   };
@@ -16,10 +16,7 @@
   config = lib.mkIf config.custom.cmdpkgs.enable
   {
     environment.systemPackages = with pkgs; [
-      git
-      neovim 
       wget
-      tmux
       tree
       gdb
       jq
