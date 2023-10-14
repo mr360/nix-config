@@ -55,7 +55,15 @@
     enable = true;
     userName = "mr360";
     userEmail = "qd0097@gmail.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+      core = { 
+	      editor = "nvim";
+        autocrlf = "input";
+      };
+    };
   };
+  
   programs.bash = {
     enable = true;
     enableCompletion = true;
