@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }:
 
 {
+    imports = [
+        ./pkgs
+    ];
+
     options.custom.gui =
     {
         enable = lib.mkOption {
@@ -21,11 +25,12 @@
         # Enable display manager 
         services.xserver.displayManager.lightdm = {
             enable = true;
-            background = "/etc/nixos/wallpaper/wp8613307-black-and-white-minimal-mountains-wallpapers.png";
-            greeters.gtk = {
-                theme.name = "Adwaita";
+            background = "#234365";
+            greeters.gtk = with pkgs; {
+                theme.name = "Chicago95";
+                theme.package = localpkgs.themes.chicago95;
                 extraConfig = ''
-                user-background=false
+                    user-background=false
                 '';
             };  
         };
@@ -44,7 +49,7 @@
         services.xserver.layout = "us";
         services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
-        # Install stateless GUI applications
+        # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
             bottles
             google-chrome
