@@ -29,10 +29,6 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/fonts;
       recursive = true;
     };
-    dataFile."icons" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/icons;
-      recursive = true;
-    };
     dataFile."lxqt" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/lxqt;
       recursive = true;
@@ -69,7 +65,6 @@
 
     shellAliases = {
       ginit = ''eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_git'';
-      xrf = "xrandr --output HDMI-1 --off && xrandr --auto  && xrandr --output HDMI-1 --primary  --output DP-1  --right-of HDMI-1";
     };
   };
 
