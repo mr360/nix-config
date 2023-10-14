@@ -27,8 +27,8 @@
             enable = true;
             background = "#234365";
             greeters.gtk = with pkgs; {
-                theme.name = "Chicago95";
-                theme.package = localpkgs.themes.chicago95;
+                theme.name = "Raleigh-Reloaded";
+                theme.package = localpkgs.themes.raleigh-reloaded;
                 extraConfig = ''
                     user-background=false
                 '';
