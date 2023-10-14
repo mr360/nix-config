@@ -51,7 +51,6 @@
 
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
-            bottles
             google-chrome
             vlc
         ];
