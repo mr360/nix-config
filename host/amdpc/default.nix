@@ -10,6 +10,7 @@
       ../../modules/libvirt.nix
       ../../modules/gui.nix
       ../../modules/powersaver.nix
+      ../../modules/ssh.nix
       home-manager.nixosModules.home-manager 
       {
         home-manager.useGlobalPkgs = true;
@@ -62,7 +63,7 @@
       upper = "04:00";
     };
     dates = "01:00";
-    flake = "github:mr360/nix-config";
+    flake = "git+ssh://git@github.com/mr360/nix-config";
     flags = [ 
       "--update-input" 
       "nixpkgs" 

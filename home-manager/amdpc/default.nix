@@ -4,7 +4,6 @@
   home.username = "shady";
   home.homeDirectory = "/home/shady";
   home.packages = with pkgs; [
-    git
     vscode
     neovim
     tmux

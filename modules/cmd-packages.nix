@@ -16,6 +16,7 @@
   config = lib.mkIf config.custom.cmdpkgs.enable
   {
     environment.systemPackages = with pkgs; [
+      git
       wget
       tree
       gdb

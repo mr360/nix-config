@@ -43,6 +43,10 @@
               gui.enable = true;
               cmdpkgs.enable = true;
               powersaver.enable = false;
+              ssh = {
+                enable_agent = true;
+                enable_server = false;
+              };
             };
           };
           modules = [
