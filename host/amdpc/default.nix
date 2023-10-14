@@ -55,6 +55,11 @@
   hardware.opengl.enable = true;
   nixpkgs.config.allowUnfree = true;
 
+  nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
+    auto-optimise-store = true;
+  };
+
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
