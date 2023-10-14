@@ -5,12 +5,12 @@
     [ 
       ./hardware-configuration.nix
       ../../boot/uefi.nix
-      ../../modules/cmd-packages.nix
-      ../../modules/user.nix
-      ../../modules/libvirt.nix
-      ../../modules/gui.nix
-      ../../modules/powersaver.nix
-      ../../modules/ssh.nix
+      ../../module/cmd-package.nix
+      ../../module/user.nix
+      ../../module/libvirt.nix
+      ../../module/gui.nix
+      ../../module/powersaver.nix
+      ../../module/ssh.nix
       home-manager.nixosModules.home-manager 
       {
         home-manager.useGlobalPkgs = true;

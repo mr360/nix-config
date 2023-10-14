@@ -15,37 +15,37 @@
 
     # Openbox and LXQT desktop settings
     configFile."lxqt" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/lxqt;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/lxqt;
       recursive = true;
     };
     configFile."openbox" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/openbox;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/openbox;
       recursive = true;
     };
     
     # LXQT Custom theme files
     dataFile."fonts" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/fonts;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/fonts;
       recursive = true;
     };
     dataFile."lxqt" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/lxqt;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/lxqt;
       recursive = true;
     };
     dataFile."themes" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.local/share/themes;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/themes;
       recursive = true;
     };
 
     # QTerm settings
     configFile."qterminal.org" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/qterminal.org;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/qterminal.org;
       recursive = true;
     };
 
     # PCManFM 
     configFile."pcmanfm-qt" = {
-      source = config.lib.file.mkOutOfStoreSymlink ../../dotfiles/.config/pcmanfm-qt;
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/pcmanfm-qt;
       recursive = true;
     };
   };

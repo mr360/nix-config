@@ -8,7 +8,7 @@ stdenvNoCC.mkDerivation {
   version = "unstable-2023-10-15";
 
   src = builtins.fetchGit {
-    url = /etc/nixos/dotfiles/.local/share/themes;  # Hacky: should use relative pathing  ../../..
+    url = /etc/nixos/dotfile/.local/share/themes;  # Hacky: should use relative pathing  ../../..
     rev = "8b19cb699919effc437309de189d19cbbcc96243";
     ref = "main";
   };
