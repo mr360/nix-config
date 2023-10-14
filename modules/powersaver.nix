@@ -1,7 +1,7 @@
 {config, lib, pkgs, ...}: 
 
 {
-  options.custom.powersaver =
+  options.builderOptions.powersaver =
   {
       enable = lib.mkOption {
       default = false;
@@ -13,7 +13,7 @@
       };
   };
 
-  config = lib.mkIf config.custom.powersaver.enable
+  config = lib.mkIf config.builderOptions.powersaver.enable
   {
   };
 }

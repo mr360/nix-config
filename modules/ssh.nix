@@ -1,7 +1,7 @@
   { config, lib, pkgs, ... }@args: 
 
 {
-  options.custom.ssh =
+  options.builderOptions.ssh =
   {
     enable_server = lib.mkOption {
       default = false;
@@ -26,7 +26,7 @@
   };
 
   config = lib.mkMerge [
-    (lib.mkIf (config.custom.ssh.enable_agent)
+    (lib.mkIf (config.builderOptions.ssh.enable_agent)
     {
         programs.ssh = {
             startAgent = true; 
@@ -38,13 +38,13 @@
             };
             extraConfig = ''
                 Host github.com
-                  IdentityFile /home/${config.custom.user.name}/.ssh/id_ed25519_git
+                  IdentityFile /home/${config.builderOptions.user.name}/.ssh/id_ed25519_git
                   IdentitiesOnly yes
                   AddKeysToAgent yes
                 '';
         };
     })
-    (lib.mkIf (config.custom.ssh.enable_server)
+    (lib.mkIf (config.builderOptions.ssh.enable_server)
     {
         services.openssh = {
             enable = true;

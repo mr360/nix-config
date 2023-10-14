@@ -15,12 +15,12 @@
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
-        home-manager.users.${specialArgs.custom.user.name} = 
+        home-manager.users.${specialArgs.builderOptions.user.name} = 
         import ../../home-manager/amdpc/default.nix;
       }
     ];
 
-  custom = specialArgs.custom;
+  builderOptions = specialArgs.builderOptions;
 
   # Mount attched ntfs hdd
   # ls -lha /dev/disk/by-uuid

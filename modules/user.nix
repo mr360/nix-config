@@ -2,7 +2,7 @@
 {config, lib, pkgs, ...}: 
 
 {
-  options.custom.user =
+  options.builderOptions.user =
   {
     name = lib.mkOption {
       default = "shady";
@@ -16,7 +16,7 @@
 
   config.users = {
     mutableUsers = false;
-    users.${config.custom.user.name} = {
+    users.${config.builderOptions.user.name} = {
       isNormalUser = true;
       extraGroups = [ 
         "wheel"

@@ -33,7 +33,7 @@
           system = "x86_64-linux";
           specialArgs = {
             inherit home-manager;
-            custom = {
+            builderOptions = {
               user.name = "shady";
               libvirt = {
                 enable = true;

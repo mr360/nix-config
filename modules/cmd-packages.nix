@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }: 
 
 {
-  options.custom.cmdpkgs =
+  options.builderOptions.cmdpkgs =
   {
       enable = lib.mkOption {
       default = false;
@@ -13,7 +13,7 @@
       };
   };
 
-  config = lib.mkIf config.custom.cmdpkgs.enable
+  config = lib.mkIf config.builderOptions.cmdpkgs.enable
   {
     environment.systemPackages = with pkgs; [
       git

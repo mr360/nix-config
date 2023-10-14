@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }@args: 
 
 {
-  options.custom.libvirt =
+  options.builderOptions.libvirt =
   {
     enable = lib.mkOption {
       default = false;
@@ -33,14 +33,14 @@
   };
 
   config = lib.mkMerge [
-  (lib.mkIf (config.custom.libvirt.pci_e_devices != null)
+  (lib.mkIf (config.builderOptions.libvirt.pci_e_devices != null)
   {
     boot.initrd.availableKernelModules = [ 
       "vfio-pci" 
       ];
 
     boot.initrd.preDeviceCommands = ''
-      DEVS="${config.custom.libvirt.pci_e_devices}"
+      DEVS="${config.builderOptions.libvirt.pci_e_devices}"
       for DEV in $DEVS; do
         echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
       done
@@ -50,12 +50,12 @@
     boot.kernelParams = [ 
     "kvm.ignore_msrs=1"
     "pcie_aspm=off"
-    "${config.custom.libvirt.vendor}_iommu=on"
+    "${config.builderOptions.libvirt.vendor}_iommu=on"
     ];
 
     systemd.tmpfiles.rules = [
-      "f /dev/shm/scream 0660 ${config.custom.user.name} qemu-libvirtd -"
-      "f /dev/shm/looking-glass 0660 ${config.custom.user.name} qemu-libvirtd -"
+      "f /dev/shm/scream 0660 ${config.builderOptions.user.name} qemu-libvirtd -"
+      "f /dev/shm/looking-glass 0660 ${config.builderOptions.user.name} qemu-libvirtd -"
     ];
 
     systemd.user.services.scream-ivshmem = {
@@ -76,10 +76,10 @@
   })
 
 
-  (lib.mkIf (config.custom.libvirt.enable)
+  (lib.mkIf (config.builderOptions.libvirt.enable)
   {
     boot.kernelModules = [ 
-      "kvm-${config.custom.libvirt.vendor}" 
+      "kvm-${config.builderOptions.libvirt.vendor}" 
       ];
 
     virtualisation.libvirtd = {
@@ -99,7 +99,7 @@
       virtmanager          
     ];
 
-    users.users.${config.custom.user.name} = {
+    users.users.${config.builderOptions.user.name} = {
       extraGroups = [
         "libvirtd"
         "qemu-libvirtd" 
@@ -109,13 +109,13 @@
 
     # Allow VM to run as non-root without ulimit 
     security.pam.loginLimits = [{
-      domain = "${config.custom.user.name}";
+      domain = "${config.builderOptions.user.name}";
       type = "soft";
       item = "memlock";
       value = "20000000";
     }
     {
-      domain = "${config.custom.user.name}";
+      domain = "${config.builderOptions.user.name}";
       type = "hard";
       item = "memlock";
       value = "20000000";

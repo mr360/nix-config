@@ -5,7 +5,7 @@
         ./pkgs
     ];
 
-    options.custom.gui =
+    options.builderOptions.gui =
     {
         enable = lib.mkOption {
         default = false;
@@ -17,7 +17,7 @@
         };
     };
 
-    config = lib.mkIf config.custom.gui.enable
+    config = lib.mkIf config.builderOptions.gui.enable
     {
         # Enable the X11 windowing system.
         services.xserver.enable = true;
