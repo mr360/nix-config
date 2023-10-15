@@ -228,62 +228,58 @@
       <action name="ToggleMaximizeFull"/>
     </keybind>
     <keybind key="Super-KP_6">
-      <keybind key="Super-KP_6">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>50%</width>
-          <height>100%</height>
-          <x>50%</x>
-          <y>0%</y>
-        </action>  
-      </keybind> 
-      <keybind key="KP_Add">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>66%</width>
-          <height>100%</height>
-          <x>34%</x>
-          <y>0%</y>
-        </action>
-      </keybind>
-      <keybind key="KP_Subtract">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>34%</width>
-          <height>100%</height>
-          <x>66%</x>
-          <y>0%</y>
-        </action>
-      </keybind>
-    </keybind>
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>50%</width>
+        <height>100%</height>
+        <x>50%</x>
+        <y>0%</y>
+      </action>  
+    </keybind> 
     <keybind key="Super-KP_4">
-      <keybind key="Super-KP_4">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>50%</width>
-          <height>100%</height>
-          <x>0%</x>
-          <y>0%</y>
-        </action>  
-      </keybind> 
-      <keybind key="KP_Add">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>66%</width>
-          <height>100%</height>
-          <x>0%</x>
-          <y>0%</y>
-        </action>
-      </keybind>
-      <keybind key="KP_Subtract">
-        <action name="UnmaximizeFull"/>
-        <action name="MoveResizeTo">
-          <width>34%</width>
-          <height>100%</height>
-          <x>0%</x>
-          <y>0%</y>
-        </action>
-      </keybind>
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>50%</width>
+        <height>100%</height>
+        <x>0%</x>
+        <y>0%</y>
+      </action>  
+    </keybind>     
+    <keybind key="Super-KP_Add">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>66%</width>
+        <height>100%</height>
+        <x>34%</x>
+        <y>0%</y>
+      </action>
+    </keybind>
+    <keybind key="Super-KP_Subtract">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>34%</width>
+        <height>100%</height>
+        <x>66%</x>
+        <y>0%</y>
+      </action>
+    </keybind>
+    <keybind key="C-KP_Add">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>66%</width>
+        <height>100%</height>
+        <x>0%</x>
+        <y>0%</y>
+      </action>
+    </keybind>
+    <keybind key="C-KP_Subtract">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>34%</width>
+        <height>100%</height>
+        <x>0%</x>
+        <y>0%</y>
+      </action>
     </keybind>
     <keybind key="Super-KP_8">
       <action name="UnmaximizeFull"/>
