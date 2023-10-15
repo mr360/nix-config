@@ -224,32 +224,66 @@
       </action>
     </keybind>
     <!-- Window snapping code we are adding -->
-    <keybind key="Super-KP_4">
-      <action name="UnmaximizeFull"/>
-      <action name="MoveResizeTo">
-        <width>50%</width>
-        <height>100%</height>
-        <x>0%</x>
-        <y>0%</y>
-      </action>
+    <keybind key="Super-KP_5">
+      <action name="ToggleMaximizeFull"/>
     </keybind>
     <keybind key="Super-KP_6">
-      <action name="UnmaximizeFull"/>
-      <action name="MoveResizeTo">
-        <width>50%</width>
-        <height>100%</height>
-        <x>50%</x>
-        <y>0%</y>
-      </action>
+      <keybind key="Super-KP_6">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>50%</width>
+          <height>100%</height>
+          <x>50%</x>
+          <y>0%</y>
+        </action>  
+      </keybind> 
+      <keybind key="KP_Add">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>66%</width>
+          <height>100%</height>
+          <x>34%</x>
+          <y>0%</y>
+        </action>
+      </keybind>
+      <keybind key="KP_Subtract">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>34%</width>
+          <height>100%</height>
+          <x>66%</x>
+          <y>0%</y>
+        </action>
+      </keybind>
     </keybind>
-    <keybind key="Super-KP_5">
-      <action name="UnmaximizeFull"/>
-      <action name="MoveResizeTo">
-        <width>100%</width>
-        <height>50%</height>
-        <x>0%</x>
-        <y>50%</y>
-      </action>
+    <keybind key="Super-KP_4">
+      <keybind key="Super-KP_4">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>50%</width>
+          <height>100%</height>
+          <x>0%</x>
+          <y>0%</y>
+        </action>  
+      </keybind> 
+      <keybind key="KP_Add">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>66%</width>
+          <height>100%</height>
+          <x>0%</x>
+          <y>0%</y>
+        </action>
+      </keybind>
+      <keybind key="KP_Subtract">
+        <action name="UnmaximizeFull"/>
+        <action name="MoveResizeTo">
+          <width>34%</width>
+          <height>100%</height>
+          <x>0%</x>
+          <y>0%</y>
+        </action>
+      </keybind>
     </keybind>
     <keybind key="Super-KP_8">
       <action name="UnmaximizeFull"/>
@@ -258,6 +292,15 @@
         <height>50%</height>
         <x>0%</x>
         <y>0%</y>
+      </action>
+    </keybind>
+    <keybind key="Super-KP_2">
+      <action name="UnmaximizeFull"/>
+      <action name="MoveResizeTo">
+        <width>100%</width>
+        <height>50%</height>
+        <x>0%</x>
+        <y>50%</y>
       </action>
     </keybind>
     <!-- Move the window to the first monitor -->
