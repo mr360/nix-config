@@ -27,6 +27,7 @@
       hexedit
       nnn
       tmux
+      pcalc
     ];
   };
 }

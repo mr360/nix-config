@@ -53,9 +53,15 @@
         environment.systemPackages = with pkgs; [
             google-chrome
             vlc
+
             mtpaint
             feh
             flameshot
+
+            qbittorrent
+            popcorntime
+
+            qalculate-qt
         ];
 
         # Start systemd services for GUI packages
