@@ -48,6 +48,12 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/pcmanfm-qt;
       recursive = true;
     };
+
+    # Feh  Image Viewer 
+    configFile."feh" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/feh;
+      recursive = true;
+    };
   };
   
   # Git & Bash

@@ -53,6 +53,7 @@
         environment.systemPackages = with pkgs; [
             google-chrome
             vlc
+            feh
         ];
 
         # Enable sound and printing

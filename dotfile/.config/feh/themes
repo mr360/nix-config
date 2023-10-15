@@ -1,0 +1,4 @@
+feh -B '#d4d0c8' \
+-d \
+--geometry 800x700 \
+--scale-down
