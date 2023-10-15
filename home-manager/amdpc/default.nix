@@ -57,6 +57,12 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/feh;
       recursive = true;
     };
+
+    # VLC settings 
+    configFile."vlc/vlcrc" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/vlc/vlcrc;
+      recursive = false;
+    };
   };
   
   # Git & Bash
