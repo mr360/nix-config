@@ -3,7 +3,7 @@
 {
   /*
     Note: Limited usage of home-manager. Only used for linking xdg config files rather than using nix styled option layout. 
-    Once home-manager becomes officially integrated with nix then we can think about it :-) 
+    Once home-manager becomes mature then we can think about it :-) 
   */
 
   home.username = "shady";
