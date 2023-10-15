@@ -1,5 +1,5 @@
 # nix-config
-NixOS configuration: simple system config for my everyday usage
+NixOS configuration: simple system config for my everyday usage. 
 
 ## Structure
 ```
@@ -26,17 +26,6 @@ NixOS configuration: simple system config for my everyday usage
 └── win10-1080ti.virt.xml
 ```
 
-
-## NixOS Flake: 
-- TODO: Add SSH agent support using user.users.shady.authorizationssh
-
-## Home Manager (User Settings)
-- Implement user settings for editors and refine window controls (iterative)
-
-## Custom nixpkgs
-- TODO: Understand how to develop custom packages & overlays
-
-## Virtualisation (PCI-E Passthrough)
-- FUTURE: VM drive on physical disk/partition rather than raw image
-
+## Notice
+This is not my best work but I hope to improve it over time. I started the journey on the 29/09/23.
 
