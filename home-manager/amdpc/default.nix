@@ -1,13 +1,16 @@
 { config, pkgs, ... }:
 
 {
+  /*
+    Note: Limited usage of home-manager. Only used for linking xdg config files rather than using nix styled option layout. 
+    Once home-manager becomes officially integrated with nix then we can think about it :-) 
+  */
+
   home.username = "shady";
   home.homeDirectory = "/home/shady";
   home.packages = with pkgs; [
     vscode
     neovim
-    tmux
-    nnn
   ];
 
   xdg = {
@@ -81,14 +84,7 @@
     };
   };
 
-  # TODO Shortcut overlay + injection
-
-  # Editors
-  # TODO vscode
-
-  # TODO neovim
-  
-  # TODO tmux
+  # TODO GUI Quickview Shortcuts + File Assoications
 
   home.stateVersion = "23.05";
   programs.home-manager.enable = true;

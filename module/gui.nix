@@ -53,8 +53,29 @@
         environment.systemPackages = with pkgs; [
             google-chrome
             vlc
+            mtpaint
             feh
+            flameshot
         ];
+
+        # Start systemd services for GUI packages
+        systemd.user.services.flameshot = {
+            wantedBy = [ "graphical-session.target" ];
+            partOf = [ "graphical-session.target" ];
+
+            serviceConfig = {
+                ExecStart = "${pkgs.flameshot}/bin/flameshot";
+                Restart = "on-abort";
+
+                LockPersonality = true;
+                MemoryDenyWriteExecute = true;
+                NoNewPrivileges = true;
+                PrivateUsers = true;
+                RestrictNamespaces = true;
+                SystemCallArchitectures = "native";
+                SystemCallFilter = "@system-service";
+            };
+        };
 
         # Enable sound and printing
         services.printing.enable = true;

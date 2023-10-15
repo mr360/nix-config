@@ -25,6 +25,8 @@
       python3
       gcc
       hexedit
+      nnn
+      tmux
     ];
   };
 }
