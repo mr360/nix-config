@@ -47,7 +47,6 @@
 
         # Configure keymap in X11
         services.xserver.layout = "us";
-        services.xserver.xkbOptions = "eurosign:e,caps:escape";
 
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
