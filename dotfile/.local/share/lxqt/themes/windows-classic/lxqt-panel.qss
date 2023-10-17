@@ -250,6 +250,16 @@ This would require changes to the source code... a future possibility for a patc
     margin-right: 0px;    
 }
 
+#TaskBar LXQtGroupPopup {
+   border: 2px solid transparent;
+   border-image: url(border.png) 2px;
+   background-color: #D4D0C8;
+}
+
+/*#TaskBar LXQtGroupPopup > QToolButton{
+   border: 0px solid black;
+   background-color: #D4D0C8;
+}*/
 
 /*
  * Mount plugin

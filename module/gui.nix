@@ -50,19 +50,29 @@
 
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
+            xcompmgr
+
             google-chrome
             vlc
-
             mtpaint
             feh
             flameshot
-
             qbittorrent
             popcorntime
-
             qalculate-qt
         ];
 
+        # Start xcompmgr as a service 
+        systemd.user.services.startXcompmgr = {
+            wantedBy = [ "graphical-session.target" ];
+            partOf = [ "graphical-session.target" ];
+
+            serviceConfig = {
+                ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr";
+                Restart = "on-failure";
+            };
+        };
+        
         # Start systemd services for GUI packages
         systemd.user.services.flameshot = {
             wantedBy = [ "graphical-session.target" ];
