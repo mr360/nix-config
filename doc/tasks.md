@@ -1,4 +1,8 @@
 ## Interative: 
+- Create live-install usb
+- Build & Compile KASM-VNC
+- Install tailscale vpn
+- Install syncthing
 - HomeManager conf --> tmux | neovim | vscode
 
 ## Nice2Do:
