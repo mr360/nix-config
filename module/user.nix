@@ -23,7 +23,7 @@
         "networkmanager" 
         ];
         
-      initialPassword = "1234";
+      passwordFile = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIICtnasp85/WNYFdKEmV+izIAt12oKntK7eEFhwo5fhk qd0097@gmail.com"
       ];

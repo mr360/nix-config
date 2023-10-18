@@ -1,6 +1,10 @@
 # nix-config
 NixOS configuration: simple system config for my everyday usage. 
 
+## Dependencies
+
+- Requires contents from `passwd` repository to be placed within `./dotfile/.cred/`
+
 ## Structure
 ```
 ├── flake.lock
