@@ -1,1 +1,5 @@
+# Ignore live iso created file 
+result
+
+# Ignore .cred folder
 /dotfile/.cred/*

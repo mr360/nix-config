@@ -53,6 +53,26 @@
             ./host/amdpc/default.nix
           ];
         };
+        # nix build .#nixosConfigurations.live-usb.config.system.build.isoImage
+        "live-usb" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            builderOptions = {
+              user.name = "installer";
+              gui.enable = false;
+              cmdpkgs.enable = true;
+              powersaver.enable = false;
+              ssh = {
+                enable_agent = true;
+                enable_server = false;
+              };
+            };
+          };
+          modules = [
+            (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
+            ./host/liveusb/default.nix
+          ];
+        };
       };
     };
 }
