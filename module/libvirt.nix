@@ -15,7 +15,7 @@
     pci_e_devices = lib.mkOption {
       default = null;
       example = "0000:0c:00.0 0000:0c:00.1";
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
       description = ''
         String list of PCI-E devices to passthrough.
         If none are supplied -- passthrough is disabled
