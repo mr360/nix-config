@@ -6,8 +6,6 @@
     Once home-manager becomes mature then we can think about it :-) 
   */
 
-  home.username = "shady";
-  home.homeDirectory = "/home/shady";
   home.packages = with pkgs; [
     vscode
     neovim
@@ -86,7 +84,6 @@
     '';
 
     shellAliases = {
-      ginit = ''eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_git'';
     };
   };
 
