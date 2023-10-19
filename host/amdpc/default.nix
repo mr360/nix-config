@@ -50,6 +50,10 @@
 
   networking.hostName = "amd-desktop"; 
   networking.networkmanager.enable = true;  
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 80 443 52198 9050 4447];
+  };
   time.timeZone = "Australia/Sydney";
 
   hardware.opengl.enable = true;
