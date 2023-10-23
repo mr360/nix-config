@@ -60,6 +60,7 @@
             qbittorrent
             popcorntime
             qalculate-qt
+            simplescreenrecorder
         ];
 
         # Start xcompmgr as a service 

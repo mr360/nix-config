@@ -2,4 +2,4 @@
 result
 
 # Ignore .cred folder
-/dotfile/.cred/*
+dotfile/.cred/
