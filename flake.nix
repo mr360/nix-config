@@ -60,6 +60,25 @@
             ./host/amdpc/default.nix
           ];
         };
+        # sudo nixos-rebuild switch --flake .#server-r710
+        "server-r710" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            builderOptions = {
+              user.name = "foxskis";
+              gui.enable = false;
+              cmdpkgs.enable = true;
+              powersaver.enable = false;
+              ssh = {
+                enable_agent = true;
+                enable_server = false;
+              };
+            };
+          };
+          modules = [
+            ./host/server/default.nix
+          ];
+        };
         # nix build .#nixosConfigurations.live-usb.config.system.build.isoImage
         "live-usb" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
