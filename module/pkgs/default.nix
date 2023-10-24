@@ -7,6 +7,7 @@ in {
         chicago95 = callPackage ./themes/chicago95-theme.nix {};
         raleigh-reloaded = callPackage ./themes/raleigh-reloaded-theme.nix {};
       };
+      kasm-vnc = callPackage ./kasm-vnc.nix {};
     };
   })];
 }
