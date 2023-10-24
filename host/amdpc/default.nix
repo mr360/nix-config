@@ -72,7 +72,7 @@
       upper = "04:00";
     };
     dates = "01:00";
-    flake = "git+ssh://git@github.com/mr360/nix-config";
+    flake = "github:mr360/nix-config";
     flags = [ 
       "--update-input" 
       "nixpkgs" 
