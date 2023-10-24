@@ -28,6 +28,7 @@
       nnn
       tmux
       pcalc
+      neovim
     ];
   };
 }
