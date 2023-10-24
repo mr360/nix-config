@@ -52,7 +52,8 @@
   networking.networkmanager.enable = true;  
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 80 443 52198 9050 4447];
+    allowedTCPPorts = [ 80 443 52198 9050 4447 8384 22000];
+    allowedUDPPorts = [ 22000 21027 ];
   };
   time.timeZone = "Australia/Sydney";
 
@@ -62,6 +63,43 @@
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
+  };
+
+  services = {
+    syncthing = {
+      enable = true;
+      relay.enable = false;
+      user = "${config.builderOptions.user.name}";
+      configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
+      dataDir = "/home/${config.builderOptions.user.name}/sync";
+      overrideDevices = true;
+      overrideFolders = true;
+      devices = {
+        "server-r710" = { id = "INSERT-DEVICE-ID"; };
+      };
+      folders = {
+        "DriveA" = {        
+          path = "/mnt/a_drive";
+          devices = [ "server-r710"];
+        };
+        "DriveB" = {
+          path = "/mnt/b_drive";
+          devices = [ "server-r710"];
+        };
+
+        "Documents" = {
+          path = "/home/${config.builderOptions.user.name}/Documents";
+          devices = [ "server-r710" ];
+          ignorePerms = false;  # Syncthing sync file permissions.
+        };
+      };
+      extraOptions = {
+        gui = {
+          user = "${config.builderOptions.user.name}";
+          password = "pass";
+        };
+      };
+    };
   };
 
   system.autoUpgrade = {
