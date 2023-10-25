@@ -61,6 +61,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
+            thunderbird
         ];
 
         # Start xcompmgr as a service 
