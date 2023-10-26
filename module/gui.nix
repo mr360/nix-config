@@ -61,7 +61,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
-            thunderbird unstable.legacyPackages."${pkgs.system}".kdocker
+            thunderbird birdtray
         ];
 
         # Start xcompmgr as a service 
