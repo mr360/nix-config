@@ -48,6 +48,9 @@
         # Configure keymap in X11
         services.xserver.layout = "us";
 
+        # Enable network applet in tray
+        programs.nm-applet.enable = true;
+
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
             xcompmgr
