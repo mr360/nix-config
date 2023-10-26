@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, unstable, ... }:
 
 {
     imports = [
@@ -61,7 +61,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
-            thunderbird
+            thunderbird unstable.legacyPackages."${pkgs.system}".kdocker
         ];
 
         # Start xcompmgr as a service 

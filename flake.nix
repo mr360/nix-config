@@ -20,18 +20,22 @@
     	nixpkgs = {
         url = "github:NixOS/nixpkgs/release-23.05";
       };
+      unstable = {
+        url = "github:NixOS/nixpkgs/nixos-unstable";
+      };
       home-manager = {
         url = "github:nix-community/home-manager/release-23.05";
         inputs.nixpkgs.follows = "nixpkgs";
       };
     };
 
-    outputs = { nixpkgs, home-manager, ... }@inputs: {
+    outputs = { unstable, nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
         # sudo nixos-rebuild switch --flake .#amd-desktop
         "amd-desktop" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
+            inherit unstable;
             inherit home-manager;
             builderOptions = {
               user.name = "shady";
