@@ -106,11 +106,11 @@
     enable = true;
     allowReboot = true;
     rebootWindow = {
-      lower = "02:00";
+      lower = "00:00";
       upper = "04:00";
     };
-    dates = "01:00";
-    flake = "github:mr360/nix-config";
+    dates = "monthly";
+    flake = "/home/${config.builderOptions.user.name}/nixos";
     flags = [ 
       "--update-input" 
       "nixpkgs" 
