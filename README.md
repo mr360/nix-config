@@ -1,8 +1,11 @@
 # nix-config
-NixOS configuration: simple system config for my everyday usage. 
 
-## Dependencies
+NixOS configuration: simple system config for my everyday usage.
 
+## Get Started
+
+- Clone current repository to `$HOME` folder & create symlink to `/etc/nixos`
+  > sudo ln -s /home/shady/nixos /etc/nixos
 - Requires contents from `passwd` repository to be placed within `./dotfile/.cred/`
 
 ## Build Installation USB (Live CD)
