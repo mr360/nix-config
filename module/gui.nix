@@ -64,7 +64,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
-            thunderbird birdtray
+            ferdium
         ];
 
         # Start xcompmgr as a service 
