@@ -66,7 +66,18 @@
             simplescreenrecorder
             ferdium
         ];
+        
+        # Start ferdium as a service 
+        systemd.user.services.ferdium = {
+            wantedBy = [ "graphical-session.target" ];
+            partOf = [ "graphical-session.target" ];
 
+            serviceConfig = {
+                ExecStart = "${pkgs.ferdium}/bin/ferdium";
+                Restart = "on-failure";
+            };
+        };
+        
         # Start xcompmgr as a service 
         systemd.user.services.startXcompmgr = {
             wantedBy = [ "graphical-session.target" ];
