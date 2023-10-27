@@ -22,7 +22,11 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/openbox;
       recursive = true;
     };
-    
+    configFile."gtk-3.0" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/gtk-3.0;
+      recursive = true;
+    };
+
     # LXQT Custom theme files
     dataFile."fonts" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/fonts;
