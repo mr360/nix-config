@@ -11,6 +11,7 @@
       ../../module/gui.nix
       ../../module/powersaver.nix
       ../../module/ssh.nix
+      ../../module/container.nix      
       home-manager.nixosModules.home-manager 
       {
         home-manager.useGlobalPkgs = true;

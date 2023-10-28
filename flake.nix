@@ -51,6 +51,9 @@
                 enable_agent = true;
                 enable_server = false;
               };
+              docker = {
+                idrac6 = true;
+              };
             };
           };
           modules = [
