@@ -1,4 +1,4 @@
-{ config, pkgs, specialArgs, home-manager, ... }:
+{ lib, config, pkgs, specialArgs, home-manager, ... }:
 
 {
   imports =
@@ -13,6 +13,13 @@
 
   builderOptions = specialArgs.builderOptions;
   
+  isoImage.contents = [
+    {
+      source = /etc/nixos/dotfile/.cred;
+      target = "/etc/nixos/dotfile/.cred";
+    }
+  ];
+
   networking.hostName = "nix-live"; 
   networking.networkmanager.enable = if config.networking.wireless.enable then false else true;
   time.timeZone = "Australia/Sydney";

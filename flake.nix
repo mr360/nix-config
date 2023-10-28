@@ -62,13 +62,13 @@
           system = "x86_64-linux";
           specialArgs = {
             builderOptions = {
-              user.name = "installer";
+              user.name = "shady";
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
               ssh = {
                 enable_agent = true;
-                enable_server = false;
+                enable_server = true;
               };
             };
           };

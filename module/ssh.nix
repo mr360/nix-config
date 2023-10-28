@@ -1,5 +1,8 @@
-  { config, lib, pkgs, ... }@args: 
+{ config, lib, pkgs, ... }@args: 
 
+let 
+  isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
+in
 {
   options.builderOptions.ssh =
   {
@@ -38,7 +41,7 @@
             };
             extraConfig = ''
                 Host github.com
-                  IdentityFile /etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
+                  IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
                   IdentitiesOnly yes
                   AddKeysToAgent yes
                 '';
