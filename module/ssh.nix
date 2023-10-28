@@ -44,6 +44,12 @@ in
                   IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
                   IdentitiesOnly yes
                   AddKeysToAgent yes
+
+                Host 192.168.1.*
+                  Port 22
+                  IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
+                  IdentitiesOnly yes
+                  AddKeysToAgent yes                  
                 '';
         };
     })
@@ -54,6 +60,10 @@ in
             settings.PasswordAuthentication = false;
             settings.KbdInteractiveAuthentication = false;
         };
+
+        users.users."${config.builderOptions.user.name}".openssh.authorizedKeys.keyFiles = [
+          "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/authorized_keys"
+        ];
     })
   ];
 }
