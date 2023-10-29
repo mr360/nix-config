@@ -52,7 +52,7 @@
                 enable_server = false;
               };
               docker = {
-                idrac6 = true;
+                idrac6 = false;
               };
             };
           };
