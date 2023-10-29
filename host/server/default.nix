@@ -15,6 +15,11 @@
 
   builderOptions = specialArgs.builderOptions;
 
+  fileSystems."/mnt/storage" =
+  { 
+    device = "/dev/disk/by-id/scsi-36848f690d9a34c002ab458812f79466a";
+  };
+  
   networking.hostName = "storage-r710"; 
   networking.networkmanager.enable = true;  
   networking.firewall = {
