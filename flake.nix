@@ -61,7 +61,7 @@
           ];
         };
         # sudo nixos-rebuild switch --flake .#server-r710
-        "server-r710" = nixpkgs.lib.nixosSystem {
+        "storage-r710" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
             builderOptions = {
@@ -71,7 +71,7 @@
               powersaver.enable = false;
               ssh = {
                 enable_agent = true;
-                enable_server = false;
+                enable_server = true;
               };
             };
           };
@@ -84,7 +84,7 @@
           system = "x86_64-linux";
           specialArgs = {
             builderOptions = {
-              user.name = "shady";
+              user.name = "live";
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;

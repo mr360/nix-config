@@ -15,11 +15,11 @@
 
   builderOptions = specialArgs.builderOptions;
 
-  networking.hostName = "server-r710"; 
+  networking.hostName = "storage-r710"; 
   networking.networkmanager.enable = true;  
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 80 443 52198 9050 4447 8384 22000];
+    allowedTCPPorts = [ 22 80 443 52198 9050 4447 8384 22000];
     allowedUDPPorts = [ 22000 21027 ];
   };
   time.timeZone = "Australia/Sydney";

@@ -20,7 +20,7 @@
     }
   ];
 
-  networking.hostName = "nix-live"; 
+  networking.hostName = "live-usb"; 
   networking.networkmanager.enable = if config.networking.wireless.enable then false else true;
   time.timeZone = "Australia/Sydney";
 
