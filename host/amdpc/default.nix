@@ -76,29 +76,25 @@
       overrideDevices = true;
       overrideFolders = true;
       devices = {
-        "server-r710" = { id = "INSERT-DEVICE-ID"; };
+        "storage-r710" = { id = "INSERT-DEVICE-ID"; };
       };
       folders = {
-        "DriveA" = {        
-          path = "/mnt/a_drive";
-          devices = [ "server-r710"];
+        "LtsData" = {        
+          path = "/mnt/a_drive/KeepOOO";
+          devices = [ "storage-r710"];
         };
-        "DriveB" = {
+        /*"DriveB" = {
           path = "/mnt/b_drive";
-          devices = [ "server-r710"];
-        };
+          devices = [ "storage-r710"];
+        };*/
 
         "Documents" = {
           path = "/home/${config.builderOptions.user.name}/Documents";
-          devices = [ "server-r710" ];
+          devices = [ "storage-r710" ];
           ignorePerms = false;  # Syncthing sync file permissions.
         };
       };
       extraOptions = {
-        gui = {
-          user = "${config.builderOptions.user.name}";
-          password = "pass";
-        };
       };
     };
   };
