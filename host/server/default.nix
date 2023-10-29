@@ -14,10 +14,11 @@
     ];
 
   builderOptions = specialArgs.builderOptions;
-
+  
   fileSystems."/mnt/storage" =
   { 
     device = "/dev/disk/by-id/scsi-36848f690d9a34c002ab458812f79466a";
+    fsType = "ext2";
   };
   
   networking.hostName = "storage-r710"; 
@@ -43,25 +44,16 @@
       enable = true;
       user = "${config.builderOptions.user.name}";
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
+      dataDir = "/home/${config.builderOptions.user.name}/sync";
       overrideDevices = true;
       overrideFolders = true;
       devices = {
-        "server-r710" = { id = ""; };
+        "shady-amd" = { id = ""; };
       };
       folders = {
-        "DriveA" = {        
-          path = "/mnt/a_drive";
-          devices = [ "server-r710"];
-        };
-        "DriveB" = {
-          path = "/mnt/b_drive";
-          devices = [ "server-r710"];
-        };
-
-        "Documents" = {
-          path = "/home/${config.builderOptions.user.name}/Documents";
-          devices = [ "server-r710" ];
-          ignorePerms = false;     # By default, Syncthing doesn't sync file permissions. This line enables it for this folder.
+        "Storage" = {        
+          path = "/mnt/storage";
+          devices = [ "shady-amd"];
         };
       };
       extraOptions = {
