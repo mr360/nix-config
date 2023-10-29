@@ -39,31 +39,28 @@
   };
 
   # Enable custom syncthing 
-  /*services = {
+  services = {
     syncthing = {
       enable = true;
+      relay.enable = false;
       user = "${config.builderOptions.user.name}";
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
-      dataDir = "/home/${config.builderOptions.user.name}/sync";
+      dataDir = "/mnt/storage/sync";
       overrideDevices = true;
       overrideFolders = true;
       devices = {
-        "shady-amd" = { id = ""; };
+        "amd-desktop" = { id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; };
       };
       folders = {
         "Storage" = {        
-          path = "/mnt/storage";
-          devices = [ "shady-amd"];
+          path = "/mnt/storage/drive";
+          devices = [ "amd-desktop"];
         };
       };
       extraOptions = {
-        gui = {
-          user = "${config.builderOptions.user.name}";
-          password = "1234";
-        };
       };
     };
-  };*/
+  };
 
   system.stateVersion = "23.05";
 }
