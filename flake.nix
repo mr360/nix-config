@@ -52,7 +52,7 @@
                 enable_server = false;
               };
               docker = {
-                idrac6 = false;
+                idrac6 = true;
               };
             };
           };
@@ -60,7 +60,7 @@
             ./host/amdpc/default.nix
           ];
         };
-        # sudo nixos-rebuild switch --flake .#server-r710
+        # sudo nixos-rebuild switch --flake .#storage-r710
         "storage-r710" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
