@@ -41,6 +41,25 @@
   # Enable custom syncthing 
   services = {
     syncthing = {
+      enable = true;
+      user = "${config.builderOptions.user.name}";
+      configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
+      dataDir = "/mnt/storage/drive";
+      overrideDevices = true;
+      overrideFolders = true;
+      devices = {
+        "amd-desktop" = { 
+	        id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 
+	        autoAcceptFolders = true;
+	      };
+      };
+      folders = {
+        "Documents" = {
+          path = "/mnt/storage/drive/Documents";
+          devices = [ "amd-desktop" ];
+          ignorePerms = true;
+        };
+      };
       extraOptions = {
         gui.insecureSkipHostcheck = true;
         options = {
@@ -51,25 +70,6 @@
           urAccepted = -1;
         };
       }; 
-      enable = true;
-      user = "${config.builderOptions.user.name}";
-      configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
-      dataDir = "/mnt/storage/drive";
-      overrideDevices = true;
-      overrideFolders = true;
-      devices = {
-        "amd-desktop" = { 
-	  id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 
-	  autoAcceptFolders = true;
-	};
-      };
-      folders = {
-      	"Documents" = {
-          path = "/mnt/storage/drive/Documents";
-          devices = [ "amd-desktop" ];
-          ignorePerms = true;
-        };
-      };
     };
   };
 

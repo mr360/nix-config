@@ -83,19 +83,26 @@
           path = "/mnt/a_drive/KeepOOO";
           devices = [ "storage-r710"];
         };
+        "Documents" = {
+          path = "/home/${config.builderOptions.user.name}/Documents";
+          devices = [ "storage-r710" ];
+          ignorePerms = true;
+        };
         /*"DriveB" = {
           path = "/mnt/b_drive";
           devices = [ "storage-r710"];
         };*/
-
-        "Documents" = {
-          path = "/home/${config.builderOptions.user.name}/Documents";
-          devices = [ "storage-r710" ];
-          ignorePerms = false;  # Syncthing sync file permissions.
-        };
       };
       extraOptions = {
-      };
+        gui.insecureSkipHostcheck = true;
+        options = {
+          relaysEnabled = false;
+          natEnabled = true;
+          globalAnnounceEnabled = false;
+          localAnnounceEnabled = true;
+          urAccepted = -1;
+        };
+      }; 
     };
   };
 
