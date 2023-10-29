@@ -58,6 +58,12 @@
           path = "/mnt/storage/drive/Documents";
           devices = [ "amd-desktop" ];
           ignorePerms = true;
+          versioning = {
+            type = "simple";
+            params = {
+              keep = "7";
+            };
+          };
         };
       };
       extraOptions = {
