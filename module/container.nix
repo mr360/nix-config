@@ -37,6 +37,7 @@
               IDRAC_USER = "root";
               IDRAC_PASSWORD = "root";
             };
+            # After installation need to run: chown -R shady:users /tmp/shady
             volumes = [
               "/tmp/${config.builderOptions.user.name}/idrac/app:/app"
               "/tmp/${config.builderOptions.user.name}/idrac/media:/vmedia"
