@@ -76,7 +76,7 @@
       overrideDevices = true;
       overrideFolders = true;
       devices = {
-        "storage-r710" = { id = "INSERT-DEVICE-ID"; };
+        "storage-r710" = { id = "NFEK5HE-FNVPJ2F-BNGIPK3-QAU2HRO-RQQULMV-J3AMFKQ-4FAFLNR-UXIBWA4"; };
       };
       folders = {
         "LtsData" = {        
