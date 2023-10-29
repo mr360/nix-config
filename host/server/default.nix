@@ -17,8 +17,8 @@
   
   fileSystems."/mnt/storage" =
   { 
-    device = "/dev/disk/by-id/scsi-36848f690d9a34c002ab458812f79466a";
-    fsType = "ext2";
+    device = "/dev/disk/by-uuid/55689d40-7584-4040-970c-be406ab09ac9";
+    fsType = "ext4";
   };
   
   networking.hostName = "storage-r710"; 
