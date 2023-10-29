@@ -1,9 +1,11 @@
 ## Interative
 
-- Build & Compile KASM-VNC
-- Install tailscale vpn
-- Install syncthing
+- Install NixOS on `server-r710`                                              [TODO]
+  - Create syncthing profile
+  - Setup tailscale vpn  
+- Configure syncthing with `server-r710` device-id
 - HomeManager conf --> tmux | neovim | vscode
+- Create a common home-manager --> machine specific
 
 ## Nice2Do
 
@@ -11,9 +13,9 @@
 - Remove usage of overlay and move to flak.nix for LXQT .local files --> new git fork of windows-classic
 - Declarative for lxqt --> panel.conf -- quicklauncher {pkg.vscode}
 
-## Custom nixpkgs
+## Package Custom Nixpkg
 
-- TODO: Understand how to develop custom packages & overlays
+- Build & Compile KASM-VNC
 
 ## Virtualisation (PCI-E Passthrough)
 
