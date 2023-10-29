@@ -50,7 +50,6 @@
       devices = {
         "amd-desktop" = { 
 	        id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 
-	        autoAcceptFolders = true;
 	      };
       };
       folders = {
@@ -65,11 +64,11 @@
             };
           };
         };
-	"LtsData" = {
-	  path = "/mnt/storage/drive/LtsData";
-	  devices = [ "amd-desktop" ];
-	  ignorePerms = true;
-	};
+        "LtsData" = {
+          path = "/mnt/storage/drive/LtsData";
+          devices = [ "amd-desktop" ];
+          ignorePerms = true;
+	      };
       };
       extraOptions = {
         gui.insecureSkipHostcheck = true;
