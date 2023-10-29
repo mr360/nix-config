@@ -65,6 +65,11 @@
             };
           };
         };
+	"LtsData" = {
+	  path = "/mnt/storage/drive/LtsData";
+	  devices = [ "amd-desktop" ];
+	  ignorePerms = true;
+	};
       };
       extraOptions = {
         gui.insecureSkipHostcheck = true;
