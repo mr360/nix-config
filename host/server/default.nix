@@ -38,13 +38,15 @@
     auto-optimise-store = true;
   };
 
-  # Enable custom syncthing 
+  # Enable Syncthing functionality with appropriate
+  # user groups and access, plus host specific folders
+  systemd.services.syncthing.serviceConfig.UMask = "0007";
   services = {
     syncthing = {
       enable = true;
       user = "${config.builderOptions.user.name}";
+      group = "users";
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
-      dataDir = "/mnt/storage/drive";
       overrideDevices = true;
       overrideFolders = true;
       devices = {

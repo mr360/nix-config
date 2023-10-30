@@ -66,13 +66,16 @@
     auto-optimise-store = true;
   };
 
+  # Enable Syncthing functionality with appropriate
+  # user groups and access, plus host specific folders
+  systemd.services.syncthing.serviceConfig.UMask = "0007";
   services = {
     syncthing = {
       enable = true;
       relay.enable = false;
       user = "${config.builderOptions.user.name}";
+      group = "users";
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
-      dataDir = "/home/${config.builderOptions.user.name}/sync";
       overrideDevices = true;
       overrideFolders = true;
       devices = {
@@ -88,10 +91,6 @@
           devices = [ "storage-r710" ];
           ignorePerms = true;
         };
-        /*"DriveB" = {
-          path = "/mnt/b_drive";
-          devices = [ "storage-r710"];
-        };*/
       };
       extraOptions = {
         gui.insecureSkipHostcheck = true;
