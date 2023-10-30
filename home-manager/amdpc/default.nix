@@ -64,6 +64,12 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/vlc/vlcrc;
       recursive = false;
     };
+
+    # Syncthing System Tray
+    configFile."syncthingtray.ini" = {
+      source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/syncthingtray.ini;
+      recursive = false;
+    };
   };
   
   # Git & Bash
