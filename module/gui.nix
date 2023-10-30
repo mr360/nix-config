@@ -65,8 +65,20 @@
             qalculate-qt
             simplescreenrecorder
             ferdium
-        ];
+        ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
         
+        # Start syncthingtray as a service if syncthing is enabled 
+        systemd.user.services.syncthingtray =  if config.services.syncthing.enable then 
+        {
+            wantedBy = [ "graphical-session.target" ];
+            after = [ "graphical-session.target" ];
+
+            serviceConfig = {
+                ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --connection '${config.networking.hostName}' --wait";
+                Restart = "on-failure";
+            };
+        } else {};
+
         # Start ferdium as a service 
         systemd.user.services.ferdium = {
             wantedBy = [ "graphical-session.target" ];
