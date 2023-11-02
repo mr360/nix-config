@@ -92,6 +92,11 @@
           devices = [ "amd-desktop" ];
           ignorePerms = true;
 	      };
+        "LtsData2" = {
+          path = "/mnt/storage/drive/LtsData2";
+          devices = [ "amd-desktop" ];
+          ignorePerms = true;
+	      };
       };
       extraOptions = {
         gui.insecureSkipHostcheck = true;

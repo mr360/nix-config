@@ -87,6 +87,10 @@
           path = "/mnt/a_drive/KeepOOO";
           devices = [ "storage-r710"];
         };
+        "LtsData2" = {        
+          path = "/mnt/b_drive/KeepOOO1";
+          devices = [ "storage-r710"];
+        };
         "Documents" = {
           path = "/home/${config.builderOptions.user.name}/Documents";
           devices = [ "storage-r710" ];
