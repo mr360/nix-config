@@ -11,6 +11,7 @@
       ../../module/gui.nix
       ../../module/powersaver.nix
       ../../module/ssh.nix
+      ../../module/utility
     ];
 
   builderOptions = specialArgs.builderOptions;
@@ -36,6 +37,26 @@
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
+  };
+
+  # Enable Nextcloud hosting service to track
+  # documents and files e.g movies tv shows music
+  users.users."${config.builderOptions.user.name}".extraGroups = [ "nextcloud" ];
+  users.users.nextcloud.extraGroups = [ "users" ];
+  services.nextcloud = {
+    enable = true;
+    package = pkgs.nextcloud27;
+    hostName = "192.168.1.102";
+    home = "/mnt/storage/nextcloud";
+    database.createLocally = true;
+    config = {
+      dbtype = "sqlite";
+      adminuser = "${config.builderOptions.user.name}";
+      adminpassFile = "${pkgs.writeText "adminpass" "1234"}";
+    };
+    https = false;
+    autoUpdateApps.enable = true;
+    autoUpdateApps.startAt = "05:00:00";
   };
 
   # Enable Syncthing functionality with appropriate
@@ -83,6 +104,21 @@
         };
       }; 
     };
+  };
+  
+  # Task to set group permissions for files created by syncthing
+  # Allows user and nextcloud group to rw files and directories
+  task.fix-syncthing-permissions = {
+    user = "${config.builderOptions.user.name}";
+    onCalendar = "*-*-* 18:00:00";
+    script = let
+      folders = pkgs.lib.concatMapStringsSep " " (folder: folder.path) (builtins.attrValues config.services.syncthing.folders);
+      in ''
+      for FOLDER in ${folders}; do
+        find "$FOLDER" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
+        find "$FOLDER" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
+      done
+    '';
   };
 
   system.stateVersion = "23.05";
