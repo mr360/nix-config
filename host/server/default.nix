@@ -113,18 +113,18 @@
   
   # Task to set group permissions for files created by syncthing
   # Allows user and nextcloud group to rw files and directories
-  task.fix-syncthing-permissions = {
-    user = "${config.builderOptions.user.name}";
-    onCalendar = "*-*-* 18:00:00";
-    script = let
-      folders = pkgs.lib.concatMapStringsSep " " (folder: folder.path) (builtins.attrValues config.services.syncthing.folders);
-      in ''
-      for FOLDER in ${folders}; do
-        find "$FOLDER" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
-        find "$FOLDER" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
-      done
-    '';
-  };
+  #task.fix-syncthing-permissions = {
+  #  user = "${config.builderOptions.user.name}";
+  #  onCalendar = "*-*-* 4:35:00";
+  #  script = let
+  #    folders = pkgs.lib.concatMapStringsSep " " (folder: folder.path) (builtins.attrValues config.services.syncthing.folders);
+  #    in ''
+  #    for FOLDER in ${folders}; do
+  #      find "$FOLDER" -type f \( ! -perm -g=rw \) -not -path "*/.st*"  -exec chmod g+rw {} \;
+  #      find "$FOLDER" -type d \( ! -perm -g=rwxs \) -not -path "*/.st*" -exec chmod g+rwxs {} \;
+  #    done
+  #  '';
+  #};
 
   system.stateVersion = "23.05";
 }
