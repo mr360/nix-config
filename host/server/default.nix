@@ -57,8 +57,8 @@
 	      };
       };
       folders = {
-        "Documents" = {
-          path = "/mnt/storage/drive/Documents";
+        "sync" = {
+          path = "/mnt/storage/drive/sync";
           devices = [ "amd-desktop" ];
           ignorePerms = true;
           versioning = {
@@ -68,16 +68,6 @@
             };
           };
         };
-        "LtsData" = {
-          path = "/mnt/storage/drive/LtsData";
-          devices = [ "amd-desktop" ];
-          ignorePerms = true;
-	      };
-        "LtsData2" = {
-          path = "/mnt/storage/drive/LtsData2";
-          devices = [ "amd-desktop" ];
-          ignorePerms = true;
-	      };
       };
       extraOptions = {
         gui.insecureSkipHostcheck = true;

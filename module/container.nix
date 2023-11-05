@@ -145,7 +145,7 @@ in
                 PUID=uid;
                 PGID=gid;
                 TZ=timezone;
-                DEFAULT_WORKSPACE="${documentDrivePath}/Documents/development";
+                DEFAULT_WORKSPACE="${documentDrivePath}/";
               };
               volumes = [
                 "${documentDrivePath}/drive:/mnt/storage/drive"

@@ -90,16 +90,8 @@
         "storage-r710" = { id = "NFEK5HE-FNVPJ2F-BNGIPK3-QAU2HRO-RQQULMV-J3AMFKQ-4FAFLNR-UXIBWA4"; };
       };
       folders = {
-        "LtsData" = {        
-          path = "/mnt/a_drive/KeepOOO";
-          devices = [ "storage-r710"];
-        };
-        "LtsData2" = {        
-          path = "/mnt/b_drive/KeepOOO1";
-          devices = [ "storage-r710"];
-        };
-        "Documents" = {
-          path = "/home/${config.builderOptions.user.name}/Documents";
+        "sync" = {
+          path = "/home/${config.builderOptions.user.name}/sync";
           devices = [ "storage-r710" ];
           ignorePerms = true;
         };
