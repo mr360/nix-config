@@ -148,7 +148,7 @@ in
                 DEFAULT_WORKSPACE="${documentDrivePath}/";
               };
               volumes = [
-                "${documentDrivePath}/drive:/mnt/storage/drive"
+                "${documentDrivePath}/sync:/mnt/storage/drive"
                 "${dockerStoragePath}/code:/config"
               ];
           };
