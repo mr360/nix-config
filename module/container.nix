@@ -191,6 +191,7 @@ in
               volumes = [
                 "${dockerStoragePath}/nextcloud/config:/var/www/html"
                 "${dockerStoragePath}/nextcloud/data:/var/www/html/data"
+		"${documentDrivePath}:${documentDrivePath}"
               ];
           };
         };
