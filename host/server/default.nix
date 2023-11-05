@@ -12,6 +12,7 @@
       ../../module/powersaver.nix
       ../../module/ssh.nix
       ../../module/utility
+      ../../module/container.nix
     ];
 
   builderOptions = specialArgs.builderOptions;
@@ -37,26 +38,6 @@
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
-  };
-
-  # Enable Nextcloud hosting service to track
-  # documents and files e.g movies tv shows music
-  users.users."${config.builderOptions.user.name}".extraGroups = [ "nextcloud" ];
-  users.users.nextcloud.extraGroups = [ "users" ];
-  services.nextcloud = {
-    enable = true;
-    package = pkgs.nextcloud27;
-    hostName = "192.168.1.102";
-    home = "/mnt/storage/nextcloud";
-    database.createLocally = true;
-    config = {
-      dbtype = "sqlite";
-      adminuser = "${config.builderOptions.user.name}";
-      adminpassFile = "${pkgs.writeText "adminpass" "1234"}";
-    };
-    https = false;
-    autoUpdateApps.enable = true;
-    autoUpdateApps.startAt = "05:00:00";
   };
 
   # Enable Syncthing functionality with appropriate

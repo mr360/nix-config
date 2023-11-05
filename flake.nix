@@ -75,10 +75,9 @@
               };
               docker = {
                 jellyfin = false;
-                code = false;
-                nextcloud = false;
+                code = true;
+                nextcloud = true;
                 tailscale = false;
-                caddy = false;
               };
             };
           };

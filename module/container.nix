@@ -22,15 +22,6 @@ in
       '';
       };
 
-      caddy = lib.mkOption {
-      default = false;
-      example = true;
-      type = lib.types.bool;
-      description = ''
-          Enable caddy reverse proxy docker image
-      '';
-      };
-
       jellyfin = lib.mkOption {
       default = false;
       example = true;
@@ -93,28 +84,6 @@ in
                 "${dockerStoragePath}/idrac/app:/app"
                 "${dockerStoragePath}/idrac/media:/vmedia"
                 "${dockerStoragePath}/idrac/screenshots:/screenshots"
-              ];
-          };
-        };
-      };
-    };
-  })
-  
-  (lib.mkIf (config.builderOptions.docker.caddy) 
-  {
-    virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
-      oci-containers = { 
-        backend = "docker";
-        containers = {
-          caddy = {
-              autoStart = true;
-              image = "";
-              ports = [ 
-                ];
-              environment = {
-              };
-              volumes = [
               ];
           };
         };
@@ -190,11 +159,15 @@ in
 
   (lib.mkIf (config.builderOptions.docker.nextcloud) 
   {
-    # Manual steps  (future: create custom dockerfile)
-    # Need to run: chown -R {user.name}:users <dockerStoragePath>/nextcloud
-    # Go through setup process (nix-shell mitproxy)
-    # sudo docker container exec -it <63f6a18eb605> bash
-    # ./occ app:install richdocumentscode
+    # Required: [TODO: create custom dockerfile]
+    # ---------------------------------------------------------
+    # => chown -R {user.name}:users <dockerStoragePath>/nextcloud
+    # => run Nextcloud Installer
+    # => sudo docker container exec -it <63f6a18eb605> bash
+    # ==> ./occ app:install richdocumentscode
+    # ==> ./occ app:enable files_external
+    # ==> ./occ app:install files_archive
+    # ==> ./occ app:install richdocuments
 
     networking.firewall.allowedTCPPorts = [ 8080 ];
     virtualisation = {
