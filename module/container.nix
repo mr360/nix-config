@@ -5,20 +5,14 @@
 let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
+  user = "${config.builderOptions.user.name}";
   timezone = "Australia/Sydney";
+  dockerStoragePath = "/mnt/storage/docker";
+  documentDrivePath = "/mnt/storage/drive";
 in
 {
   options.builderOptions.docker =
   {
-      enable = lib.mkOption {
-      default = false;
-      example = true;
-      type = lib.types.bool;
-      description = ''
-          Enable docker virtualisation
-      '';
-      };
-
       idrac6 = lib.mkOption {
       default = false;
       example = true;
@@ -28,12 +22,12 @@ in
       '';
       };
 
-      nginx = lib.mkOption {
+      caddy = lib.mkOption {
       default = false;
       example = true;
       type = lib.types.bool;
       description = ''
-          Enable NGINX docker image
+          Enable caddy reverse proxy docker image
       '';
       };
 
@@ -75,60 +69,54 @@ in
   };
 
   config = lib.mkMerge [
-  (lib.mkIf (config.builderOptions.docker.enable) 
-  {
-    virtualisation.docker.rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
-  })
-
   (lib.mkIf (config.builderOptions.docker.idrac6)
   {
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        idrac6 = {
-            autoStart = true;
-            image = "domistyle/idrac6:v0.9";
-            ports = [ 
-              "5800:5800"
-              "5900:5900"
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          idrac6 = {
+              autoStart = true;
+              image = "domistyle/idrac6:v0.9";
+              ports = [ 
+                "5800:5800"
+                "5900:5900"
+                ];
+              environment = {
+                IDRAC_HOST = "192.168.1.130";
+                IDRAC_USER = "root";
+                IDRAC_PASSWORD = "root";
+              };
+              # After installation need to run: chown -R shady:users /{dockerStoragePath}/idrac
+              volumes = [
+                "${dockerStoragePath}/idrac/app:/app"
+                "${dockerStoragePath}/idrac/media:/vmedia"
+                "${dockerStoragePath}/idrac/screenshots:/screenshots"
               ];
-            environment = {
-              IDRAC_HOST = "192.168.1.130";
-              IDRAC_USER = "root";
-              IDRAC_PASSWORD = "root";
-            };
-            # After installation need to run: chown -R shady:users /tmp/shady
-            volumes = [
-              "/tmp/${config.builderOptions.user.name}/idrac/app:/app"
-              "/tmp/${config.builderOptions.user.name}/idrac/media:/vmedia"
-              "/tmp/${config.builderOptions.user.name}/idrac/screenshots:/screenshots"
-            ];
+          };
         };
       };
     };
   })
   
-  (lib.mkIf (config.builderOptions.docker.nginx) 
+  (lib.mkIf (config.builderOptions.docker.caddy) 
   {
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        nginx = {
-            autoStart = true;
-            image = "nginx:1.25.2-alpine-slim";
-            ports = [ 
-              "8094:8094"
-              "8095:8443"
-              "8096:9443"
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          caddy = {
+              autoStart = true;
+              image = "";
+              ports = [ 
+                ];
+              environment = {
+              };
+              volumes = [
               ];
-            environment = {
-              NGINX_PORT="80";
-            };
-            volumes = [
-            ];
+          };
         };
       };
     };
@@ -136,27 +124,35 @@ in
 
   (lib.mkIf (config.builderOptions.docker.jellyfin) 
   {
-    networking.firewall.allowedTCPPorts = [ 8096 ];
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        jellyfin = {
-            autoStart = true;
-            image = "linuxserver/jellyfin:10.8.11";
-            ports = [ 
-              "8096:8096"
+    networking.firewall.allowedTCPPorts = [ 9001 ];
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          jellyfin = {
+              autoStart = true;
+              image = "linuxserver/jellyfin:10.8.11";
+              ports = [ 
+                "9001:8096"
               ];
-            environment = {
-              PUID= uid;
-              PGID= gid;
-              TZ=timezone;
-            };
-            volumes = [
-              "/mnt/storage/jellyfin/library:/config"
-              "/mnt/storage/jellyfin/data:/data"
-              "/mnt/storage/jellyfin/cache:/cache"
-              #/mnt/storage/drive/LtsData/Media:/media/lts1
-            ];
+              environment = {
+                PUID= uid;
+                PGID= gid;
+                TZ=timezone;
+                JELLYFIN_LOG_DIR = "/log";
+                JELLYFIN_DATA_DIR = "/data";
+                JELLYFIN_CONFIG_DIR = "/config";
+                JELLYFIN_CACHE_DIR = "/cache";
+              };
+              volumes = [
+                "${dockerStoragePath}/jellyfin/config:/config"
+                "${dockerStoragePath}/jellyfin/data:/data"
+                "${dockerStoragePath}/jellyfin/cache:/cache"
+                "${dockerStoragePath}/jellyfin/log:/log"
+                #${documentDrivePath}/LtsData/Media:/media/library
+              ];
+          };
         };
       };
     };
@@ -164,26 +160,29 @@ in
 
   (lib.mkIf (config.builderOptions.docker.code) 
   {
-    networking.firewall.allowedTCPPorts = [ 8443 ];
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        code = {
-            autoStart = true;
-            image = "linuxserver/code-server:4.18.0";
-            ports = [ 
-              "8443:8443"
+    networking.firewall.allowedTCPPorts = [ 9002 ];
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = {  
+        backend = "docker";
+        containers = {
+          code = {
+              autoStart = true;
+              image = "linuxserver/code-server:4.18.0";
+              ports = [ 
+                "9002:8443"
+                ];
+              environment = {
+                PUID=uid;
+                PGID=gid;
+                TZ=timezone;
+                DEFAULT_WORKSPACE="${documentDrivePath}/Documents/development";
+              };
+              volumes = [
+                "${documentDrivePath}/drive:/mnt/storage/drive"
+                "${dockerStoragePath}/code:/config"
               ];
-            environment = {
-              PUID=uid;
-              PGID=gid;
-              TZ=timezone;
-              DEFAULT_WORKSPACE="/mnt/storage/drive/Documents/development";
-            };
-            volumes = [
-              "/mnt/storage/drive:/mnt/storage/drive"
-              #"~/nixos/dotfile/.config/code:/config"
-            ];
+          };
         };
       };
     };
@@ -191,25 +190,36 @@ in
 
   (lib.mkIf (config.builderOptions.docker.nextcloud) 
   {
-    networking.firewall.allowedTCPPorts = [ 9443 ];
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        nextcloud = {
-            autoStart = true;
-            image = "linuxserver/nextcloud:27.1.3";
-            ports = [ 
-              "9443:443"
+    # Manual steps  (future: create custom dockerfile)
+    # Need to run: chown -R {user.name}:users <dockerStoragePath>/nextcloud
+    # Go through setup process (nix-shell mitproxy)
+    # sudo docker container exec -it <63f6a18eb605> bash
+    # ./occ app:install richdocumentscode
+
+    networking.firewall.allowedTCPPorts = [ 8080 ];
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          nextcloud = {
+              autoStart = true;
+              image = "azamserver/nextcloud-imagemagick-ffmpeg:latest";
+              user = uid;
+              ports = [ 
+                "8080:80"
+                ];
+              environment = {      
+                PHP_UPLOAD_LIMIT="6G";
+                PHP_MEMORY_LIMIT="16192M";
+                NEXTCLOUD_DATA_DIR="/var/www/html/data";
+                TRUSTED_PROXIES="";
+              };
+              volumes = [
+                "${dockerStoragePath}/nextcloud/config:/var/www/html"
+                "${dockerStoragePath}/nextcloud/data:/var/www/html/data"
               ];
-            environment = {
-              PUID=uid;
-              PGID=gid;
-              TZ=timezone;            
-            };
-            volumes = [
-              "/mnt/storage/nextcloud/config:/config"
-              "/mnt/storage/nextcloud/data:/data"
-            ];
+          };
         };
       };
     };
@@ -217,18 +227,22 @@ in
 
   (lib.mkIf (config.builderOptions.docker.tailscale) 
   {
-    virtualisation.oci-containers = { 
-      backend = "docker";
-      containers = {
-        tailscale = {
-            autoStart = true;
-            image = "tailscale/tailscale:v1.52.0";
-            ports = [ 
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          tailscale = {
+              autoStart = true;
+              image = "tailscale/tailscale:v1.52.0";
+              user = uid;            
+              ports = [ 
+                ];
+              environment = {
+              };
+              volumes = [
               ];
-            environment = {
-            };
-            volumes = [
-            ];
+          };
         };
       };
     };

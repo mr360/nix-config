@@ -52,14 +52,7 @@
                 enable_server = false;
               };
               docker = {
-                enable = true;
                 idrac6 = true;
-                # Server Settings [Temp]
-                jellyfin = true;
-                code = true;
-                nextcloud = true;
-                tailscale = false;
-                nginx = false;
               };
             };
           };
@@ -79,6 +72,13 @@
               ssh = {
                 enable_agent = true;
                 enable_server = true;
+              };
+              docker = {
+                jellyfin = false;
+                code = false;
+                nextcloud = false;
+                tailscale = false;
+                caddy = false;
               };
             };
           };
