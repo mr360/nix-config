@@ -145,10 +145,10 @@ in
                 PUID=uid;
                 PGID=gid;
                 TZ=timezone;
-                DEFAULT_WORKSPACE="${documentDrivePath}/";
+                DEFAULT_WORKSPACE="${documentDrivePath}/sync";
               };
               volumes = [
-                "${documentDrivePath}/sync:/mnt/storage/drive"
+                "${documentDrivePath}/sync:/mnt/storage/drive/sync"
                 "${dockerStoragePath}/code:/config"
               ];
           };
