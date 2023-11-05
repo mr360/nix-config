@@ -6,6 +6,10 @@
     Once home-manager becomes mature then we can think about it :-) 
   */
 
+  imports = [
+    ../common.nix
+  ];
+
   home.packages = with pkgs; [
     vscode
   ];
@@ -72,32 +76,5 @@
     };
   };
   
-  # Git & Bash
-  programs.git = {
-    enable = true;
-    userName = "mr360";
-    userEmail = "qd0097@gmail.com";
-    extraConfig = {
-      init.defaultBranch = "main";
-      core = { 
-	      editor = "nvim";
-        autocrlf = "input";
-      };
-    };
-  };
-  
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    bashrcExtra = ''
-    '';
-
-    shellAliases = {
-    };
-  };
-
   # TODO GUI Quickview Shortcuts + File Assoications
-
-  home.stateVersion = "23.05";
-  programs.home-manager.enable = true;
 }

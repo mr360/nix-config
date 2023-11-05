@@ -64,6 +64,7 @@
         "storage-r710" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
+            inherit home-manager;
             builderOptions = {
               user.name = "foxskis";
               gui.enable = false;

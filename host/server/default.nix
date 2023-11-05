@@ -13,6 +13,13 @@
       ../../module/ssh.nix
       ../../module/utility
       ../../module/container.nix
+      home-manager.nixosModules.home-manager 
+      {
+        home-manager.useGlobalPkgs = true;
+        home-manager.useUserPackages = true;
+        home-manager.users.${specialArgs.builderOptions.user.name} = 
+        import ../../home-manager/common.nix;
+      }
     ];
 
   builderOptions = specialArgs.builderOptions;
