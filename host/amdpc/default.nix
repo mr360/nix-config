@@ -54,8 +54,15 @@
   networking.networkmanager.enable = true;  
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 80 443 52198 9050 4447 8384 22000];
-    allowedUDPPorts = [ 22000 21027 ];
+    allowedTCPPorts = [ 
+      80 443          # internet 
+      9050 4447 8384  # popcorn-time
+      52198           # qbittorrent 
+      22000           # syncthing
+      ];
+    allowedUDPPorts = [ 
+      22000 21027     # syncthing
+      ];  
   };
   time.timeZone = "Australia/Sydney";
 
