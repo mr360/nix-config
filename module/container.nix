@@ -119,7 +119,7 @@ in
                 "${dockerStoragePath}/jellyfin/data:/data"
                 "${dockerStoragePath}/jellyfin/cache:/cache"
                 "${dockerStoragePath}/jellyfin/log:/log"
-                #${documentDrivePath}/LtsData/Media:/media/library
+                "${documentDrivePath}/LtsData2/Media/Movie_Shows:/media/library"
               ];
           };
         };

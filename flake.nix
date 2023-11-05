@@ -74,7 +74,7 @@
                 enable_server = true;
               };
               docker = {
-                jellyfin = false;
+                jellyfin = true;
                 code = true;
                 nextcloud = true;
                 tailscale = false;
