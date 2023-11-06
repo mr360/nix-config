@@ -47,6 +47,9 @@
     auto-optimise-store = true;
   };
 
+  services.tailscale.enable = true;
+  services.tailscale.useRoutingFeatures = "server";
+
   # Enable Syncthing functionality with appropriate
   # user groups and access, plus host specific folders
   systemd.services.syncthing.serviceConfig.UMask = "0007";

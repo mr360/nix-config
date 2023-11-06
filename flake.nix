@@ -78,7 +78,6 @@
                 jellyfin = true;
                 code = true;
                 nextcloud = true;
-                tailscale = false;
               };
             };
           };

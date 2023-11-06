@@ -48,15 +48,6 @@ in
           Enable nextcloud docker image
       '';
       };   
-
-      tailscale = lib.mkOption {
-      default = false;
-      example = true;
-      type = lib.types.bool;
-      description = ''
-          Enable tailscale vpn docker image
-      '';
-      };         
   };
 
   config = lib.mkMerge [
@@ -193,29 +184,6 @@ in
                 "${dockerStoragePath}/nextcloud/config:/var/www/html"
                 "${dockerStoragePath}/nextcloud/data:/var/www/html/data"
 		"${documentDrivePath}:${documentDrivePath}"
-              ];
-          };
-        };
-      };
-    };
-  })
-
-  (lib.mkIf (config.builderOptions.docker.tailscale) 
-  {
-    virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
-      oci-containers = { 
-        backend = "docker";
-        containers = {
-          tailscale = {
-              autoStart = true;
-              image = "tailscale/tailscale:v1.52.0";
-              user = uid;            
-              ports = [ 
-                ];
-              environment = {
-              };
-              volumes = [
               ];
           };
         };
