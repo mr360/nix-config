@@ -149,6 +149,7 @@ in
               };
               volumes = [
                 "${documentDrivePath}/sync:/mnt/storage/drive/sync"
+                "/etc/nixos/dotfile/.cred/${user}/ssh:/config/.ssh:ro"
                 "${dockerStoragePath}/code:/config"
               ];
           };
