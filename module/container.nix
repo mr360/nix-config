@@ -140,8 +140,13 @@ in
               };
               volumes = [
                 "${documentDrivePath}/sync:/mnt/storage/drive/sync"
-                "/etc/nixos/dotfile/.cred/${user}/ssh:/config/.ssh:ro"
-                "${dockerStoragePath}/code:/config"
+                "/etc/nixos/dotfile/.cred/user/${user}/ssh:/config/.ssh"
+		"/etc/nixos/dotfile/.config/code-server/.bashrc:/config/.bashrc"
+		"${dockerStoragePath}/code/.config:/config/.config"
+		"${dockerStoragePath}/code/.local:/config/.local"
+		"${dockerStoragePath}/code/data:/config/data"
+		"${dockerStoragePath}/code/extensions:/config/extensions"
+		"${dockerStoragePath}/code/workspace:/config/workspace"
               ];
           };
         };
