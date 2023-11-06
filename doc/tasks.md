@@ -1,17 +1,15 @@
 ## Interative
 
-- Install NixOS on `server-r710`                                              [TODO]
-  - Create syncthing profile
-  - Setup tailscale vpn  
-- Configure syncthing with `server-r710` device-id
 - HomeManager conf --> tmux | neovim | vscode
-- Create a common home-manager --> machine specific
 
 ## Nice2Do
 
 - Use themes for LXQT .local files --> new git fork of windows-classic
 - Remove usage of overlay and move to flak.nix for LXQT .local files --> new git fork of windows-classic
 - Declarative for lxqt --> panel.conf -- quicklauncher {pkg.vscode}
+- Adjust the background and gtk-greeter to select a background image titled: "default.jpg" /wallpaper
+- Implement `lxqt-mimeapps.list` in `home/shady/.config/`
+- Automatic map QEMU keyboard and mouse to VM (envdev)
 
 ## Package Custom Nixpkg
 
