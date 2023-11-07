@@ -63,7 +63,7 @@ in
               image = "domistyle/idrac6:v0.9";
               ports = [ 
                 "5800:5800"
-                "5900:5900"
+                "5850:5900"
                 ];
               environment = {
                 IDRAC_HOST = "192.168.1.130";
@@ -141,12 +141,12 @@ in
               volumes = [
                 "${documentDrivePath}/sync:/mnt/storage/drive/sync"
                 "/etc/nixos/dotfile/.cred/user/${user}/ssh:/config/.ssh"
-		"/etc/nixos/dotfile/.config/code-server/.bashrc:/config/.bashrc"
-		"${dockerStoragePath}/code/.config:/config/.config"
-		"${dockerStoragePath}/code/.local:/config/.local"
-		"${dockerStoragePath}/code/data:/config/data"
-		"${dockerStoragePath}/code/extensions:/config/extensions"
-		"${dockerStoragePath}/code/workspace:/config/workspace"
+		            "/etc/nixos/dotfile/.config/code-server/.bashrc:/config/.bashrc"
+		            "${dockerStoragePath}/code/.config:/config/.config"
+		            "${dockerStoragePath}/code/.local:/config/.local"
+		            "${dockerStoragePath}/code/data:/config/data"
+		            "${dockerStoragePath}/code/extensions:/config/extensions"
+		            "${dockerStoragePath}/code/workspace:/config/workspace"
               ];
           };
         };
@@ -188,7 +188,7 @@ in
               volumes = [
                 "${dockerStoragePath}/nextcloud/config:/var/www/html"
                 "${dockerStoragePath}/nextcloud/data:/var/www/html/data"
-		"${documentDrivePath}:${documentDrivePath}"
+		            "${documentDrivePath}:${documentDrivePath}"
               ];
           };
         };
