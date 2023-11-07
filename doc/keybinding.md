@@ -21,3 +21,4 @@ Recall the deleted command: `Ctrl+Y` (then `Alt+Y`)
 - Remove characters on the left, until the beginning of the word: `Ctrl+W`
 - To clear your entire command prompt: `Ctrl + L`
 - Toggle between the start of line and current cursor position: `Ctrl + XX`
+- Search previous bash command history: `Ctrl + R'
