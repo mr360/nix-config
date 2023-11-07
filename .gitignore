@@ -3,3 +3,6 @@ result
 
 # Ignore .cred folder
 dotfile/.cred/
+
+# Ignore panel.conf 
+dotfile/.config/lxqt/panel.conf
