@@ -42,7 +42,7 @@ This would require changes to the source code... a future possibility for a patc
 #MainMenu {
     border: 2px solid transparent;
     border-image: url(border.png) 2px;
-    qproperty-icon: url(lxqt-panel/start-icon-xp.png);
+    qproperty-icon: url(lxqt-panel/start-icon-nix.png);
     font: bold;
     /*Unfortunately the below QSS doesn't work as there is no way to determine when the button is unchecked if clicking elsewhere to close the menu*/
     /*qproperty-checkable: true;    */

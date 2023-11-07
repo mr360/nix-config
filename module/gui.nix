@@ -25,7 +25,7 @@
         # Enable display manager 
         services.xserver.displayManager.lightdm = {
             enable = true;
-            background = "#234365";
+            background = ../wallpaper/wallpapersden.com_sunset-4k-ultra-hd-2021_wxl.jpg;
             greeters.gtk = with pkgs; {
                 theme.name = "Raleigh-Reloaded";
                 theme.package = localpkgs.themes.raleigh-reloaded;
