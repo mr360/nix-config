@@ -74,6 +74,12 @@
     auto-optimise-store = true;
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "monthly";
+    options = "--delete-older-than 30d";
+  };
+
   # Enable Syncthing functionality with appropriate
   # user groups and access, plus host specific folders
   systemd.services.syncthing.serviceConfig.UMask = "0007";
