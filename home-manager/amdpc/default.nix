@@ -14,6 +14,24 @@
     vscode
   ];
 
+  # TODO: Issue: Needs to be run twice -- first time to create the panel.conf & another to symlink
+  # Note: Do not edit panel.conf rather edit the panel.conf.base file instead
+  home.file = {
+    "panel.conf" = {
+      target = "/nixos/dotfile/.config/lxqt/panel.conf";
+      text = (builtins.readFile ../../dotfile/.config/lxqt/panel.conf.base) + ''
+        [quicklaunch]
+        alignment=Left
+        apps\1\desktop=${pkgs.pcmanfm-qt}/share/applications/pcmanfm-qt.desktop
+        apps\2\desktop=${pkgs.google-chrome}/share/applications/google-chrome.desktop
+        apps\3\desktop=${pkgs.lxqt.qterminal}/share/applications/qterminal.desktop
+        apps\4\desktop=${pkgs.vscode}/share/applications/code.desktop
+        apps\size=4
+        type=quicklaunch
+      '';
+    };
+  };
+
   xdg = {
     enable = true;
 
@@ -75,6 +93,4 @@
       recursive = false;
     };
   };
-  
-  # TODO GUI Quickview Shortcuts + File Assoications
 }
