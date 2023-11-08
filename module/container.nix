@@ -22,6 +22,15 @@ in
       '';
       };
 
+      bind9 = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
+      description = ''
+          Enable bind9 docker image
+      '';
+      };
+
       jellyfin = lib.mkOption {
       default = false;
       example = true;
@@ -75,6 +84,35 @@ in
                 "${dockerStoragePath}/idrac/app:/app"
                 "${dockerStoragePath}/idrac/media:/vmedia"
                 "${dockerStoragePath}/idrac/screenshots:/screenshots"
+              ];
+          };
+        };
+      };
+    };
+  })
+  
+  (lib.mkIf (config.builderOptions.docker.bind9) 
+  {
+    networking.firewall.allowedTCPPorts = [ 53 ];
+    virtualisation = {
+      docker = { enable = true; enableOnBoot = true; };
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+          jellyfin = {
+              autoStart = true;
+              image = "ubuntu/bind9:9.18-22.04_beta";
+              ports = [ 
+                "53:53"
+              ];
+              environment = {
+                BIND9_USER = user;
+                TZ = timezone;
+              };
+              volumes = [
+                "${dockerStoragePath}/bind9/configuration:/etc/bind/named.conf"
+                "${dockerStoragePath}/bind9/resource:/var/lib/bind"
+                "${dockerStoragePath}/bind9/cache:/var/cache/bind"
               ];
           };
         };
