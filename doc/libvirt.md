@@ -20,7 +20,7 @@ nix-shell -p pciutils
 ## Notes
 
 - Remember to change the user account on ln29 & ln80 of `win10-1080ti.virt.xml`
-- To resolve the following permission issue -- execute `chown shady /dev/vfio/17` as root user.
+- To resolve the following permission issue -- execute `sudo chown shady /dev/vfio/17` as root user.
 
 ```bash
 [shady@amd-desktop:~]$ virsh start win10-1080ti
