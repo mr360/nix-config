@@ -106,11 +106,10 @@ in
                 "53:53"
               ];
               environment = {
-                #BIND9_USER = uid;
                 TZ = timezone;
               };
               volumes = [
-                "${dockerStoragePath}/bind9/configuration:/etc/bind" # named.conf
+                "/etc/nixos/dotfile/.config/bind9:/etc/bind"
                 "${dockerStoragePath}/bind9/resource:/var/lib/bind"
                 "${dockerStoragePath}/bind9/cache:/var/cache/bind"
               ];
