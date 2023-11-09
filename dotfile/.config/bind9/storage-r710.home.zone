@@ -11,8 +11,8 @@ $ORIGIN storage-r710.home.
 ns       IN      A       192.168.1.102
 
 ;
-jellyfin             IN      A       192.168.1.102
-nextcloud            IN      A       192.168.1.102
-code                 IN      A       192.168.1.102
+_jellyfin._tcp      IN      SRV     10 5 9001 jellyfin.storage-r710.home.
+_nextcloud._tcp     IN      SRV     10 5 8080 nextcloud.storage-r710.home.
+_code._tcp          IN      SRV     10 5 9002 code.storage-r710.home.
 remote               IN      A       192.168.1.102
 idrac                IN      A       192.168.1.130
