@@ -75,7 +75,7 @@ in
                 "5850:5900"
                 ];
               environment = {
-                IDRAC_HOST = "192.168.1.130";
+                IDRAC_HOST = "remote.storage-r710.home";
                 IDRAC_USER = "root";
                 IDRAC_PASSWORD = "root";
               };

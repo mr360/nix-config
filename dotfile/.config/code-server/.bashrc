@@ -81,7 +81,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias enter='eval "$(ssh-agent -s)" && ssh-add /config/.ssh/id_ed25519_git && ssh -t foxskis@192.168.1.102 "cd /mnt/storage/drive/sync && clear; bash --login"'
+alias enter='eval "$(ssh-agent -s)" && ssh-add /config/.ssh/id_ed25519_git && ssh -t foxskis@remote.storage-r710.home "cd /mnt/storage/drive/sync && clear; bash --login"'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like

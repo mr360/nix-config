@@ -45,7 +45,7 @@ in
                   IdentitiesOnly yes
                   AddKeysToAgent yes
 
-                Host 192.168.1.*
+                Host remote.storage-r710.home
                   Port 22
                   IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
                   IdentitiesOnly yes
