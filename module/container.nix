@@ -94,6 +94,7 @@ in
   (lib.mkIf (config.builderOptions.docker.bind9) 
   {
     networking.firewall.allowedTCPPorts = [ 53 ];
+    networking.firewall.allowedUDPPorts = [ 53 ];
     virtualisation = {
       docker = { enable = true; enableOnBoot = true; };
       oci-containers = { 
@@ -103,9 +104,11 @@ in
               autoStart = true;
               image = "ubuntu/bind9:9.18-22.04_beta";
               ports = [ 
-                "53:53"
+                "53:53/tcp"
+                "53:53/udp"
               ];
               environment = {
+                BIND9_USER="root";
                 TZ = timezone;
               };
               volumes = [

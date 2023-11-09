@@ -1,18 +1,16 @@
 $TTL    604800
-@       IN      SOA     home.io. admin.home.io. (
+$ORIGIN storage-r710.home.
+@       IN      SOA     ns.storage-r710.home. admin.storage-r710.home. (
                               4         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
                          604800 )       ; Negative Cache TTL
 ;
-@       IN      NS      home.io.  
-@       IN      A       192.168.1.102
+         IN      NS      ns.storage-r710.home.  
+ns       IN      A       192.168.1.102
 
 ;
-jellyfin.home.io             IN      A       192.168.1.102
-nextcloud.home.io            IN      A       192.168.1.102
-code.home.io                 IN      A       192.168.1.102
-www.jellyfin.home.io         IN      A       192.168.1.102
-www.nextcloud.home.io        IN      A       192.168.1.102
-www.code.home.io             IN      A       192.168.1.102
+jellyfin             IN      A       192.168.1.102
+nextcloud            IN      A       192.168.1.102
+code                 IN      A       192.168.1.102
