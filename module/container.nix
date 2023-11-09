@@ -99,18 +99,18 @@ in
       oci-containers = { 
         backend = "docker";
         containers = {
-          jellyfin = {
+          bind9 = {
               autoStart = true;
               image = "ubuntu/bind9:9.18-22.04_beta";
               ports = [ 
                 "53:53"
               ];
               environment = {
-                BIND9_USER = user;
+                #BIND9_USER = uid;
                 TZ = timezone;
               };
               volumes = [
-                "${dockerStoragePath}/bind9/configuration:/etc/bind/named.conf"
+                "${dockerStoragePath}/bind9/configuration:/etc/bind" # named.conf
                 "${dockerStoragePath}/bind9/resource:/var/lib/bind"
                 "${dockerStoragePath}/bind9/cache:/var/cache/bind"
               ];
