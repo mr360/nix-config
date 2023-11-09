@@ -1,4 +1,0 @@
-zone "storage-r710.home" {
-    type master;
-    file "/etc/bind/zones/db.home.local";
-};
