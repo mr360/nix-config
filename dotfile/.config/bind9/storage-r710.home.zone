@@ -13,6 +13,6 @@ ns       IN      A       192.168.1.102
 ;
 remote              IN      A       192.168.1.102
 idrac               IN      A       192.168.1.130
-_jellyfin._tcp      IN      SRV     10 5 9001 remote.storage-r710.home.
-_nextcloud._tcp     IN      SRV     10 5 8080 remote.storage-r710.home.
-_code._tcp          IN      SRV     10 5 9002 remote.storage-r710.home.
+_jellyfin._tcp.jellyfin.storage-r710.home    86400   IN      SRV     10 5 9001 remote.storage-r710.home.
+_nextcloud._tcp.nextcloud.storage-r710.home  86400   IN      SRV     10 5 8080 remote.storage-r710.home.
+_code._tcp.code.storage-r710.home            86400   IN      SRV     10 5 9002 remote.storage-r710.home.
