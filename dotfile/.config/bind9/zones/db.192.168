@@ -1,6 +1,6 @@
 ;
 $TTL    604800
-@       IN      SOA     home.local. admin.home.local. (
+@       IN      SOA     home.io. admin.home.io. (
                               15        ; Serial
                          604800         ; Refresh
                           86400         ; Retry
@@ -8,10 +8,10 @@ $TTL    604800
                          604800 )       ; Negative Cache TTL
 
 ;
-@               IN      NS      home.local.
+@               IN      NS      home.io.
 @               IN      A       192.168.1.102
 
 ;
-10             IN      PTR     jellyfin.home.local.
-10             IN      PTR     nextcloud.home.local.
-10             IN      PTR     code.home.local.
+10             IN      PTR     jellyfin.home.io.
+10             IN      PTR     nextcloud.home.io.
+10             IN      PTR     code.home.io.

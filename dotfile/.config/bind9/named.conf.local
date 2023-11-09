@@ -1,4 +1,4 @@
-zone "home.local" {
+zone "home.io" {
     type master;
     file "/etc/bind/zones/db.home.local";
 };
