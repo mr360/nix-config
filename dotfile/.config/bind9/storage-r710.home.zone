@@ -1,7 +1,7 @@
 $TTL    604800
 $ORIGIN storage-r710.home.
 @       IN      SOA     ns.storage-r710.home. admin.storage-r710.home. (
-                            103         ; Serial
+                            104         ; Serial
                          604800         ; Refresh
                           86400         ; Retry
                         2419200         ; Expire
