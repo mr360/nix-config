@@ -1,5 +1,7 @@
 # nix-config
 
+![Running Config](./doc/data/looking_g;ass_cyberpunk_2023-11-09_12-51.png)
+
 NixOS configuration: simple system config for my everyday usage.
 
 ## Get Started
