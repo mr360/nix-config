@@ -2,6 +2,7 @@
 
 ## Iterative
 
+- Add caddy to bind9 to router subdomain to ip address
 - HomeManager conf --> tmux | neovim | vscode
 
 ## Nice2Do

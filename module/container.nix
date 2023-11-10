@@ -94,7 +94,7 @@ in
   (lib.mkIf (config.builderOptions.docker.bind9) 
   {
     # Bind9 docker address needs to be set as secondary
-    # dns server whilst server ip is set as primary in router.
+    # whilst server ip is primary DNS within the router.
     networking.firewall.allowedTCPPorts = [ 53 ];
     networking.firewall.allowedUDPPorts = [ 53 ];
     virtualisation = {
