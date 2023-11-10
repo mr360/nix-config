@@ -1,13 +1,11 @@
-:80 {
-	reverse_proxy jellyfin.storage-r710.home {
-	    dynamic srv _http._tcp.jellyfin.storage-r710.home
-    }
-	reverse_proxy nextcloud.storage-r710.home {
-	    dynamic srv _http._tcp.nextcloud.storage-r710.home
-    }
-	reverse_proxy code.storage-r710.home {
-	    dynamic srv _http._tcp.code.storage-r710.home
-    }    
+nextcloud.storage-r710.home:80 {
+    reverse_proxy 192.168.1.102:8080 
+}
+code.storage-r710.home:80 {
+    reverse_proxy 192.168.1.102:9002
+}
+jellyfin.storage-r710.home:80 {
+    reverse_proxy 192.168.1.102:9001
 }
 
 # Refer to the Caddy docs for more information:
