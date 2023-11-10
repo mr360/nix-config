@@ -2,7 +2,6 @@
 
 ## Iterative
 
-- Add caddy to bind9 to router subdomain to ip address
 - HomeManager conf --> tmux | neovim | vscode
 
 ## Nice2Do
@@ -10,7 +9,7 @@
 - Use themes for LXQT .local files --> new git fork of windows-classic
 - Remove usage of overlay and move to flak.nix for LXQT .local files --> new git fork of windows-classic
 - Implement `lxqt-mimeapps.list` in `home/shady/.config/`
-- Enable Scream ISHVEM on host machine (VM)
+- Fix DNS resolver issue within docker image (nslookup remote.storage-r710.home)
 
 ## Package Custom Nixpkg
 
