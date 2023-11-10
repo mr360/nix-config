@@ -119,6 +119,21 @@ in
                 "${dockerStoragePath}/bind9/cache:/var/cache/bind"
               ];
           };
+          caddy = {
+            autoStart = true;
+            image = "caddy:2.7"
+            ports = [
+              "80:80"
+            ];
+            environment = {
+            };
+            volumes = [
+              "${dockerStoragePath}/caddy/data:/data"
+              "${dockerStoragePath}/caddy/config:/config"
+              "/etc/nixos/dotfile/.config/caddy/Caddyfile:/etc/caddy/Caddyfile"
+
+            ];
+          };
         };
       };
     };

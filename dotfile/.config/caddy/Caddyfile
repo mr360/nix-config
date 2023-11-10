@@ -1,0 +1,14 @@
+:80 {
+	reverse_proxy jellyfin.storage-r710.home {
+	    dynamic srv _jellyfin._tcp.jellyfin.storage-r710.home
+    }
+	reverse_proxy nextcloud.storage-r710.home {
+	    dynamic srv _nextcloud._tcp.nextcloud.storage-r710.home
+    }
+	reverse_proxy code.storage-r710.home {
+	    dynamic srv _code._tcp.code.storage-r710.home
+    }    
+}
+
+# Refer to the Caddy docs for more information:
+# https://caddyserver.com/docs/caddyfile
