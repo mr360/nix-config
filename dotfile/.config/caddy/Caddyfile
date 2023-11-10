@@ -1,12 +1,12 @@
 :80 {
 	reverse_proxy jellyfin.storage-r710.home {
-	    dynamic srv _jellyfin._tcp.jellyfin.storage-r710.home
+	    dynamic srv _http._tcp.jellyfin.storage-r710.home
     }
 	reverse_proxy nextcloud.storage-r710.home {
-	    dynamic srv _nextcloud._tcp.nextcloud.storage-r710.home
+	    dynamic srv _http._tcp.nextcloud.storage-r710.home
     }
 	reverse_proxy code.storage-r710.home {
-	    dynamic srv _code._tcp.code.storage-r710.home
+	    dynamic srv _http._tcp.code.storage-r710.home
     }    
 }
 

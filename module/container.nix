@@ -121,7 +121,7 @@ in
           };
           caddy = {
             autoStart = true;
-            image = "caddy:2.7"
+            image = "caddy:2.7";
             ports = [
               "80:80"
             ];
