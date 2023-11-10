@@ -34,8 +34,14 @@
   networking.networkmanager.enable = true;  
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 52198 9050 4447 8384 22000];
-    allowedUDPPorts = [ 22000 21027 ];
+    allowedTCPPorts = [ 
+      22              # ssh
+      80 443          # internet
+      22000           # syncthing
+      ];
+    allowedUDPPorts = [ 
+      22000 21027     # syncthing 
+      ];
   };
   time.timeZone = "Australia/Sydney";
 
