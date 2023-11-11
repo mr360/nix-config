@@ -6,7 +6,6 @@ let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
-  timezone = "Australia/Sydney";
   dockerStoragePath = "/mnt/storage/docker";
   documentDrivePath = "/mnt/storage/drive";
 in
@@ -111,7 +110,7 @@ in
               ];
               environment = {
                 BIND9_USER="root";
-                TZ = timezone;
+                TZ = config.time.timeZone;
               };
               volumes = [
                 "/etc/nixos/dotfile/.config/bind9:/etc/bind"
@@ -156,7 +155,7 @@ in
               environment = {
                 PUID= uid;
                 PGID= gid;
-                TZ=timezone;
+                TZ=config.time.timeZone;
                 JELLYFIN_LOG_DIR = "/log";
                 JELLYFIN_DATA_DIR = "/data";
                 JELLYFIN_CONFIG_DIR = "/config";
@@ -192,7 +191,7 @@ in
               environment = {
                 PUID=uid;
                 PGID=gid;
-                TZ=timezone;
+                TZ=config.time.timeZone;
                 DEFAULT_WORKSPACE="${documentDrivePath}/sync";
               };
               volumes = [
