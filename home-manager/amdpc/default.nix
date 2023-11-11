@@ -100,7 +100,7 @@
       sudo chown ${config.home.username}:users /dev/input/by-id/usb-Corsair_Corsair_K70R_Gaming_Keyboard-if02-event-kbd &&
       sudo chown ${config.home.username}:users /dev/input/by-id/usb-Logitech_USB_Receiver-if01-event-mouse &&
       virsh -c qemu:///session start win10-1080ti ; 
-      looking-glass-client win:size=1768x802'';
+      looking-glass-client win:size=1366x784'';
   };
 
 }
