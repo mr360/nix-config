@@ -1,16 +1,16 @@
 { config, lib, pkgs, ... }: 
 
-# Manual update of docker versions every 12 months
+# Manual update of containers every 12 months
 # Next update scheduled for 1st Dec 2024
 let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
-  dockerStoragePath = "/mnt/storage/docker";
+  containerStoragePath = "/mnt/storage/container";
   documentDrivePath = "/mnt/storage/drive";
 in
 {
-  options.builderOptions.docker =
+  options.builderOptions.container =
   {
       idrac6 = lib.mkOption {
       default = false;
@@ -57,14 +57,33 @@ in
       '';
       };   
   };
-
+  
   config = lib.mkMerge [
-  (lib.mkIf (config.builderOptions.docker.idrac6)
   {
     virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
+	docker.enable = lib.mkDefault false;
+	podman = {
+	    enable = lib.mkDefault false;
+	    dockerCompat = true;
+	    dockerSocket.enable = true;
+	    defaultNetwork.settings = {
+		dns_enabled = true;
+	    };
+	    autoPrune = {
+		enable = true;
+		dates = "weekly";
+		flags = [ "--all" ];
+	    };
+	};
+    };
+  }
+
+  (lib.mkIf (config.builderOptions.container.idrac6)
+  {
+    virtualisation = {
+      podman.enable = true;
       oci-containers = { 
-        backend = "docker";
+        backend = "podman";
         containers = {
           idrac6 = {
               autoStart = true;
@@ -78,11 +97,11 @@ in
                 IDRAC_USER = "root";
                 IDRAC_PASSWORD = "root";
               };
-              # After installation need to run: chown -R shady:users /{dockerStoragePath}/idrac
+              # After installation need to run: chown -R shady:users /{containerStoragePath}/idrac
               volumes = [
-                "${dockerStoragePath}/idrac/app:/app"
-                "${dockerStoragePath}/idrac/media:/vmedia"
-                "${dockerStoragePath}/idrac/screenshots:/screenshots"
+                "${containerStoragePath}/idrac/app:/app"
+                "${containerStoragePath}/idrac/media:/vmedia"
+                "${containerStoragePath}/idrac/screenshots:/screenshots"
               ];
           };
         };
@@ -90,16 +109,16 @@ in
     };
   })
   
-  (lib.mkIf (config.builderOptions.docker.bind9) 
+  (lib.mkIf (config.builderOptions.container.bind9) 
   {
     # Bind9 docker address needs to be set as secondary
     # whilst server ip is primary DNS within the router.
     networking.firewall.allowedTCPPorts = [ 53 ];
     networking.firewall.allowedUDPPorts = [ 53 ];
     virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
+      podman.enable = true;
       oci-containers = { 
-        backend = "docker";
+        backend = "podman";
         containers = {
           bind9 = {
               autoStart = true;
@@ -114,8 +133,8 @@ in
               };
               volumes = [
                 "/etc/nixos/dotfile/.config/bind9:/etc/bind"
-                "${dockerStoragePath}/bind9/resource:/var/lib/bind"
-                "${dockerStoragePath}/bind9/cache:/var/cache/bind"
+                "${containerStoragePath}/bind9/resource:/var/lib/bind"
+                "${containerStoragePath}/bind9/cache:/var/cache/bind"
               ];
           };
           caddy = {
@@ -127,8 +146,8 @@ in
             environment = {
             };
             volumes = [
-              "${dockerStoragePath}/caddy/data:/data"
-              "${dockerStoragePath}/caddy/config:/config"
+              "${containerStoragePath}/caddy/data:/data"
+              "${containerStoragePath}/caddy/config:/config"
               "/etc/nixos/dotfile/.config/caddy/Caddyfile:/etc/caddy/Caddyfile"
 
             ];
@@ -138,13 +157,13 @@ in
     };
   })
 
-  (lib.mkIf (config.builderOptions.docker.jellyfin) 
+  (lib.mkIf (config.builderOptions.container.jellyfin) 
   {
     networking.firewall.allowedTCPPorts = [ 9001 ];
     virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
+      podman.enable = true;
       oci-containers = { 
-        backend = "docker";
+        backend = "podman";
         containers = {
           jellyfin = {
               autoStart = true;
@@ -162,10 +181,10 @@ in
                 JELLYFIN_CACHE_DIR = "/cache";
               };
               volumes = [
-                "${dockerStoragePath}/jellyfin/config:/config"
-                "${dockerStoragePath}/jellyfin/data:/data"
-                "${dockerStoragePath}/jellyfin/cache:/cache"
-                "${dockerStoragePath}/jellyfin/log:/log"
+                "${containerStoragePath}/jellyfin/config:/config"
+                "${containerStoragePath}/jellyfin/data:/data"
+                "${containerStoragePath}/jellyfin/cache:/cache"
+                "${containerStoragePath}/jellyfin/log:/log"
                 "${documentDrivePath}/LtsData2/Media/Movie_Shows:/media/library"
               ];
           };
@@ -174,13 +193,13 @@ in
     };
   })
 
-  (lib.mkIf (config.builderOptions.docker.code) 
+  (lib.mkIf (config.builderOptions.container.code) 
   {
     networking.firewall.allowedTCPPorts = [ 9002 ];
     virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
+      podman.enable = true;
       oci-containers = {  
-        backend = "docker";
+        backend = "podman";
         containers = {
           code = {
               autoStart = true;
@@ -197,12 +216,12 @@ in
               volumes = [
                 "${documentDrivePath}/sync:/mnt/storage/drive/sync"
                 "/etc/nixos/dotfile/.cred/user/${user}/ssh:/config/.ssh"
-		            "/etc/nixos/dotfile/.config/code-server/.bashrc:/config/.bashrc"
-		            "${dockerStoragePath}/code/.config:/config/.config"
-		            "${dockerStoragePath}/code/.local:/config/.local"
-		            "${dockerStoragePath}/code/data:/config/data"
-		            "${dockerStoragePath}/code/extensions:/config/extensions"
-		            "${dockerStoragePath}/code/workspace:/config/workspace"
+		"/etc/nixos/dotfile/.config/code-server/.bashrc:/config/.bashrc"
+		"${containerStoragePath}/code/.config:/config/.config"
+		"${containerStoragePath}/code/.local:/config/.local"
+		"${containerStoragePath}/code/data:/config/data"
+		"${containerStoragePath}/code/extensions:/config/extensions"
+		"${containerStoragePath}/code/workspace:/config/workspace"
               ];
           };
         };
@@ -210,11 +229,11 @@ in
     };
   })
 
-  (lib.mkIf (config.builderOptions.docker.nextcloud) 
+  (lib.mkIf (config.builderOptions.container.nextcloud) 
   {
     # Required: [TODO: create custom dockerfile]
     # ---------------------------------------------------------
-    # => chown -R {user.name}:users <dockerStoragePath>/nextcloud
+    # => chown -R {user.name}:users <containerStoragePath>/nextcloud
     # => run Nextcloud Installer
     # => sudo docker container exec -it <63f6a18eb605> bash
     # ==> ./occ app:install richdocumentscode
@@ -224,9 +243,9 @@ in
 
     networking.firewall.allowedTCPPorts = [ 8080 ];
     virtualisation = {
-      docker = { enable = true; enableOnBoot = true; };
+      podman.enable = true;
       oci-containers = { 
-        backend = "docker";
+        backend = "podman";
         containers = {
           nextcloud = {
               autoStart = true;
@@ -242,9 +261,9 @@ in
                 TRUSTED_PROXIES="";
               };
               volumes = [
-                "${dockerStoragePath}/nextcloud/config:/var/www/html"
-                "${dockerStoragePath}/nextcloud/data:/var/www/html/data"
-		            "${documentDrivePath}:${documentDrivePath}"
+                "${containerStoragePath}/nextcloud/config:/var/www/html"
+                "${containerStoragePath}/nextcloud/data:/var/www/html/data"
+		"${documentDrivePath}:${documentDrivePath}"
               ];
           };
         };

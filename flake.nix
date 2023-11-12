@@ -51,7 +51,7 @@
                 enable_agent = true;
                 enable_server = false;
               };
-              docker = {
+              container = {
                 idrac6 = true;
               };
             };
@@ -74,7 +74,7 @@
                 enable_agent = true;
                 enable_server = true;
               };
-              docker = {
+              container = {
                 bind9 = true;
 		jellyfin = true;
                 code = true;
