@@ -67,6 +67,8 @@
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
       overrideDevices = true;
       overrideFolders = true;
+      cert = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/cert.pem";
+      key = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/key.pem";
       devices = {
         "amd-desktop" = { 
 	        id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 

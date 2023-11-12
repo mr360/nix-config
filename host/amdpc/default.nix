@@ -91,6 +91,8 @@
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
       overrideDevices = true;
       overrideFolders = true;
+      cert = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/cert.pem";
+      key = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/key.pem";
       devices = {
         "storage-r710" = { id = "NFEK5HE-FNVPJ2F-BNGIPK3-QAU2HRO-RQQULMV-J3AMFKQ-4FAFLNR-UXIBWA4"; };
       };
