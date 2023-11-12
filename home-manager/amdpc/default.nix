@@ -95,6 +95,7 @@
   };
 
   programs.bash.shellAliases = {
+    enterssh = ''ssh foxskis@remote.storage-r710.home'';
     startvm = ''
       sudo chown ${config.home.username} /dev/vfio/17 && 
       sudo chown ${config.home.username}:users /dev/input/by-id/usb-Corsair_Corsair_K70R_Gaming_Keyboard-if02-event-kbd &&
