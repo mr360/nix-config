@@ -1,11 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  # Git & Bash
   programs.git = {
     enable = true;
     userName = "mr360";
-    userEmail = "qd0097@gmail.com";
+    userEmail = "mr360@users.noreply.github.com";
     extraConfig = {
       init.defaultBranch = "main";
       core = { 
