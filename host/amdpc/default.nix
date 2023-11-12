@@ -47,7 +47,6 @@
           sleep 1 && ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --off && ${pkgs.xorg.xrandr}/bin/xrandr --auto && ${pkgs.xorg.xrandr}/bin/xrandr --output HDMI-1 --primary  --output DP-1  --right-of HDMI-1
       '';
       wantedBy = [ "graphical-session.target" ];
-      partOf = [ "graphical-session.target" ];
   };
 
   networking.hostName = "amd-desktop"; 

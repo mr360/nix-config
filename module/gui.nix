@@ -71,7 +71,6 @@
         systemd.user.services.syncthingtray =  if config.services.syncthing.enable then 
         {
             wantedBy = [ "graphical-session.target" ];
-            after = [ "graphical-session.target" ];
 
             serviceConfig = {
                 ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --connection '${config.networking.hostName}' --wait";
@@ -82,7 +81,6 @@
         # Start ferdium as a service 
         systemd.user.services.ferdium = {
             wantedBy = [ "graphical-session.target" ];
-            partOf = [ "graphical-session.target" ];
 
             serviceConfig = {
                 ExecStart = "${pkgs.ferdium}/bin/ferdium";
@@ -93,7 +91,6 @@
         # Start xcompmgr as a service 
         systemd.user.services.startXcompmgr = {
             wantedBy = [ "graphical-session.target" ];
-            partOf = [ "graphical-session.target" ];
 
             serviceConfig = {
                 ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr";
@@ -104,19 +101,10 @@
         # Start systemd services for GUI packages
         systemd.user.services.flameshot = {
             wantedBy = [ "graphical-session.target" ];
-            partOf = [ "graphical-session.target" ];
 
             serviceConfig = {
                 ExecStart = "${pkgs.flameshot}/bin/flameshot";
                 Restart = "on-abort";
-
-                LockPersonality = true;
-                MemoryDenyWriteExecute = true;
-                NoNewPrivileges = true;
-                PrivateUsers = true;
-                RestrictNamespaces = true;
-                SystemCallArchitectures = "native";
-                SystemCallFilter = "@system-service";
             };
         };
 
