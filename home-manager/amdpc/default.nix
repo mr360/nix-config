@@ -94,6 +94,12 @@
     };
   };
 
+  home.file = {
+    ".config/mimeapps.list" = {
+      text = (builtins.readFile ../../dotfile/.config/mimeapps.list.base) + '''';
+    };
+  };
+
   programs.bash.shellAliases = {
     enterssh = ''ssh foxskis@remote.storage-r710.home'';
     startvm = ''

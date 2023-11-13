@@ -8,12 +8,7 @@
 
 - Use themes for LXQT .local files --> new git fork of windows-classic
 - Remove usage of overlay and move to flak.nix for LXQT .local files --> new git fork of windows-classic
-- Implement `lxqt-mimeapps.list` in `home/shady/.config/`
 - Fix DNS resolver issue within docker image (nslookup remote.storage-r710.home)
-
-## Package Custom Nixpkg
-
-- Build & Compile KASM-VNC
 
 ## Virtualisation (PCI-E Passthrough)
 

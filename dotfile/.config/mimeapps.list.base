@@ -1,0 +1,18 @@
+[Default Applications]
+text/html=google-chrome.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/unknown=google-chrome.desktop
+x-scheme-handler/mailto=ferdium.desktop
+message/rfc822=ferdium.desktop
+
+[Added Associations]
+application/x-desktop=code.desktop;
+text/x-csrc=code.desktop;
+text/plain=code.desktop;
+image/x-xcursor=code.desktop;google-chrome.desktop;
+application/octet-stream=code.desktop;
+x-scheme-handler/mailto=ferdium.desktop;
+application/x-trash=code.desktop;
+application/vnd.sqlite3=code.desktop;
