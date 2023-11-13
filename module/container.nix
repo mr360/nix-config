@@ -60,6 +60,9 @@ in
   
   config = lib.mkMerge [
   {
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}          0755 ${user} users -"
+    ];
     virtualisation = {
 	docker.enable = lib.mkDefault false;
 	podman = {
@@ -80,6 +83,12 @@ in
 
   (lib.mkIf (config.builderOptions.container.idrac6)
   {
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/idrac              0755 ${user} users -"
+        "d ${containerStoragePath}/idrac/app          0755 ${user} users -"
+        "d ${containerStoragePath}/idrac/media        0755 ${user} users -"
+        "d ${containerStoragePath}/idrac/screenshots  0755 ${user} users -"
+    ];
     virtualisation = {
       podman.enable = true;
       oci-containers = { 
@@ -97,7 +106,6 @@ in
                 IDRAC_USER = "root";
                 IDRAC_PASSWORD = "root";
               };
-              # After installation need to run: chown -R shady:users /{containerStoragePath}/idrac
               volumes = [
                 "${containerStoragePath}/idrac/app:/app"
                 "${containerStoragePath}/idrac/media:/vmedia"
@@ -113,6 +121,12 @@ in
   {
     # Bind9 docker address needs to be set as secondary
     # whilst server ip is primary DNS within the router.
+    
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/bind9          0755 ${user} users -"
+        "d ${containerStoragePath}/bind9/resource 0755 ${user} users -"
+        "d ${containerStoragePath}/bind9/cache    0755 ${user} users -"
+    ];
     networking.firewall.allowedTCPPorts = [ 53 ];
     networking.firewall.allowedUDPPorts = [ 53 ];
     virtualisation = {
@@ -159,6 +173,13 @@ in
 
   (lib.mkIf (config.builderOptions.container.jellyfin) 
   {
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/jellyfin          0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/config   0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/data     0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/cache    0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/log      0755 ${user} users -"
+    ];
     networking.firewall.allowedTCPPorts = [ 9001 ];
     virtualisation = {
       podman.enable = true;
@@ -195,6 +216,14 @@ in
 
   (lib.mkIf (config.builderOptions.container.code) 
   {
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/code             0755 ${user} users -"
+        "d ${containerStoragePath}/code/.config     0755 ${user} users -"
+        "d ${containerStoragePath}/code/.local      0755 ${user} users -"
+        "d ${containerStoragePath}/code/data        0755 ${user} users -"
+        "d ${containerStoragePath}/code/extensions  0755 ${user} users -"
+        "d ${containerStoragePath}/code/workspace   0755 ${user} users -"
+    ];
     networking.firewall.allowedTCPPorts = [ 9002 ];
     virtualisation = {
       podman.enable = true;
@@ -233,7 +262,6 @@ in
   {
     # Required: [TODO: create custom dockerfile]
     # ---------------------------------------------------------
-    # => chown -R {user.name}:users <containerStoragePath>/nextcloud
     # => run Nextcloud Installer
     # => sudo docker container exec -it <63f6a18eb605> bash
     # ==> ./occ app:install richdocumentscode
@@ -241,6 +269,11 @@ in
     # ==> ./occ app:install files_archive
     # ==> ./occ app:install richdocuments
 
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/nextcloud            0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/config     0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/data       0755 ${user} users -"
+    ];
     networking.firewall.allowedTCPPorts = [ 8080 ];
     virtualisation = {
       podman.enable = true;
