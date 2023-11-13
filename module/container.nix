@@ -61,10 +61,14 @@ in
   config = lib.mkMerge [
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}          0755 ${user} users -"
+        "d ${containerStoragePath}  0755 ${user} users -"
     ];
     virtualisation = {
-	docker.enable = lib.mkDefault false;
+	docker = { 
+	    enable = lib.mkDefault false;
+	    enableOnBoot = true;
+	};
+
 	podman = {
 	    enable = lib.mkDefault false;
 	    dockerCompat = true;
@@ -84,15 +88,15 @@ in
   (lib.mkIf (config.builderOptions.container.idrac6)
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/idrac              0755 ${user} users -"
-        "d ${containerStoragePath}/idrac/app          0755 ${user} users -"
-        "d ${containerStoragePath}/idrac/media        0755 ${user} users -"
-        "d ${containerStoragePath}/idrac/screenshots  0755 ${user} users -"
+        "d ${containerStoragePath}/idrac              0777 ${user} users -"
+        "d ${containerStoragePath}/idrac/app          0777 ${user} users -"
+        "d ${containerStoragePath}/idrac/media        0777 ${user} users -"
+        "d ${containerStoragePath}/idrac/screenshots  0777 ${user} users -"
     ];
     virtualisation = {
-      podman.enable = true;
+      docker.enable = true;
       oci-containers = { 
-        backend = "podman";
+        backend = "docker";
         containers = {
           idrac6 = {
               autoStart = true;
@@ -123,16 +127,19 @@ in
     # whilst server ip is primary DNS within the router.
     
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/bind9          0755 ${user} users -"
-        "d ${containerStoragePath}/bind9/resource 0755 ${user} users -"
-        "d ${containerStoragePath}/bind9/cache    0755 ${user} users -"
+        "d ${containerStoragePath}/bind9           0777 ${user} users -"
+        "d ${containerStoragePath}/bind9/resource  0777 ${user} users -"
+        "d ${containerStoragePath}/bind9/cache     0777 ${user} users -"
+        "d ${containerStoragePath}/caddy           0777 ${user} users -"
+        "d ${containerStoragePath}/caddy/data      0777 ${user} users -"
+        "d ${containerStoragePath}/caddy/config    0777 ${user} users -"
     ];
     networking.firewall.allowedTCPPorts = [ 53 ];
     networking.firewall.allowedUDPPorts = [ 53 ];
     virtualisation = {
-      podman.enable = true;
+      docker.enable = true;
       oci-containers = { 
-        backend = "podman";
+        backend = "docker";
         containers = {
           bind9 = {
               autoStart = true;
@@ -174,17 +181,17 @@ in
   (lib.mkIf (config.builderOptions.container.jellyfin) 
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/jellyfin          0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/config   0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/data     0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/cache    0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/log      0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin         0777 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/config  0777 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/data    0777 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/cache   0777 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/log     0777 ${user} users -"
     ];
     networking.firewall.allowedTCPPorts = [ 9001 ];
     virtualisation = {
-      podman.enable = true;
+      docker.enable = true;
       oci-containers = { 
-        backend = "podman";
+        backend = "docker";
         containers = {
           jellyfin = {
               autoStart = true;
@@ -217,18 +224,18 @@ in
   (lib.mkIf (config.builderOptions.container.code) 
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/code             0755 ${user} users -"
-        "d ${containerStoragePath}/code/.config     0755 ${user} users -"
-        "d ${containerStoragePath}/code/.local      0755 ${user} users -"
-        "d ${containerStoragePath}/code/data        0755 ${user} users -"
-        "d ${containerStoragePath}/code/extensions  0755 ${user} users -"
-        "d ${containerStoragePath}/code/workspace   0755 ${user} users -"
+        "d ${containerStoragePath}/code             0777 ${user} users -"
+        "d ${containerStoragePath}/code/.config     0777 ${user} users -"
+        "d ${containerStoragePath}/code/.local      0777 ${user} users -"
+        "d ${containerStoragePath}/code/data        0777 ${user} users -"
+        "d ${containerStoragePath}/code/extensions  0777 ${user} users -"
+        "d ${containerStoragePath}/code/workspace   0777 ${user} users -"
     ];
     networking.firewall.allowedTCPPorts = [ 9002 ];
     virtualisation = {
-      podman.enable = true;
+      docker.enable = true;
       oci-containers = {  
-        backend = "podman";
+        backend = "docker";
         containers = {
           code = {
               autoStart = true;
@@ -270,15 +277,15 @@ in
     # ==> ./occ app:install richdocuments
 
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/nextcloud            0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/config     0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/data       0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud         0777 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/config  0777 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/data    0777 ${user} users -"
     ];
     networking.firewall.allowedTCPPorts = [ 8080 ];
     virtualisation = {
-      podman.enable = true;
+      docker.enable = true;
       oci-containers = { 
-        backend = "podman";
+        backend = "docker";
         containers = {
           nextcloud = {
               autoStart = true;
