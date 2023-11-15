@@ -19,34 +19,38 @@
 
     config = lib.mkIf config.builderOptions.gui.enable
     {
-        # Enable the X11 windowing system.
-        services.xserver.enable = true;
-
-        # Enable display manager 
-        services.xserver.displayManager.lightdm = {
+        services.xserver = {
+            # Enable the X11 windowing system.
             enable = true;
-            background = ../wallpaper/wallpapersden.com_sunset-4k-ultra-hd-2021_wxl.jpg;
-            greeters.gtk = with pkgs; {
-                theme.name = "Raleigh-Reloaded";
-                theme.package = localpkgs.themes.raleigh-reloaded;
-                extraConfig = ''
-                    user-background=false
-                '';
-            };  
+
+            # Enable display manager 
+            displayManager.lightdm = {
+                enable = true;
+                background = ../wallpaper/wallpapersden.com_sunset-4k-ultra-hd-2021_wxl.jpg;
+                greeters.gtk = with pkgs; {
+                    theme.name = "Raleigh-Reloaded";
+                    theme.package = localpkgs.themes.raleigh-reloaded;
+                    extraConfig = ''
+                        user-background=false
+                    '';
+                };  
+            };
+
+            # Enable LXQT desktop (excl xserver apps)
+            desktopManager.lxqt.enable = true;
+            excludePackages = with pkgs; [ 
+                xterm
+            ];
+            
+            # Configure keymap in X11
+            layout = "us";
         };
-
-        # Enable LXQT desktop (excl apps)
-        services.xserver.desktopManager.lxqt.enable = true;
-        services.xserver.excludePackages = [ 
-            pkgs.xterm
+        
+        # Remove LXQT bundled apps
+        environment.lxqt.excludePackages = with pkgs.lxqt; [
+            lximage-qt
+            screengrab
         ];
-        environment.lxqt.excludePackages = [
-            pkgs.lxqt.lximage-qt
-            pkgs.lxqt.screengrab
-        ];
-
-        # Configure keymap in X11
-        services.xserver.layout = "us";
 
         # Enable network applet in tray
         programs.nm-applet.enable = true;
