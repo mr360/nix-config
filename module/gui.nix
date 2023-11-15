@@ -26,7 +26,7 @@
             # Enable display manager 
             displayManager.lightdm = {
                 enable = true;
-                background = ../wallpaper/wallpapersden.com_sunset-4k-ultra-hd-2021_wxl.jpg;
+                background = ../wallpaper/wallpapersden.com_island-4k_2560x1080.jpg;
                 greeters.gtk = with pkgs; {
                     theme.name = "Raleigh-Reloaded";
                     theme.package = localpkgs.themes.raleigh-reloaded;
