@@ -35,7 +35,6 @@
         "amd-desktop" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           specialArgs = {
-            inherit unstable;
             inherit home-manager;
             builderOptions = {
               user.name = "shady";
@@ -58,6 +57,11 @@
           };
           modules = [
             ./host/amdpc/default.nix
+            ({ config, pkgs, ... }: {
+              nixpkgs.overlays = [(final: prev: {
+                unstable = import unstable;
+              })];
+            })
           ];
         };
         # sudo nixos-rebuild switch --flake .#storage-r710
@@ -76,7 +80,7 @@
               };
               container = {
                 bind9 = true;
-		jellyfin = true;
+                jellyfin = true;
                 code = true;
                 nextcloud = true;
               };
@@ -84,6 +88,11 @@
           };
           modules = [
             ./host/server/default.nix
+            ({ config, pkgs, ... }: {
+              nixpkgs.overlays = [(final: prev: {
+                unstable = import unstable;
+              })];
+            })
           ];
         };
         # nix build .#nixosConfigurations.live-usb.config.system.build.isoImage
@@ -104,6 +113,11 @@
           modules = [
             (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
             ./host/liveusb/default.nix
+            ({ config, pkgs, ... }: {
+              nixpkgs.overlays = [(final: prev: {
+                unstable = import unstable;
+              })];
+            })
           ];
         };
       };
