@@ -25,6 +25,24 @@
     };
   };
 
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    nix-direnv.enable = true;
+  };
+  
+  home.file = {
+    ".config/direnv/config.toml" = {
+      text = ''
+        [whitelist]
+        prefix = [ 
+          "/home/${config.home.username}/sync/development", 
+          "/home/${config.home.username}/nixos"
+          ]
+      '';
+    };
+  };
+
   home.stateVersion = "23.05";
   programs.home-manager.enable = true;
 }
