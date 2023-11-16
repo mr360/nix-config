@@ -21,6 +21,7 @@
     '';
 
     shellAliases = {
+      devenv-init = ''nix flake init --template github:cachix/devenv'';
     };
   };
 
