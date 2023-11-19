@@ -69,6 +69,7 @@
             qalculate-qt
             simplescreenrecorder
             ferdium
+            scrcpy
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
         
         # Start syncthingtray as a service if syncthing is enabled 
