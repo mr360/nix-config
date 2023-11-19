@@ -48,6 +48,12 @@
     };
   };
 
+  home.file = {
+    ".tmux.conf" = {
+      text = (builtins.readFile ../dotfile/.config/.tmux.conf);
+    };
+  };
+
   home.stateVersion = "23.05";
   programs.home-manager.enable = true;
 }
