@@ -26,25 +26,6 @@
     '';
 
     shellAliases = {
-      devenv-init = ''nix flake init --template github:cachix/devenv'';
-    };
-  };
-
-  programs.direnv = {
-    enable = true;
-    enableBashIntegration = true;
-    nix-direnv.enable = true;
-  };
-  
-  home.file = {
-    ".config/direnv/config.toml" = {
-      text = ''
-        [whitelist]
-        prefix = [ 
-          "/home/${config.home.username}/sync/development", 
-          "/home/${config.home.username}/nixos"
-          ]
-      '';
     };
   };
 
