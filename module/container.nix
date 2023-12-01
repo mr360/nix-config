@@ -83,6 +83,8 @@ in
 	    };
 	};
     };
+
+    users.extraGroups.docker.members = [ "${user}" ];
   }
 
   (lib.mkIf (config.builderOptions.container.idrac6)
