@@ -10,11 +10,11 @@ let
     hash = "sha256-L6sVDmKuFmrf9Bm9M54ABmmWFVB8ZlqU+5gAeITBS1Q=";
 in
 stdenv.mkDerivation {
-    inherit pname version ;
+    inherit pname version;
     
     src = fetchzip {
+      inherit hash;
       url = "https://registry.npmjs.org/@devcontainers/cli/-/cli-${version}.tgz";
-      hash = hash;
     };
 
     nativeBuildInputs = [ 
