@@ -58,6 +58,7 @@
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
             xcompmgr
+            
             localpkgs.programs.devcontainers-cli
             google-chrome
             vlc
