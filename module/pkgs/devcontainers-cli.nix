@@ -6,14 +6,15 @@
 }:
 let 
     pname = "devcontainers-cli";
-    version = "unstable-0.54.1";
+    version = "0.54.1";
+    hash = "sha256-L6sVDmKuFmrf9Bm9M54ABmmWFVB8ZlqU+5gAeITBS1Q=";
 in
 stdenv.mkDerivation {
     inherit pname version ;
     
     src = fetchzip {
-      url = "https://github.com/mr360/cli/releases/download/v0.54.1/x86_64-node18-devcontainers-cli-0.54.1.tar.gz";
-      hash = "sha256-fq11G0Q2Xy56MtgqN8DX4zFL/9Ge7NaoHqHjkZGsOC0=";
+      url = "https://registry.npmjs.org/@devcontainers/cli/-/cli-${version}.tgz";
+      hash = hash;
     };
 
     nativeBuildInputs = [ 
