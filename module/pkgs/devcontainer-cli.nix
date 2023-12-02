@@ -5,7 +5,7 @@
     nodejs_18
 }:
 let 
-    pname = "devcontainers-cli";
+    pname = "devcontainer-cli";
     version = "0.54.1";
     hash = "sha256-L6sVDmKuFmrf9Bm9M54ABmmWFVB8ZlqU+5gAeITBS1Q=";
 in
@@ -16,9 +16,6 @@ stdenv.mkDerivation {
       inherit hash;
       url = "https://registry.npmjs.org/@devcontainers/cli/-/cli-${version}.tgz";
     };
-
-    nativeBuildInputs = [ 
-    ];
 
     dontBuild = true;
     dontConfigure = true;
@@ -35,7 +32,7 @@ stdenv.mkDerivation {
         require('$out/dist/spec-node/devContainersSpecCLI');
       EOF
 
-      chmod a+x $out/bin/devcontainer
+      chmod +x $out/bin/devcontainer
     '';
 
     meta = with lib; {

@@ -1,6 +1,10 @@
 { config, lib, pkgs, ... }: 
 
 {
+  imports = [
+    ./pkgs
+  ];
+
   options.builderOptions.cmdpkgs =
   {
       enable = lib.mkOption {
@@ -30,6 +34,7 @@
       pcalc
       neovim
       unrar
+      localpkgs.devcontainer-cli
     ];
   };
 }
