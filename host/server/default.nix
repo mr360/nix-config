@@ -53,6 +53,12 @@
     auto-optimise-store = true;
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = "monthly";
+    options = "--delete-older-than 30d";
+  };
+  
   services.tailscale.enable = true;
   services.tailscale.useRoutingFeatures = "server";
 
@@ -115,6 +121,21 @@
   #  '';
   #};
 
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    rebootWindow = {
+      lower = "00:00";
+      upper = "04:00";
+    };
+    dates = "weekly";
+    flake = "/home/${config.builderOptions.user.name}/nixos";
+    flags = [ 
+      "--update-input" 
+      "nixpkgs" 
+      "--commit-lock-file" 
+      ];
+  };
   system.stateVersion = "23.05";
 }
 

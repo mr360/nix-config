@@ -114,7 +114,7 @@
       lower = "00:00";
       upper = "04:00";
     };
-    dates = "monthly";
+    dates = "weekly";
     flake = "/home/${config.builderOptions.user.name}/nixos";
     flags = [ 
       "--update-input" 
