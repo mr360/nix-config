@@ -27,11 +27,13 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "nix-env -iA nixpkgs.nixd"
-
-	// Configure tool-specific properties.
-	// "customizations": {},
+	"postCreateCommand": "nix-env -iA nixpkgs.nixd nixpkgs.neovim",
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
+
+	// Mount extra folders to container
+	"mounts": [
+		"source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached"
+	]
 }
