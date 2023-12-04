@@ -68,6 +68,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
+	    libsForQt5.okular
             ferdium
             scrcpy
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
