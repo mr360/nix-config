@@ -1,0 +1,22 @@
+{
+	"name": "[_HERE_] Development Container",
+	"build": { "dockerfile": "Dockerfile" },
+
+	// "features": {},
+	// "forwardPorts": [],
+	// "remoteUser": "root"
+
+	"customizations": {
+		"vscode": {
+			"settings": {
+			},
+			"extensions": [
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	},
+	"postCreateCommand": "nix-env -iA nixpkgs.neovim",
+	"mounts": [
+		"source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached"
+	]
+}
