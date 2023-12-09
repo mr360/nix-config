@@ -9,6 +9,9 @@
 	"customizations": {
 		"vscode": {
 			"settings": {
+				"editor.fontSize": 13,
+				"editor.fontFamily": "'FreeMono', 'FreeMono', 'FreeMono'",
+				"editor.fontWeight": "600"
 			},
 			"extensions": [
 				"streetsidesoftware.code-spell-checker"
