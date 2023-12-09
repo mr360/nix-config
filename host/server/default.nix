@@ -71,6 +71,7 @@
       user = "${config.builderOptions.user.name}";
       group = "users";
       configDir = "/home/${config.builderOptions.user.name}/.config/syncthing";
+      dataDir = "/home/${config.builderOptions.user.name}";
       overrideDevices = true;
       overrideFolders = true;
       cert = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/cert.pem";
