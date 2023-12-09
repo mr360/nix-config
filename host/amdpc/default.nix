@@ -84,17 +84,17 @@
       overrideFolders = true;
       cert = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/cert.pem";
       key = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/key.pem";
-      devices = {
-        "storage-r710" = { id = "NFEK5HE-FNVPJ2F-BNGIPK3-QAU2HRO-RQQULMV-J3AMFKQ-4FAFLNR-UXIBWA4"; };
-      };
-      folders = {
-        "sync" = {
-          path = "/home/${config.builderOptions.user.name}/sync";
-          devices = [ "storage-r710" ];
-          ignorePerms = true;
+      settings = {
+        devices = {
+          "storage-r710" = { id = "NFEK5HE-FNVPJ2F-BNGIPK3-QAU2HRO-RQQULMV-J3AMFKQ-4FAFLNR-UXIBWA4"; };
         };
-      };
-      extraOptions = {
+        folders = {
+          "sync" = {
+            path = "/home/${config.builderOptions.user.name}/sync";
+            devices = [ "storage-r710" ];
+            ignorePerms = true;
+          };
+        };
         gui.insecureSkipHostcheck = true;
         options = {
           relaysEnabled = false;

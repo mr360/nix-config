@@ -75,25 +75,26 @@
       overrideFolders = true;
       cert = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/cert.pem";
       key = "/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/syncthing/key.pem";
-      devices = {
-        "amd-desktop" = { 
-	        id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 
-	      };
-      };
-      folders = {
-        "sync" = {
-          path = "/mnt/storage/drive/sync";
-          devices = [ "amd-desktop" ];
-          ignorePerms = true;
-          versioning = {
-            type = "simple";
-            params = {
-              keep = "7";
+      settings = {
+        devices = {
+          "amd-desktop" = { 
+	          id = "RWJBHW4-673NVIU-OGXHPTX-4FIKX2T-7QWS2MC-UKKMXT4-HEJPAK5-U2OGHAG"; 
+	        };
+        };
+        folders = {
+          "sync" = {
+            path = "/mnt/storage/drive/sync";
+            devices = [ "amd-desktop" ];
+            ignorePerms = true;
+            versioning = {
+              type = "simple";
+              params = {
+                keep = "7";
+              };
             };
           };
         };
-      };
-      extraOptions = {
+      
         gui.insecureSkipHostcheck = true;
         options = {
           relaysEnabled = false;

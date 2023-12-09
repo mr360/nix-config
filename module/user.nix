@@ -28,7 +28,7 @@ in
         "networkmanager" 
         ];
         
-      passwordFile = "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
+      hashedPasswordFile = "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
     };
   };
 

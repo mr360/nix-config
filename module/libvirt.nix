@@ -83,7 +83,7 @@
     programs.dconf.enable = true; 
     
     environment.systemPackages = with pkgs; [
-      virtmanager          
+      virt-manager          
     ];
 
     users.users.${config.builderOptions.user.name} = {
