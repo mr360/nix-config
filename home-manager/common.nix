@@ -27,7 +27,9 @@
 
     shellAliases = {
       devcontainer_init = ''cp -rf ~/nixos/dotfile/.template/. .'';
+      devcontainer_start = ''devcontainer up --workspace-folder .  --remove-existing-container'';
       devcontainer_nvim = ''devcontainer exec --workspace-folder . nvim .'';
+      devcontainer_bash = ''devcontainer exec --workspace-folder . bash'';
     };
   };
 
