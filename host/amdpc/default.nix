@@ -97,6 +97,7 @@
           };
         };
         gui.insecureSkipHostcheck = true;
+        gui.apikey = "qUTatb5NdbbeC5EofGgHZqtkjbPu6APN";
         options = {
           relaysEnabled = false;
           natEnabled = true;
