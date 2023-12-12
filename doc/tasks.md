@@ -3,6 +3,7 @@
 ## Iterative
 
 - HomeManager conf --> tmux | neovim | vscode
+- Symlink .icons folder to $home directory
 
 ## Nice2Do
 
