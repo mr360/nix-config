@@ -2,6 +2,7 @@
 
 ## Iterative
 
+- Fix clipboard copy and paste / tmux / vim
 - HomeManager conf --> tmux | neovim | vscode
 - Symlink .icons folder to $home directory
 
