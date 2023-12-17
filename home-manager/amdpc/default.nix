@@ -104,8 +104,8 @@
     enterssh = ''ssh foxskis@remote.storage-r710.home'';
     startvm = ''
       sudo chown ${config.home.username} /dev/vfio/17 && 
-      sudo chown ${config.home.username}:users /dev/input/by-id/usb-Corsair_Corsair_K70R_Gaming_Keyboard-if02-event-kbd &&
-      sudo chown ${config.home.username}:users /dev/input/by-id/usb-ATEN_ATEN_CS1942DP_1944DP-if02-event-mouse &&
+      sudo chown ${config.home.username}:users /dev/input/by-id/usb-*-event-kbd &&
+      sudo chown ${config.home.username}:users /dev/input/by-id/usb-*-event-mouse &&
       virsh -c qemu:///session start win10-1080ti ; 
       looking-glass-client win:size=1680x1050'';
   };
