@@ -209,7 +209,7 @@
       <address type="pci" domain="0x0000" bus="0x13" slot="0x00" function="0x0"/>
     </input>
     <input type="evdev">
-      <source dev="/dev/input/by-id/usb-Logitech_USB_Receiver-if01-event-mouse"/>
+      <source dev="/dev/input/by-id/usb-ATEN_ATEN_CS1942DP_1944DP-if02-event-mouse"/>
     </input>
     <input type="evdev">
       <source dev="/dev/input/by-id/usb-Corsair_Corsair_K70R_Gaming_Keyboard-if02-event-kbd" grab="all" grabToggle="ctrl-ctrl" repeat="on"/>
