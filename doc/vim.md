@@ -15,6 +15,18 @@
  C-d       |     | close pane (can type exit)
  C-a | 01234    | move to window 
 
+- Ctrl + A [ (enter copy-mode), Space (start highlighting), Enter (end highlighting), Ctrl + A ] (paste).
+
+- C-w : delete word
+- C-e : go to end 
+- C-b : go back a character
+- C-f : go forward a character
+- C-u : remove anything prior to cursor
+- C-k : remove anything after cursor
+- C-t : swap with previous letter on cursor  
+- C-h : delete character at cursor 
+
+
 ## NeoVim
 ### Editor
 |Key|Reason | Description   |

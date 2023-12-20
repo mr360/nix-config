@@ -58,7 +58,8 @@
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
             xcompmgr
-            
+            xclip
+
             google-chrome
             vlc
             mtpaint
@@ -68,7 +69,7 @@
             popcorntime
             qalculate-qt
             simplescreenrecorder
-	        libsForQt5.okular
+	          libsForQt5.okular
             ferdium
             scrcpy
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
