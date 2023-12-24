@@ -38,6 +38,11 @@
       text = (builtins.readFile ../dotfile/.config/.tmux.conf);
     };
   };
+  
+# configFile."nvim" = {
+#   source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/nvim;
+#   recursive = true;
+# };
 
   home.stateVersion = "23.11";
   programs.home-manager.enable = true;
