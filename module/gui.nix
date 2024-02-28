@@ -117,6 +117,14 @@
 
         # Enable sound and printing
         services.printing.enable = true;
+        services.avahi = {
+          enable = true;
+          nssmdns = true;
+          openFirewall = true;
+        };
+        services.printing.drivers = with pkgs; [
+          localpkgs.drivers.cups-brother-mfcl2800dw
+        ];
         services.pipewire = {
             enable = true;
             audio.enable = true;
