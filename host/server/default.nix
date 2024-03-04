@@ -55,7 +55,7 @@
 
   nix.gc = {
     automatic = true;
-    dates = "monthly";
+    dates = "yearly";
     options = "--delete-older-than 30d";
   };
   
@@ -130,7 +130,7 @@
       lower = "00:00";
       upper = "04:00";
     };
-    dates = "weekly";
+    dates = "yearly";
     flake = "/home/${config.builderOptions.user.name}/nixos";
     flags = [ 
       "--update-input" 
