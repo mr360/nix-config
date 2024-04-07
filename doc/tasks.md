@@ -1,8 +1,8 @@
 # Tasks
 
 ## Iterative
-
-- HomeManager conf --> tmux | neovim | vscode
+- Fix Log Out and Login services not starting up (SynthingTray,Flamethrower..ect)
+- HomeManager conf --> tmux | neovim |
 - Symlink .icons folder to $home directory
 
 ## Nice2Do
