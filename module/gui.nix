@@ -62,7 +62,7 @@
 
             google-chrome
             vlc
-            mtpaint
+            gimp 
             feh
             flameshot
             qbittorrent
