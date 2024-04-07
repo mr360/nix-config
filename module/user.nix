@@ -26,6 +26,7 @@ in
       extraGroups = [ 
         "wheel"
         "networkmanager" 
+        "vboxusers" 
         ];
         
       hashedPasswordFile = "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";

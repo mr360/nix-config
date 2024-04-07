@@ -73,6 +73,10 @@
             ferdium
             scrcpy
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
+
+        # Install VirtualBox
+        virtualisation.virtualbox.host.enable = true;
+        virtualisation.virtualbox.host.enableExtensionPack = true;
         
         # Start syncthingtray as a service if syncthing is enabled 
         systemd.user.services.syncthingtray =  if config.services.syncthing.enable then 
