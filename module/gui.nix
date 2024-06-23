@@ -60,7 +60,7 @@
             xcompmgr
             xclip
 
-            google-chrome
+            firefox
             vlc
             gimp 
             feh
