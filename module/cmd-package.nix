@@ -35,6 +35,7 @@
       neovim
       unrar
       localpkgs.devcontainer-cli
+      yt-dlp
     ];
   };
 }

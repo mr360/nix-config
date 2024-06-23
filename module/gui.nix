@@ -60,6 +60,7 @@
             xcompmgr
             xclip
 
+            lite-xl
             firefox
             vlc
             gimp 
