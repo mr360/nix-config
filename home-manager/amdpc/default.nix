@@ -24,8 +24,7 @@
         apps\1\desktop=${pkgs.pcmanfm-qt}/share/applications/pcmanfm-qt.desktop
         apps\2\desktop=${pkgs.firefox}/share/applications/firefox.desktop
         apps\3\desktop=${pkgs.lxqt.qterminal}/share/applications/qterminal.desktop
-        apps\4\desktop=${pkgs.libsForQt5.okular}/share/applications/org.kde.okular.desktop
-        apps\size=4
+        apps\size=3
         type=quicklaunch
       '';
     };
