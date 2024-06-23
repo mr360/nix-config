@@ -11,7 +11,6 @@
   ];
 
   home.packages = with pkgs; [
-    vscode
   ];
 
   # TODO: Issue: Needs to be run twice -- first time to create the panel.conf & another to symlink
@@ -25,9 +24,8 @@
         apps\1\desktop=${pkgs.pcmanfm-qt}/share/applications/pcmanfm-qt.desktop
         apps\2\desktop=${pkgs.google-chrome}/share/applications/google-chrome.desktop
         apps\3\desktop=${pkgs.lxqt.qterminal}/share/applications/qterminal.desktop
-        apps\4\desktop=${pkgs.vscode}/share/applications/code.desktop
-        apps\5\desktop=${pkgs.libsForQt5.okular}/share/applications/org.kde.okular.desktop
-        apps\size=5
+        apps\4\desktop=${pkgs.libsForQt5.okular}/share/applications/org.kde.okular.desktop
+        apps\size=4
         type=quicklaunch
       '';
     };
