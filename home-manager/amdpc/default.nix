@@ -60,6 +60,10 @@
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/themes;
       recursive = true;
     };
+    # dataFile."icons" = {
+      # source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/icons;
+      # recursive = true;
+    # };
 
     # QTerm settings
     configFile."qterminal.org" = {

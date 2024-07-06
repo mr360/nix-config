@@ -55,6 +55,12 @@
         # Enable network applet in tray
         programs.nm-applet.enable = true;
 
+        # Enable styling for QT applications to follow GTK2.0
+        qt = {
+            enable = true;
+            style = "gtk2";
+        };
+
         # Install stateless global GUI applications
         environment.systemPackages = with pkgs; [
             xcompmgr
