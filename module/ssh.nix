@@ -42,6 +42,7 @@ in
             extraConfig = ''
                 Host github.com
                   IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
+                  KexAlgorithms curve25519-sha256@libssh.org
                   IdentitiesOnly yes
                   AddKeysToAgent yes
 
