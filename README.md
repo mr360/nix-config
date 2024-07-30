@@ -20,29 +20,55 @@ sudo dd bs=4M if=/etc/nixos/result/iso/nixos-23.05.20231014.b85a19a-x86_64-linux
 ## Structure
 
 ```
-├── flake.lock
-├── flake.nix
 ├── boot
 │   └── uefi.nix
+├── doc
+│   ├── keybinding.md
+│   ├── libvirt.md
+│   ├── tasks.md
+│   ├── useful.md
+│   └── vim.md
+├── dotfile
+├── flake.lock
+├── flake.nix
+├── home-manager
+│   ├── amdpc
+│   │   └── default.nix
+│   └── common.nix
 ├── host
 │   ├── amdpc
 │   │   ├── default.nix
 │   │   └── hardware-configuration.nix
-│   └── vmware
-├── modules
-│   ├── cmd-packages.nix
+│   ├── liveusb
+│   │   └── default.nix
+│   └── server
+│       ├── default.nix
+│       └── hardware-configuration.nix
+├── module
+│   ├── cmd-package.nix
+│   ├── container.nix
 │   ├── gui.nix
 │   ├── libvirt.nix
-│   ├── nixpkgs
+│   ├── pkgs
+│   │   ├── default.nix
+│   │   ├── devcontainer-cli.nix
+│   │   ├── drivers
+│   │   │   └── cups-brother-mfcl2800dw.nix
+│   │   └── themes
+│   │       ├── chicago95-theme.nix
+│   │       └── raleigh-reloaded-theme.nix
 │   ├── powersaver.nix
-│   └── user.nix
+│   ├── ssh.nix
+│   ├── user.nix
+│   └── utility
+│       └── default.nix
+├── README.md
+├── script
 ├── wallpaper
 │   └── wp9205370-wallpapers.jpg
-├── README.md
-├── libvirt.md
 └── win10-1080ti.virt.xml
 ```
 
 ## Notice
-Not complete system. I started the journey on the 29/09/23. View docs/tasks.md for more details.
+Mostly complete system. I started the journey on the 29/09/23. View docs/tasks.md for more details.
 
