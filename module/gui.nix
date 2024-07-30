@@ -78,6 +78,8 @@
             simplescreenrecorder
             ferdium
             scrcpy
+            drawio
+            freecad
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
 
         # Install VirtualBox
