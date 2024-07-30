@@ -58,7 +58,7 @@
         # Enable styling for QT applications to follow GTK2.0
         qt = {
             enable = true;
-            style = "gtk2";
+            style = "cleanlooks";
         };
 
         # Install stateless global GUI applications
