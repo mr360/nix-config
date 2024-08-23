@@ -56,6 +56,7 @@
   };
   time.timeZone = "Australia/Sydney";
 
+  hardware.opentabletdriver.enable = true;
   hardware.opengl.enable = true;
   nixpkgs.config.allowUnfree = true;
 
