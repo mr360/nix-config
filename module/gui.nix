@@ -80,7 +80,6 @@
             scrcpy
             drawio
             freecad
-            tigervnc
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
 
         # Install VirtualBox
