@@ -17,6 +17,7 @@
       {
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
+        home-manager.backupFileExtension = "hmbak";
         home-manager.users.${specialArgs.builderOptions.user.name} = 
         import ../../home-manager/amdpc/default.nix;
       }
