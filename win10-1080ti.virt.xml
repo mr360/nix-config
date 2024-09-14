@@ -7,6 +7,10 @@
     </libosinfo:libosinfo>
   </metadata>
   <memory unit="KiB">16777216</memory>
+  <memoryBacking>
+    <source type="memfd"/>
+    <access mode="shared"/>
+  </memoryBacking>
   <currentMemory unit="KiB">16777216</currentMemory>
   <vcpu placement="static">12</vcpu>
   <iothreads>2</iothreads>
@@ -185,6 +189,13 @@
     <controller type="virtio-serial" index="0">
       <address type="pci" domain="0x0000" bus="0x0d" slot="0x00" function="0x0"/>
     </controller>
+    <filesystem type="mount" accessmode="passthrough">
+      <driver type="virtiofs"/>
+      <binary path="/run/current-system/sw/bin/virtiofsd"/>
+      <source dir="/home/shady/Downloads"/>
+      <target dir="share"/>
+      <address type="pci" domain="0x0000" bus="0x14" slot="0x00" function="0x0"/>
+    </filesystem>
     <interface type="user">
       <mac address="52:54:00:9f:57:f8"/>
       <model type="virtio"/>

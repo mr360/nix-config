@@ -84,6 +84,7 @@
     
     environment.systemPackages = with pkgs; [
       virt-manager          
+      virtiofsd
     ];
 
     users.users.${config.builderOptions.user.name} = {

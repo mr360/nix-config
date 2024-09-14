@@ -34,3 +34,9 @@ error: internal error: qemu unexpectedly closed the monitor: 2023-10-09T19:17:18
   sudo chown shady:users /dev/input/by-id/usb-Corsair_Corsair_K70R_Gaming_Keyboard-if02-event-kbd
   sudo chown shady:users /dev/input/by-id/usb-Logitech_USB_Receiver-if01-event-mouse
 ```
+
+## Enabling filesystem sharing
+https://discourse.nixos.org/t/virt-manager-cannot-find-virtiofsd/26752
+https://discourse.nixos.org/t/libvirt-session-mode-and-virtiofs/27857/4
+http://web.archive.org/web/20240119035854/https://blog.sergeantbiggs.net/posts/file-sharing-with-qemu-and-virt-manager/
+
