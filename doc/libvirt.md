@@ -36,7 +36,7 @@ error: internal error: qemu unexpectedly closed the monitor: 2023-10-09T19:17:18
 ```
 
 ## Enabling filesystem sharing
-https://discourse.nixos.org/t/virt-manager-cannot-find-virtiofsd/26752
-https://discourse.nixos.org/t/libvirt-session-mode-and-virtiofs/27857/4
-http://web.archive.org/web/20240119035854/https://blog.sergeantbiggs.net/posts/file-sharing-with-qemu-and-virt-manager/
-
+- https://discourse.nixos.org/t/virt-manager-cannot-find-virtiofsd/26752
+- https://discoursernixos.org/t/libvirt-session-mode-and-virtiofs/27857/4
+- http://web.archive.org/web/20240119035854/https://blog.sergeantbiggs.net/posts/file-sharing-with-qemu-and-virt-manager/
+- Note: To stop the driver from crashing when accessing filesystem, follow: https://github.com/virtio-win/kvm-guest-drivers-windows/issues/550#issuecomment-1013731663
