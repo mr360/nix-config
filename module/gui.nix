@@ -146,6 +146,5 @@
                 support32Bit = true;
             };
         };
-        sound.enable = true;
     };
 }
