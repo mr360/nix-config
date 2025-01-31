@@ -31,14 +31,14 @@
   { 
     device = "/dev/disk/by-uuid/46AAB89CAAB88A47";
     fsType = "ntfs-3g"; 
-    options = ["r"];
+    options = ["ro"];
   };
   
   fileSystems."/mnt/b_drive" =
   {
     device = "/dev/disk/by-uuid/BACAC99ACAC952F5";
     fsType = "ntfs-3g";
-    options = ["r"];
+    options = ["ro"];
   };
   
   networking.hostName = "amd-desktop"; 
