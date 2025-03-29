@@ -18,16 +18,19 @@
 			]
 		}
 	},
-	"postCreateCommand": "nix-env -iA nixpkgs.neovim",
+	"postCreateCommand": [
+		],
 	"mounts": [
 		"source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached",   // Allow mounting of VIM config
+		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",                   // Allow SSH passthrough for git
+		"source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",       // Assume git identity
 		"source=/dev/dri/,target=/dev/dri/,type=bind,consistency=cached",                                       // Allow X11 passthrough access to GPU
 		"source=${localEnv:HOME}/.Xauthority,target=/tmp/.Xauthority,type=bind,consistency=cached"              // Allow X11 access to XServer token
 	],
 
 	"containerEnv": {
-        "DISPLAY": "${localEnv:DISPLAY}",   // Allow X11 passthrough of GUI applications within container to current X11 display
-		"XAUTHORITY": "/tmp/.Xauthority"    // Allow X11 passthrough of GUI applications within container
+		    "DISPLAY": "${localEnv:DISPLAY}",   // Allow X11 passthrough of GUI applications within container to current X11 display
+		    "XAUTHORITY": "/tmp/.Xauthority"    // Allow X11 passthrough of GUI applications within container
     },
 	"runArgs": [
     	"--net", "host"                     // Allow remote connection to XServer for GUI applications within container
