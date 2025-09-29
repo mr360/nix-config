@@ -2,12 +2,12 @@
     lib,
     stdenv,
     fetchzip,
-    nodejs_18
+    nodejs_20
 }:
 let 
     pname = "devcontainer-cli";
-    version = "0.54.1";
-    hash = "sha256-L6sVDmKuFmrf9Bm9M54ABmmWFVB8ZlqU+5gAeITBS1Q=";
+    version = "0.80.1";
+    hash = "sha256-cIWNKBTsI2bbMCGxvwAqhZMk6kQtn3G5jjKGSLS/24U=";
 in
 stdenv.mkDerivation {
     inherit pname version;
@@ -28,7 +28,7 @@ stdenv.mkDerivation {
 
     postFixup = ''
       cat <<EOF > $out/bin/devcontainer
-      #!${nodejs_18}/bin/node
+      #!${nodejs_20}/bin/node
         require('$out/dist/spec-node/devContainersSpecCLI');
       EOF
 

@@ -81,6 +81,9 @@
             drawio
             freecad
         ] ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else []) ;
+        
+        # Resolve Password Init Failure 
+        security.pam.services.xscreensaver.enable = true;
 
         # Install VirtualBox
         virtualisation.virtualbox.host.enable = true;
