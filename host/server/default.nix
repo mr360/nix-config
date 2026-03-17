@@ -48,7 +48,7 @@
   };
   time.timeZone = "Australia/Sydney";
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
   nixpkgs.config.allowUnfree = true;
 
   nix.settings = {
