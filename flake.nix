@@ -79,10 +79,10 @@
                 enable_server = true;
               };
               container = {
-                bind9 = true;
-                jellyfin = true;
-                code = true;
-                nextcloud = true;
+                bind9 = false;
+                jellyfin = false;
+                code = false;
+                nextcloud = false;
               };
             };
           };
