@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }: 
+{ config, lib, pkgs, serverUrl, ... }: 
 
 let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
@@ -101,15 +101,6 @@ in
 	  Please note that this requuires yt-dlp to be installed
       '';
       };   
-
-      serverUrl = lib.mkOption {
-      default = "storage-r710.tailb15a6.ts.net";
-      example = "server.tailscale.com";
-      type = lib.types.string;
-      description = ''
-         Server url for routing 
-      '';
-      };   
   };
   
   config = lib.mkMerge [
@@ -156,7 +147,7 @@ in
 	  lib.listToAttrs (map (r: {
 	    name = "${r.service}-${r.route}";
 	    value = {
-	      rule = "Host(`${r.route}.${config.builderOptions.container.serverUrl}`)";
+	      rule = "Host(`${r.route}.${serverUrl}`)";
 	      entryPoints = [ r.entry ];
 	      service = r.service;
 	      #tls = {
@@ -188,7 +179,7 @@ in
    '';
 
   corefile = pkgs.writeText "Corefile" ''
-    ${config.builderOptions.container.serverUrl}:53 {
+    ${serverUrl}:53 {
         template IN A {
             match ".*"
             answer "{{ .Name }} 60 IN A 100.94.62.12"
@@ -251,14 +242,14 @@ in
       		"traefik.enable"="true";
 
 	        # Dashboard router
-	        "traefik.http.routers.dashboard.rule"="Host(`route.${config.builderOptions.container.serverUrl}`)";
+	        "traefik.http.routers.dashboard.rule"="Host(`route.${serverUrl}`)";
 	        "traefik.http.routers.dashboard.entrypoints"="websecure";
 	        "traefik.http.routers.dashboard.service"="api@internal";
 
 		# TLS Certificate 
 	        "traefik.http.routers.r0.tls.certresolver"="letsencrypt";
-	        "traefik.http.routers.r0.tls.domains[0].main"="${config.builderOptions.container.serverUrl}";
-	        "traefik.http.routers.r0.tls.domains[0].sans"="*.${config.builderOptions.container.serverUrl}";
+	        "traefik.http.routers.r0.tls.domains[0].main"="${serverUrl}";
+	        "traefik.http.routers.r0.tls.domains[0].sans"="*.${serverUrl}";
 	      };
 	      extraOptions = [
 		"--add-host=host.docker.internal:host-gateway"
@@ -328,7 +319,7 @@ in
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.jellyfin.rule" = "Host(`media.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.jellyfin.rule" = "Host(`media.${serverUrl}`)";
 		  "traefik.http.services.jellyfin.loadbalancer.server.port" = "8096";
 		  "traefik.http.routers.jellyfin.entrypoints" = "websecure";
               };
@@ -439,11 +430,11 @@ in
               environment = {
 	      CODER_PG_CONNECTION_URL="postgresql://username:password@172.17.0.9:5432/coder?sslmode=disable";
 	      CODER_HTTP_ADDRESS="0.0.0.0:2080";
-	      CODER_ACCESS_URL="https://code.${config.builderOptions.container.serverUrl}";
+	      CODER_ACCESS_URL="https://code.${serverUrl}";
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.coder.rule" = "Host(`code.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.coder.rule" = "Host(`code.${serverUrl}`)";
 		  "traefik.http.services.coder.loadbalancer.server.port" = "2080";
 		  "traefik.http.routers.coder.entrypoints" = "websecure";
               };
@@ -486,7 +477,7 @@ in
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.qbittorrent.rule" = "Host(`torrent.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.qbittorrent.rule" = "Host(`torrent.${serverUrl}`)";
 		  "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8480";
 		  "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
               };
@@ -519,7 +510,7 @@ in
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.minipaint.rule" = "Host(`paint.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.minipaint.rule" = "Host(`paint.${serverUrl}`)";
 		  "traefik.http.services.minipaint.loadbalancer.server.port" = "80";
 		  "traefik.http.routers.minipaint.entrypoints" = "websecure";
               };
@@ -562,7 +553,7 @@ in
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.ferdium.rule" = "Host(`inbox.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.ferdium.rule" = "Host(`inbox.${serverUrl}`)";
 		  "traefik.http.services.ferdium.loadbalancer.server.port" = "3001";
 		  "traefik.http.routers.ferdium.entrypoints" = "websecure";
 
@@ -621,7 +612,7 @@ in
               };
               labels = {
 	          "traefik.enable" = "true";
-		  "traefik.http.routers.ytdlp.rule" = "Host(`ytdlp.${config.builderOptions.container.serverUrl}`)";
+		  "traefik.http.routers.ytdlp.rule" = "Host(`ytdlp.${serverUrl}`)";
 		  "traefik.http.services.ytdlp.loadbalancer.server.port" = "3033";
 		  "traefik.http.routers.ytdlp.entrypoints" = "websecure";
               };

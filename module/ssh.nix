@@ -1,8 +1,7 @@
-{ config, lib, pkgs, ... }@args: 
+{ config, lib, pkgs, serverUrl, ... }@args: 
 
 let 
   isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
-  serverAlias = "remote.storage-r710.home";
   port = 22;
 in
 {
@@ -48,7 +47,7 @@ in
                   IdentitiesOnly yes
                   AddKeysToAgent yes
 
-                Host ${serverAlias}
+                Host ${serverUrl}
                   Port ${toString port} 
                   IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
                   IdentitiesOnly yes

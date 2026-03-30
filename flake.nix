@@ -36,6 +36,7 @@
           system = "x86_64-linux";
           specialArgs = {
             inherit home-manager;
+	    serverUrl = "mr360.me";
             builderOptions = {
               user.name = "foxskis";
               gui.enable = false;
@@ -57,7 +58,6 @@
 		minipaint = true;
 		ferdium = true;
 		ytdlp = true;
-		serverUrl = "mr360.me";
               };
             };
           };
@@ -73,6 +73,7 @@
         # nix build .#nixosConfigurations.live-usb.config.system.build.isoImage
         "live-usb" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
+	  serverUrl = "mr360.me";
           specialArgs = {
             builderOptions = {
               user.name = "live";
