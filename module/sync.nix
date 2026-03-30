@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, serverUrl, ... }:
 
 let
   user = config.builderOptions.user.name;
@@ -16,7 +16,19 @@ in
     };
 
     folders = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
+      type = lib.types.listOf (lib.types.submodule ({ ... }: {
+        options = {
+          directory = lib.mkOption {
+            type = lib.types.str;
+            description = "Directory to sync.";
+          };
+
+          secret = lib.mkOption {
+            type = lib.types.str;
+            description = "Secret used for syncing.";
+          };
+        };
+      }));
       default = [];
       description = "Folders to share in headless mode via Resilio Sync";
     };
@@ -44,16 +56,16 @@ in
       httpPass = "";
       httpLogin = "";
       deviceName = config.networking.hostName;
-      #sharedFolders = [{
-	 #   secret         = "the key"; 
-	 #   directory      = sharedDirectory;
-	 #   knownHosts     = ["${config.builderOptions.container.serverUrl}:${sharePort}"];
-	 #   useRelayServer = false;
-	 #   useTracker     = false;
-	 #   useDHT         = false;
-	 #   searchLAN      = true;
-	 #   useSyncTrash   = true;
-	 # }];
+      sharedFolders = map (folder: {
+	    secret         = folder.secret; 
+	    directory      = folder.directory;
+	    knownHosts     = ["${serverUrl}:${sharePort}"];
+	    useRelayServer = false;
+	    useTracker     = false;
+	    useDHT         = false;
+	    searchLAN      = true;
+	    useSyncTrash   = true;
+	  }) config.builderOptions.sync.folders;
     };
 
     builderOptions.container.traefik.routes = [{
@@ -62,18 +74,5 @@ in
 	entry = "websecure";
 	loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
     }];
-
-    #TODO: design flow for user portion if needed
-    #  sync = {  
-    #    enable = true;
-    #    folders = [
-    #     {
-    #       directory = "";
-    #       secret = "";
-    #       hostUrl = "xyz";
-    #     } 
-    #    ];
-    #  }
-    #
   };
 }
