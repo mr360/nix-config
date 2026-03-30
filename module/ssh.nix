@@ -2,6 +2,8 @@
 
 let 
   isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
+  serverAlias = "remote.storage-r710.home";
+  port = 22;
 in
 {
   options.builderOptions.ssh =
@@ -46,8 +48,8 @@ in
                   IdentitiesOnly yes
                   AddKeysToAgent yes
 
-                Host remote.storage-r710.home
-                  Port 22
+                Host ${serverAlias}
+                  Port ${toString port} 
                   IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
                   IdentitiesOnly yes
                   AddKeysToAgent yes                  
@@ -65,6 +67,10 @@ in
         users.users."${config.builderOptions.user.name}".openssh.authorizedKeys.keyFiles = [
           "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/authorized_keys"
         ];
+
+	networking.firewall = { 
+	  allowedTCPPorts = lib.mkAfter [ port ];
+	};
     })
   ];
 }

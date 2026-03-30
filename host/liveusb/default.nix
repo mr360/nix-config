@@ -4,11 +4,13 @@
   imports =
     [ 
       ../../module/cmd-package.nix
+      ../../host/common.nix
       ../../module/user.nix
       ../../module/libvirt.nix
       ../../module/gui.nix
       ../../module/powersaver.nix
       ../../module/ssh.nix
+      ../../module/sync.nix
     ];
 
   builderOptions = specialArgs.builderOptions;
@@ -21,11 +23,6 @@
   ];
 
   networking.hostName = "live-usb"; 
-  networking.networkmanager.enable = if config.networking.wireless.enable then false else true;
-  time.timeZone = "Australia/Sydney";
-
-  hardware.opengl.enable = true;
-  nixpkgs.config.allowUnfree = true;
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

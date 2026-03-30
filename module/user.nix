@@ -4,6 +4,7 @@
 let 
   isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
   home = "/home/${config.builderOptions.user.name}";
+  isSyncEnabled = config.builderOptions.sync == true;
 in
 {
   options.builderOptions.user =
@@ -26,14 +27,13 @@ in
       extraGroups = [ 
         "wheel"
         "networkmanager" 
-        "vboxusers" 
         ];
         
       hashedPasswordFile = "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
     };
   };
 
-  config.system.activationScripts.createInitFolderStruct = if isoPrefix == "" then ''
+  config.system.activationScripts.createInitFolderStruct = if isSyncEnabled then ''
     if test -f ${home}/.sync_setup; then 
       echo "Already set...skipping initial folder creation"
     else

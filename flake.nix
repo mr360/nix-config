@@ -31,39 +31,6 @@
 
     outputs = { unstable, nixpkgs, home-manager, ... }@inputs: {
     nixosConfigurations = {
-        # sudo nixos-rebuild switch --flake .#amd-desktop
-        "amd-desktop" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = {
-            inherit home-manager;
-            builderOptions = {
-              user.name = "shady";
-              libvirt = {
-                enable = true;
-                pci_e_devices = "0000:0c:00.0 0000:0c:00.1";
-                vendor = "amd";
-                };
-              gui.enable = true;
-              cmdpkgs.enable = true;
-              powersaver.enable = false;
-              ssh = {
-                enable_agent = true;
-                enable_server = false;
-              };
-              container = {
-                idrac6 = true;
-              };
-            };
-          };
-          modules = [
-            ./host/amdpc/default.nix
-            ({ config, pkgs, ... }: {
-              nixpkgs.overlays = [(final: prev: {
-                unstable = import unstable;
-              })];
-            })
-          ];
-        };
         # sudo nixos-rebuild switch --flake .#storage-r710
         "storage-r710" = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
@@ -74,6 +41,7 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
+	      sync.enable = true;
               ssh = {
                 enable_agent = true;
                 enable_server = true;
@@ -104,6 +72,7 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
+	      sync.enable = false;
               ssh = {
                 enable_agent = true;
                 enable_server = true;
