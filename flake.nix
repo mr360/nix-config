@@ -41,16 +41,23 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
-	      sync.enable = true;
+	      sync = {
+	        enable = true;
+	      };
               ssh = {
                 enable_agent = true;
                 enable_server = true;
               };
               container = {
-                bind9 = false;
-                jellyfin = false;
-                code = false;
+                traefik = { enable = true; };
+                jellyfin = true;
                 nextcloud = false;
+                coder = true;
+		qbittorrent = true;
+		minipaint = true;
+		ferdium = true;
+		ytdlp = true;
+		serverUrl = "mr360.me";
               };
             };
           };
@@ -72,7 +79,9 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
-	      sync.enable = false;
+	      sync = {
+	        enable = false;
+	      };
               ssh = {
                 enable_agent = true;
                 enable_server = true;

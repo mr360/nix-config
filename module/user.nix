@@ -39,6 +39,8 @@ in
     else
       mkdir -p ${home}/sync/documents
       mkdir -p ${home}/sync/development
+      mkdir -p ${home}/sync/downloads/torrent
+      mkdir -p ${home}/sync/downloads/browser
       mkdir -p ${home}/sync/media/audio
       mkdir -p ${home}/sync/media/picture/screenshot
       mkdir -p ${home}/sync/media/picture/webcam
@@ -50,6 +52,7 @@ in
       rm -R -f ${home}/Music       && ln -s ${home}/sync/media/audio ${home}/Music
       rm -R -f ${home}/Documents   && ln -s ${home}/sync/documents ${home}/Documents
       rm -R -f ${home}/Development && ln -s ${home}/sync/development ${home}/Development
+      rm -R -f ${home}/Downloads   && ln -s ${home}/sync/downloads ${home}/Downloads
       
       chown -R ${config.builderOptions.user.name}:users ${home}/sync/
       echo "createInitFolderStruct" > ${home}/.sync_setup
