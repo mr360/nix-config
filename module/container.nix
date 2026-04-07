@@ -4,9 +4,10 @@ let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
-  credentialPath = "/home/${user}/nix-config/dotfile/.cred/user/${user}";
+  credentialPath = "/home/${user}/nix-config/dotfile/.cred";
   containerStoragePath = "/mnt/storage/container";
   storageMediaPath = "/mnt/storage/drive";
+  internalNetwork = "internal-container-network";
 in
 {
   options.builderOptions.container =
@@ -46,6 +47,15 @@ in
           Enable jellyfin docker image
       '';
       };
+
+      onlyoffice = lib.mkOption {
+      default = false;
+      example = true;
+      type = lib.types.bool;
+      description = ''
+          Enable onlyoffice docker image
+      '';
+      };   
 
       nextcloud = lib.mkOption {
       default = false;
@@ -108,7 +118,22 @@ in
     systemd.tmpfiles.rules = [
         "d ${containerStoragePath}  0755 ${user} users -"
     ];
-    
+
+    systemd.services.create-docker-network = {
+     description = "container shared docker network";
+     after = [ "docker.service" ];
+     requires = [ "docker.service" ];
+     wantedBy = [ "multi-user.target" ];
+     serviceConfig = {
+       Type = "oneshot";
+       ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect ${internalNetwork} >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create ${internalNetwork}'";
+     };
+    };   
+
+    systemd.services.docker.serviceConfig.ExecStartPost = [
+      "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect ${internalNetwork} >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create ${internalNetwork}'"
+    ];
+
     virtualisation = {
 	docker = { 
 	    enable = lib.mkDefault false;
@@ -138,6 +163,15 @@ in
   traefikYaml = 
     (pkgs.formats.yaml {}).generate "traefik.yml" {
       http = {
+        middlewares = {
+          common-header = { 
+            headers = {
+              customRequestHeaders = {
+	        X-Forwarded-Proto = "https";
+	      };
+	    };
+	  };
+	};
         serversTransports = {
             ignorecert = {
             	insecureSkipVerify = "true";
@@ -211,15 +245,15 @@ in
               autoStart = true;
               image = "traefik:v3.6";
               ports = [ 
-                "80:8060"
-		"443:4443"
+                "80:80"
+		"443:443"
               ];
               cmd = [
 	        "--api.dashboard=true"
 	      	"--providers.docker=true"
 		"--providers.file.directory=/dynamic"
 		"--providers.file.watch=true"
-		"--entrypoints.web.address=:8060"
+		"--entrypoints.web.address=:80"
 		
 		# DNS Challenge 01
 		"--certificatesResolvers.letsencrypt.acme.dnsChallenge.provider=cloudflare"
@@ -231,7 +265,8 @@ in
 		"--entrypoints.web.http.redirections.entrypoint.to=websecure"
                 "--entrypoints.web.http.redirections.entrypoint.scheme=https"
                 "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-		"--entrypoints.websecure.address=:4443"
+		"--entrypoints.websecure.http.middlewares=common-header@file"
+		"--entrypoints.websecure.address=:443"
 		"--entrypoints.websecure.http.tls=true"
 
 		# Observability 
@@ -247,15 +282,18 @@ in
 	        "traefik.http.routers.dashboard.service"="api@internal";
 
 		# TLS Certificate 
+		"traefik.http.routers.r0.entrypoints"="websecure";
+		"traefik.http.routers.r0.tls"="true";
 	        "traefik.http.routers.r0.tls.certresolver"="letsencrypt";
 	        "traefik.http.routers.r0.tls.domains[0].main"="${serverUrl}";
 	        "traefik.http.routers.r0.tls.domains[0].sans"="*.${serverUrl}";
 	      };
 	      extraOptions = [
 		"--add-host=host.docker.internal:host-gateway"
+		"--network=${internalNetwork}"
 	      ];
 	      environmentFiles = [
-		"${credentialPath}/tailscale/cfToken.env"
+		"${credentialPath}/env/cfToken.env"
   	      ];
               volumes = [
                 "/var/run/docker.sock:/var/run/docker.sock:ro"
@@ -277,6 +315,9 @@ in
               labels = {
 	          "traefik.enable" = "false";
               };
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
               volumes = [
 		"${corefile}:/etc/coredns/Corefile"
 		"${resolvConf}:/etc/coredns/resolv.conf"
@@ -305,9 +346,6 @@ in
           jellyfin = {
               autoStart = true;
               image = "linuxserver/jellyfin:10.11.6";
-              ports = [ 
-                "9001:8096"
-              ];
               environment = {
                 PUID= uid;
                 PGID= gid;
@@ -330,7 +368,110 @@ in
                 "${containerStoragePath}/jellyfin/log:/log"
                 "${storageMediaPath}/Media/Movie_Shows:/media/library"
               ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
           };
+        };
+      };
+    };
+  })
+  
+  (lib.mkIf (config.builderOptions.container.onlyoffice) 
+  {
+    systemd.tmpfiles.rules = [
+        "d ${containerStoragePath}/onlyoffice                             0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/data         0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/logs         0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/data        0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/logs        0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt 0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/conf.d                0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/data                  0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/initdb                0777 ${user} users -"
+
+    ];
+
+    virtualisation = {
+      docker.enable = true;
+      oci-containers = { 
+        backend = "docker";
+        containers = {
+	  onlyoffice-mysql = {
+           image = "mysql:9.6.0";
+           autoStart = true;
+           environment = {
+             MYSQL_DATABASE      = "onlyoffice";
+           };
+	   environmentFiles = [
+	     "${credentialPath}/env/onlyoffice.env"
+  	   ];
+           volumes = [
+             "${containerStoragePath}/onlyoffice/mysql/conf.d:/etc/mysql/conf.d"
+             "${containerStoragePath}/onlyoffice/mysql/data:/var/lib/mysql"
+             "${containerStoragePath}/onlyoffice/mysql/initdb:/docker-entrypoint-initdb.d"
+           ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
+         };
+	  # TODO: Fix issue with systemd hard requirement 
+	  # no easy way to get this running 
+	  # manually have to override entrypoint and run scripts without 
+	  # systemd 
+          onlyoffice-community = {
+           image = "onlyoffice/communityserver:12.7.1.1942";
+           autoStart = true;
+           environment = {
+              MYSQL_SERVER_DB_NAME="onlyoffice";
+              MYSQL_SERVER_HOST="onlyoffice-mysql";
+	      DOCUMENT_SERVER_PORT_80_TCP_ADDR="onlyoffice-documentserver";
+           };
+	   environmentFiles = [
+	     "${credentialPath}/env/onlyoffice.env"
+  	   ];
+           volumes = [
+             "${containerStoragePath}/onlyoffice/CommunityServer/data:/var/www/onlyoffice/Data"
+             "${containerStoragePath}/onlyoffice/CommunityServer/logs:/var/log/onlyoffice"
+	     "${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt:/etc/letsencrypt"
+	     "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+           ];
+              labels = {
+	          "traefik.enable" = "true";
+		  "traefik.http.routers.onlyoffice-community.rule" = "Host(`office.${serverUrl}`)";
+		  "traefik.http.services.onlyoffice-community.loadbalancer.server.port" = "80";
+		  "traefik.http.routers.onlyoffice-community.entrypoints" = "websecure";
+              };
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
+	      dependsOn = [ "onlyoffice-mysql" "onlyoffice-documentserver" ];
+         };
+       
+          onlyoffice-documentserver = {
+           image = "onlyoffice/documentserver:9.3";
+           autoStart = true;
+           environment = {
+             JWT_ENABLED = "true";
+	     JWT_HEADER="Authorization";
+           };
+	   environmentFiles = [
+	     "${credentialPath}/env/onlyoffice.env"
+  	   ];
+           volumes = [
+             "${containerStoragePath}/onlyoffice/DocumentServer/data:/var/www/onlyoffice/Data"
+             "${containerStoragePath}/onlyoffice/DocumentServer/logs:/var/log/onlyoffice"
+           ];
+              labels = {
+	          "traefik.enable" = "true";
+		  "traefik.http.routers.onlyoffice-documentserver.rule" = "Host(`internal-onlyoffice-ds.${serverUrl}`)";
+		  "traefik.http.services.onlyoffice-documentserver.loadbalancer.server.port" = "80";
+		  "traefik.http.routers.onlyoffice-documentserver.entrypoints" = "websecure";
+              };
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
+         };
         };
       };
     };
@@ -342,15 +483,16 @@ in
     # ---------------------------------------------------------
     # => run Nextcloud Installer
     # => sudo docker container exec -it <63f6a18eb605> bash
-    # ==> ./occ app:install richdocumentscode
     # ==> ./occ app:enable files_external
     # ==> ./occ app:install files_archive
-    # ==> ./occ app:install richdocuments
+    # ==> ./occ app:install onlyoffice 
 
     systemd.tmpfiles.rules = [
         "d ${containerStoragePath}/nextcloud         0777 ${user} users -"
         "d ${containerStoragePath}/nextcloud/config  0777 ${user} users -"
         "d ${containerStoragePath}/nextcloud/data    0777 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/db      0777 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/redis   0777 ${user} users -"
     ];
 
     virtualisation = {
@@ -360,27 +502,79 @@ in
         containers = {
           nextcloud = {
               autoStart = true;
-              image = "azamserver/nextcloud-imagemagick-ffmpeg:latest";
-              user = uid;
-              ports = [ 
-                "8080:80"
-                ];
+	      image = "linuxserver/nextcloud:33.0.1";
               environment = {      
+                PUID = "1000";
+                PGID = "100";
+                TZ = "Australia/Melbourne";
+		
                 PHP_UPLOAD_LIMIT="6G";
                 PHP_MEMORY_LIMIT="16192M";
-                NEXTCLOUD_DATA_DIR="/var/www/html/data";
-                TRUSTED_PROXIES="";
+
+		MYSQL_HOST     = "nextcloud-mariadb:3306";
+		REDIS_HOST="nextcloud-redis";
+		MYSQL_DATABASE = "nextcloud";
+
+		DOCKER_MODS="linuxserver/mods:universal-package-install";
+		INSTALL_PACKAGES="imagemagick";
+              };
+	   environmentFiles = [
+	     "${credentialPath}/env/nextcloud.env"
+  	   ];
+              labels = {
+	          "traefik.enable" = "true";
+		  "traefik.http.routers.nextcloud.rule" = "Host(`cloud.${serverUrl}`)";
+		  "traefik.http.services.nextcloud.loadbalancer.server.port" = "80";
+		  "traefik.http.routers.nextcloud.entrypoints" = "websecure";
               };
               volumes = [
-                "${containerStoragePath}/nextcloud/config:/var/www/html"
-                "${containerStoragePath}/nextcloud/data:/var/www/html/data"
+                "${containerStoragePath}/nextcloud/config:/config"
+                "${containerStoragePath}/nextcloud/data:/data"
 		"${storageMediaPath}:${storageMediaPath}"
               ];
+	      dependsOn = [ "nextcloud-mariadb" "nextcloud-redis" ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
           };
-	  #redis = {}
-	  #postgres = {}
-	  #office = {}
-	  #cron = {}
+
+	  nextcloud-mariadb = {
+           image = "linuxserver/mariadb:11.4.9";
+           autoStart = true;
+           environment = {
+                PUID = "1000";
+                PGID = "100";
+                TZ = "Australia/Melbourne";
+             MYSQL_DATABASE      = "nextcloud";
+           };
+           volumes = [
+             "${containerStoragePath}/nextcloud/db:/config"
+             "${containerStoragePath}/nextcloud/db/custom.cnf:/config/custom.cnf"
+           ];
+	   environmentFiles = [
+	     "${credentialPath}/env/nextcloud.env"
+  	   ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
+         };
+       
+         nextcloud-redis = {
+           image = "redis:alpine3.23";
+           autoStart = true;
+           cmd = [ 
+             "redis-server" 
+	     "--appendonly" "yes" 
+	     "--maxmemory" "512mb"
+             "--maxmemory-policy" "allkeys-lru"
+           ];
+           volumes = [
+             "${containerStoragePath}/nextcloud/redis:/data"
+           ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
+         };
         };
       };
     };
@@ -394,43 +588,35 @@ in
         "d ${containerStoragePath}/coder/database    0777 ${user} users -"
     ];
 
-    networking.firewall.allowedTCPPorts = lib.mkAfter [ 2080 ];
-
     virtualisation = {
       docker.enable = true;
       oci-containers = { 
         backend = "docker";
         containers = {
-	  database = {
+	  coder-postgresdb = {
             autoStart = true;
             image = "postgres:17";
     
             environment = {
-              POSTGRES_USER = "username";
-              POSTGRES_PASSWORD = "password";
               POSTGRES_DB = "coder";
             };
     
             volumes = [
               "${containerStoragePath}/coder/database:/var/lib/postgresql/data"
             ];
-    
-            # optional if you want external access
-             ports = [ "5432:5432" ];
-    
-            extraOptions = [
-            ];
+	   environmentFiles = [
+	     "${credentialPath}/env/coder.env"
+  	   ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
           };
           coder = {
               autoStart = true;
               image = "ghcr.io/coder/coder:v2.31.6";
-              ports = [ 
-                "2080:2080"
-              ];
               environment = {
-	      CODER_PG_CONNECTION_URL="postgresql://username:password@172.17.0.9:5432/coder?sslmode=disable";
-	      CODER_HTTP_ADDRESS="0.0.0.0:2080";
-	      CODER_ACCESS_URL="https://code.${serverUrl}";
+	        CODER_HTTP_ADDRESS="0.0.0.0:2080";
+	        CODER_ACCESS_URL="https://code.${serverUrl}";
               };
               labels = {
 	          "traefik.enable" = "true";
@@ -442,8 +628,12 @@ in
                 "/var/run/docker.sock:/var/run/docker.sock:rw"
                 "${containerStoragePath}/coder/home:/home/coder"
               ];
-	      dependsOn = [ "database" ];
+	   environmentFiles = [
+	     "${credentialPath}/env/coder.env"
+  	   ];
+	      dependsOn = [ "coder-postgresdb" ];
 	      extraOptions = [
+		"--network=${internalNetwork}"
 	         "--privileged" # allows Docker in Docker
                  "--group-add=992"
 	      ];
@@ -464,7 +654,6 @@ in
               autoStart = true;
               image = "linuxserver/qbittorrent:5.1.4";
               ports = [ 
-                "8480:8480"
 		"6881:6881"
 		"6881:6881/udp"
               ];
@@ -485,6 +674,9 @@ in
                 "${containerStoragePath}/qbittorrent/config:/config"
                 "/home/${user}/Downloads:/downloads"
               ];
+	      extraOptions = [
+		"--network=${internalNetwork}"
+	      ];
           };
         };
       };
@@ -501,9 +693,6 @@ in
           minipaint = {
               autoStart = true;
               image = "pfav/minipaint:v4.11.0";
-              ports = [ 
-                "8123:80"
-              ];
 	      cmd = [
 	      ];
               environment = {
@@ -517,7 +706,8 @@ in
               volumes = [
               ];
 	      extraOptions = [
-  	      ];
+		"--network=${internalNetwork}"
+	      ];
           };
         };
       };
@@ -534,10 +724,6 @@ in
           ferdium = {
               autoStart = true;
               image = "linuxserver/ferdium:7.1.1";
-              ports = [ 
-                "3000:3000"
-                "3001:3001"
-              ];
 	      cmd = [
 	      ];
               environment = {
@@ -566,7 +752,8 @@ in
 		"/home/${user}/sync:/sync"
               ];
 	      extraOptions = [
-                "--shm-size=2gb" 
+		"--network=${internalNetwork}"
+                "--shm-size=1gb" 
 		"--device=/dev/dri:/dev/dri"
   	      ];
           };
@@ -602,9 +789,6 @@ in
           ytdlp = {
               autoStart = true;
               image = "marcobaobao/yt-dlp-webui:latest";
-              ports = [ 
-                "3033:3033"
-              ];
 	      cmd = [
 	      "-conf" "/etc/config.yml"
 	      ];
@@ -622,6 +806,7 @@ in
 		"${ytdlp}/bin/yt-dlp:/usr/local/bin/yt-dlp"
               ];
 	      extraOptions = [
+		"--network=${internalNetwork}"
   	      ];
           };
         };

@@ -52,7 +52,8 @@
               container = {
                 traefik = { enable = true; };
                 jellyfin = true;
-                nextcloud = false;
+		onlyoffice = true;
+                nextcloud = true;
                 coder = true;
 		qbittorrent = true;
 		minipaint = true;
