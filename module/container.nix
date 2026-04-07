@@ -233,7 +233,7 @@ in
   in
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/traefik           0777 ${user} users -"
+        "d ${containerStoragePath}/traefik           0755 ${user} users -"
         "f ${containerStoragePath}/traefik/acme.json 0600 ${user} users -"
     ];
     virtualisation = {
@@ -331,11 +331,11 @@ in
   (lib.mkIf (config.builderOptions.container.jellyfin) 
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/jellyfin         0777 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/config  0777 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/data    0777 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/cache   0777 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/log     0777 ${user} users -"
+        "d ${containerStoragePath}/jellyfin         0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/config  0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/data    0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/cache   0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin/log     0755 ${user} users -"
     ];
 
     virtualisation = {
@@ -380,15 +380,15 @@ in
   (lib.mkIf (config.builderOptions.container.onlyoffice) 
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/onlyoffice                             0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/DocumentServer/data         0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/DocumentServer/logs         0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/data        0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/logs        0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt 0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/conf.d                0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/data                  0777 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/initdb                0777 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice                             0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/data         0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/logs         0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/data        0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/logs        0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt 0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/conf.d                0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/data                  0755 ${user} users -"
+        "d ${containerStoragePath}/onlyoffice/mysql/initdb                0755 ${user} users -"
 
     ];
 
@@ -488,11 +488,11 @@ in
     # ==> ./occ app:install onlyoffice 
 
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/nextcloud         0777 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/config  0777 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/data    0777 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/db      0777 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/redis   0777 ${user} users -"
+        "d ${containerStoragePath}/nextcloud         0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/config  0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/data    0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/db      0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud/redis   0755 ${user} users -"
     ];
 
     virtualisation = {
@@ -583,9 +583,9 @@ in
   (lib.mkIf (config.builderOptions.container.coder) 
   {
     systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/coder             0777 ${user} users -"
-        "d ${containerStoragePath}/coder/home        0777 ${user} users -"
-        "d ${containerStoragePath}/coder/database    0777 ${user} users -"
+        "d ${containerStoragePath}/coder             0755 ${user} users -"
+        "d ${containerStoragePath}/coder/home        0755 ${user} users -"
+        "d ${containerStoragePath}/coder/database    0755 ${user} users -"
     ];
 
     virtualisation = {
@@ -788,7 +788,7 @@ in
         containers = {
           ytdlp = {
               autoStart = true;
-              image = "marcobaobao/yt-dlp-webui:latest";
+              image = "marcobaobao/yt-dlp-webui:sha256-41be2e1ed6fbee5278039f09d6116c5f5f6c587f219ae75ceb11234522bee5bc.sig";
 	      cmd = [
 	      "-conf" "/etc/config.yml"
 	      ];
