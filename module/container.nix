@@ -11,6 +11,14 @@ let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
+  containerUIDs = {
+    redis   = "999";
+  };
+
+  containerGIDs = {
+    redis   = "999";
+  };
+
   credentialPath = "${flakePath}/dotfile/.cred";
   containerStoragePath = "/mnt/storage/container";
   storageMediaPath = "/mnt/storage/drive";
@@ -242,8 +250,8 @@ in
       in
       {
         systemd.tmpfiles.rules = [
-          "d ${containerStoragePath}/traefik           0755 ${user} users -"
-          "f ${containerStoragePath}/traefik/acme.json 0600 ${user} users -"
+          "d ${containerStoragePath}/traefik           0755 ${uid} ${gid} -"
+          "f ${containerStoragePath}/traefik/acme.json 0600 ${uid} ${gid} -"
         ];
         virtualisation = {
           docker.enable = true;
@@ -340,11 +348,11 @@ in
 
     (lib.mkIf (config.builderOptions.container.jellyfin) {
       systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/jellyfin         0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/config  0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/data    0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/cache   0755 ${user} users -"
-        "d ${containerStoragePath}/jellyfin/log     0755 ${user} users -"
+        "d ${containerStoragePath}/jellyfin         0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/jellyfin/config  0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/jellyfin/data    0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/jellyfin/cache   0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/jellyfin/log     0755 ${uid} ${gid} -"
       ];
 
       virtualisation = {
@@ -388,16 +396,15 @@ in
 
     (lib.mkIf (config.builderOptions.container.onlyoffice) {
       systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/onlyoffice                             0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/DocumentServer/data         0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/DocumentServer/logs         0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/data        0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/logs        0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt 0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/conf.d                0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/data                  0755 ${user} users -"
-        "d ${containerStoragePath}/onlyoffice/mysql/initdb                0755 ${user} users -"
-
+        "d ${containerStoragePath}/onlyoffice                             0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/data         0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/DocumentServer/logs         0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/data        0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/logs        0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt 0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/mysql/conf.d                0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/mysql/data                  0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/onlyoffice/mysql/initdb                0755 ${uid} ${gid} -"
       ];
 
       virtualisation = {
@@ -499,11 +506,11 @@ in
       # ==> ./occ app:install onlyoffice
 
       systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/nextcloud         0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/config  0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/data    0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/db      0755 ${user} users -"
-        "d ${containerStoragePath}/nextcloud/redis   0755 ${user} users -"
+        "d ${containerStoragePath}/nextcloud         0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/config  0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/data    0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/db      0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/redis   0755 ${containerUIDs.redis} ${containerGIDs.redis}  -"
       ];
 
       virtualisation = {
@@ -599,9 +606,9 @@ in
 
     (lib.mkIf (config.builderOptions.container.coder) {
       systemd.tmpfiles.rules = [
-        "d ${containerStoragePath}/coder             0755 ${user} users -"
-        "d ${containerStoragePath}/coder/home        0755 ${user} users -"
-        "d ${containerStoragePath}/coder/database    0755 ${user} users -"
+        "d ${containerStoragePath}/coder             0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/coder/home        0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/coder/database    0755 ${uid} ${gid} -"
       ];
 
       virtualisation = {
