@@ -1,8 +1,7 @@
 
-{config, lib, pkgs, ...}: 
+{config, lib, pkgs, flakePath, ...}: 
 
 let 
-  isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
   home = "/home/${config.builderOptions.user.name}";
   isSyncEnabled = config.builderOptions.sync == true;
 in
@@ -29,7 +28,7 @@ in
         "networkmanager" 
         ];
         
-      hashedPasswordFile = "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
+      hashedPasswordFile = "${flakePath}/dotfile/.cred/user/${config.builderOptions.user.name}/hashed.passwd";
     };
   };
 

@@ -1,10 +1,10 @@
-{ config, lib, pkgs, serverUrl, ... }: 
+{ config, lib, pkgs, serverUrl, flakePath, ... }: 
 
 let
   uid = toString config.users.users.${config.builderOptions.user.name}.uid;
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
-  credentialPath = "/home/${user}/nix-config/dotfile/.cred";
+  credentialPath = "${flakePath}/dotfile/.cred";
   containerStoragePath = "/mnt/storage/container";
   storageMediaPath = "/mnt/storage/drive";
   internalNetwork = "internal-container-network";

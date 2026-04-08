@@ -1,8 +1,8 @@
-{ config, lib, pkgs, serverUrl, ... }:
+{ config, lib, pkgs, serverUrl, flakePath, ... }:
 
 let
   user = config.builderOptions.user.name;
-  keyFile = "/home/${user}/nix-config/dotfile/.cred/licence/btsync.btskey";
+  keyFile = "${flakePath}/dotfile/.cred/licence/btsync.btskey";
   syncDataPath = "/mnt/storage/service/resilio-sync";
   webUIPort = 9116;
   sharePort = 55555;

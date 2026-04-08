@@ -1,7 +1,7 @@
-{ config, lib, pkgs, serverUrl, ... }@args: 
+{ config, lib, pkgs, serverUrl, flakePath, ... }@args: 
 
 let 
-  isoPrefix = if builtins.hasAttr "config.isoImage" config then "/iso" else "";
+  sshPath = "${flakePath}/dotfile/.cred/user/${config.builderOptions.user.name}/ssh";
   port = 22;
 in
 {
@@ -42,14 +42,14 @@ in
             };
             extraConfig = ''
                 Host github.com
-                  IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
+                  IdentityFile ${sshPath}/id_ed25519_git
                   KexAlgorithms curve25519-sha256@libssh.org
                   IdentitiesOnly yes
                   AddKeysToAgent yes
 
                 Host ${serverUrl}
                   Port ${toString port} 
-                  IdentityFile ${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/id_ed25519_git
+                  IdentityFile ${sshPath}/id_ed25519_git
                   IdentitiesOnly yes
                   AddKeysToAgent yes                  
                 '';
@@ -64,7 +64,7 @@ in
         };
 
         users.users."${config.builderOptions.user.name}".openssh.authorizedKeys.keyFiles = [
-          "${isoPrefix}/etc/nixos/dotfile/.cred/user/${config.builderOptions.user.name}/ssh/authorized_keys"
+          "${sshPath}/authorized_keys"
         ];
 
 	networking.firewall = { 

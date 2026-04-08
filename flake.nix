@@ -37,6 +37,7 @@
           specialArgs = {
             inherit home-manager;
 	    serverUrl = "mr360.me";
+	    flakePath = "/home/foxskis/nix-config";
             builderOptions = {
               user.name = "foxskis";
               gui.enable = false;
@@ -64,35 +65,6 @@
           };
           modules = [
             ./host/server/default.nix
-            ({ config, pkgs, ... }: {
-              nixpkgs.overlays = [(final: prev: {
-                unstable = import unstable;
-              })];
-            })
-          ];
-        };
-        # nix build .#nixosConfigurations.live-usb.config.system.build.isoImage
-        "live-usb" = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-	  serverUrl = "mr360.me";
-          specialArgs = {
-            builderOptions = {
-              user.name = "live";
-              gui.enable = false;
-              cmdpkgs.enable = true;
-              powersaver.enable = false;
-	      sync = {
-	        enable = false;
-	      };
-              ssh = {
-                enable_agent = true;
-                enable_server = true;
-              };
-            };
-          };
-          modules = [
-            (nixpkgs + "/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix")
-            ./host/liveusb/default.nix
             ({ config, pkgs, ... }: {
               nixpkgs.overlays = [(final: prev: {
                 unstable = import unstable;

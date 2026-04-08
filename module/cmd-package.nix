@@ -21,21 +21,15 @@
   {
     environment.systemPackages = with pkgs; [
       git
-      wget
       tree
-      gdb
       jq
       p7zip
-      python3
-      gcc
       hexedit
-      nnn
       tmux
       pcalc
       neovim
       unrar
       localpkgs.devcontainer-cli
-      yt-dlp
     ];
   };
 }

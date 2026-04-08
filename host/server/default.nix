@@ -29,12 +29,6 @@
 
   builderOptions = specialArgs.builderOptions;
   
-#  fileSystems."/mnt/storage" =
-#  { 
-#    device = "/dev/disk/by-uuid/55689d40-7584-4040-970c-be406ab09ac9";
-#    fsType = "ext4";
-#  };
-  
   networking.hostName = "storage-r710"; 
   networking.firewall = {
     enable = true;
@@ -65,7 +59,7 @@
       upper = "04:00";
     };
     dates = "yearly";
-    flake = "/home/${config.builderOptions.user.name}/nixos";
+    flake = specialArgs.flakePath;
     flags = [ 
       "--update-input" 
       "nixpkgs" 
