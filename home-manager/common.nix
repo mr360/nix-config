@@ -1,4 +1,9 @@
-{ config, pkgs, networking, ... }:
+{
+  config,
+  pkgs,
+  networking,
+  ...
+}:
 
 {
   programs.git = {
@@ -7,13 +12,13 @@
     userEmail = "mr360@users.noreply.github.com";
     extraConfig = {
       init.defaultBranch = "main";
-      core = { 
-	      editor = "nvim";
+      core = {
+        editor = "nvim";
         autocrlf = "input";
       };
     };
   };
-  
+
   programs.bash = {
     enable = true;
     enableCompletion = true;
@@ -26,11 +31,11 @@
     '';
 
     shellAliases = {
-      devcontainer_init = ''cp -rf ~/nixos/dotfile/.template/. .'';
-      devcontainer_start = ''devcontainer up --workspace-folder .  --remove-existing-container'';
-      devcontainer_nvim = ''devcontainer exec --workspace-folder . nvim .'';
-      devcontainer_bash = ''devcontainer exec --workspace-folder . bash'';
-      devcontainer_tunnel = ''devcontainer exec --workspace-folder . code tunnel --accept-server-license-terms --name ${networking.hostName}'';
+      devcontainer_init = "cp -rf ~/nixos/dotfile/.template/. .";
+      devcontainer_start = "devcontainer up --workspace-folder .  --remove-existing-container";
+      devcontainer_nvim = "devcontainer exec --workspace-folder . nvim .";
+      devcontainer_bash = "devcontainer exec --workspace-folder . bash";
+      devcontainer_tunnel = "devcontainer exec --workspace-folder . code tunnel --accept-server-license-terms --name ${networking.hostName}";
     };
   };
 
@@ -39,11 +44,11 @@
       text = (builtins.readFile ../dotfile/.config/.tmux.conf);
     };
   };
-  
-# configFile."nvim" = {
-#   source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/nvim;
-#   recursive = true;
-# };
+
+  # configFile."nvim" = {
+  #   source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/nvim;
+  #   recursive = true;
+  # };
 
   home.stateVersion = "25.05";
   programs.home-manager.enable = true;

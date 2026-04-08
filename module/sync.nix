@@ -1,4 +1,11 @@
-{ config, lib, pkgs, serverUrl, flakePath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  serverUrl,
+  flakePath,
+  ...
+}:
 
 let
   user = config.builderOptions.user.name;
@@ -16,20 +23,25 @@ in
     };
 
     folders = lib.mkOption {
-      type = lib.types.listOf (lib.types.submodule ({ ... }: {
-        options = {
-          directory = lib.mkOption {
-            type = lib.types.str;
-            description = "Directory to sync.";
-          };
+      type = lib.types.listOf (
+        lib.types.submodule (
+          { ... }:
+          {
+            options = {
+              directory = lib.mkOption {
+                type = lib.types.str;
+                description = "Directory to sync.";
+              };
 
-          secret = lib.mkOption {
-            type = lib.types.str;
-            description = "Secret used for syncing.";
-          };
-        };
-      }));
-      default = [];
+              secret = lib.mkOption {
+                type = lib.types.str;
+                description = "Secret used for syncing.";
+              };
+            };
+          }
+        )
+      );
+      default = [ ];
       description = "Folders to share in headless mode via Resilio Sync";
     };
   };
@@ -37,18 +49,21 @@ in
   config = lib.mkIf config.builderOptions.sync.enable {
     users.users.${user}.extraGroups = lib.mkAfter [ "rslsync" ];
 
-    networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort webUIPort ];
+    networking.firewall.allowedTCPPorts = lib.mkAfter [
+      sharePort
+      webUIPort
+    ];
     networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
 
     systemd.tmpfiles.rules = [
-        "d ${syncDataPath}                   0777 ${user} users -"
-        "C ${syncDataPath}/licence.btskey    0777 ${user} users - ${builtins.path { path = keyFile; }}"
+      "d ${syncDataPath}                   0777 ${user} users -"
+      "C ${syncDataPath}/licence.btskey    0777 ${user} users - ${builtins.path { path = keyFile; }}"
     ];
 
     services.resilio = {
       enable = true;
       checkForUpdates = false;
-      enableWebUI = config.builderOptions.sync.folders == [];
+      enableWebUI = config.builderOptions.sync.folders == [ ];
       httpListenPort = webUIPort;
       httpListenAddr = "0.0.0.0";
       storagePath = syncDataPath;
@@ -57,22 +72,24 @@ in
       httpLogin = "";
       deviceName = config.networking.hostName;
       sharedFolders = map (folder: {
-	    secret         = folder.secret; 
-	    directory      = folder.directory;
-	    knownHosts     = ["${serverUrl}:${sharePort}"];
-	    useRelayServer = false;
-	    useTracker     = false;
-	    useDHT         = false;
-	    searchLAN      = true;
-	    useSyncTrash   = true;
-	  }) config.builderOptions.sync.folders;
+        secret = folder.secret;
+        directory = folder.directory;
+        knownHosts = [ "${serverUrl}:${sharePort}" ];
+        useRelayServer = false;
+        useTracker = false;
+        useDHT = false;
+        searchLAN = true;
+        useSyncTrash = true;
+      }) config.builderOptions.sync.folders;
     };
 
-    builderOptions.container.traefik.routes = [{
-    	service = "rslsync";
-	route = "sync";
-	entry = "websecure";
-	loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
-    }];
+    builderOptions.container.traefik.routes = [
+      {
+        service = "rslsync";
+        route = "sync";
+        entry = "websecure";
+        loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
+      }
+    ];
   };
 }

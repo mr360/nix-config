@@ -2,8 +2,8 @@
 
 {
   /*
-    Note: Limited usage of home-manager. Only used for linking xdg config files rather than using nix styled option layout. 
-    Once home-manager becomes mature then we can think about it :-) 
+    Note: Limited usage of home-manager. Only used for linking xdg config files rather than using nix styled option layout.
+    Once home-manager becomes mature then we can think about it :-)
   */
 
   imports = [
@@ -61,8 +61,8 @@
       recursive = true;
     };
     # dataFile."icons" = {
-      # source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/icons;
-      # recursive = true;
+    # source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.local/share/icons;
+    # recursive = true;
     # };
 
     # QTerm settings
@@ -71,19 +71,19 @@
       recursive = true;
     };
 
-    # PCManFM 
+    # PCManFM
     configFile."pcmanfm-qt" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/pcmanfm-qt;
       recursive = true;
     };
 
-    # Feh  Image Viewer 
+    # Feh  Image Viewer
     configFile."feh" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/feh;
       recursive = true;
     };
 
-    # VLC settings 
+    # VLC settings
     configFile."vlc/vlcrc" = {
       source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/vlc/vlcrc;
       recursive = false;
@@ -98,12 +98,12 @@
 
   home.file = {
     ".config/mimeapps.list" = {
-      text = (builtins.readFile ../../dotfile/.config/mimeapps.list.base) + '''';
+      text = (builtins.readFile ../../dotfile/.config/mimeapps.list.base) + "";
     };
   };
 
   programs.bash.shellAliases = {
-    enterssh = ''ssh foxskis@remote.storage-r710.home'';
+    enterssh = "ssh foxskis@remote.storage-r710.home";
     startvm = ''
       sudo chown ${config.home.username} /dev/vfio/17 && 
       sudo chown ${config.home.username}:users /dev/input/by-id/usb-*-event-kbd &&

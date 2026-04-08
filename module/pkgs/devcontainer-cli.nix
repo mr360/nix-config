@@ -1,46 +1,46 @@
 {
-    lib,
-    stdenv,
-    fetchzip,
-    nodejs_20
+  lib,
+  stdenv,
+  fetchzip,
+  nodejs_20,
 }:
-let 
-    pname = "devcontainer-cli";
-    version = "0.80.1";
-    hash = "sha256-cIWNKBTsI2bbMCGxvwAqhZMk6kQtn3G5jjKGSLS/24U=";
+let
+  pname = "devcontainer-cli";
+  version = "0.80.1";
+  hash = "sha256-cIWNKBTsI2bbMCGxvwAqhZMk6kQtn3G5jjKGSLS/24U=";
 in
 stdenv.mkDerivation {
-    inherit pname version;
-    
-    src = fetchzip {
-      inherit hash;
-      url = "https://registry.npmjs.org/@devcontainers/cli/-/cli-${version}.tgz";
-    };
+  inherit pname version;
 
-    dontBuild = true;
-    dontConfigure = true;
+  src = fetchzip {
+    inherit hash;
+    url = "https://registry.npmjs.org/@devcontainers/cli/-/cli-${version}.tgz";
+  };
 
-    installPhase = ''
-      mkdir -p $out/bin
-      cp -a "$src/." "$out"
-      rm devcontainer.js
-    '';
+  dontBuild = true;
+  dontConfigure = true;
 
-    postFixup = ''
-      cat <<EOF > $out/bin/devcontainer
-      #!${nodejs_20}/bin/node
-        require('$out/dist/spec-node/devContainersSpecCLI');
-      EOF
+  installPhase = ''
+    mkdir -p $out/bin
+    cp -a "$src/." "$out"
+    rm devcontainer.js
+  '';
 
-      chmod +x $out/bin/devcontainer
-    '';
+  postFixup = ''
+    cat <<EOF > $out/bin/devcontainer
+    #!${nodejs_20}/bin/node
+      require('$out/dist/spec-node/devContainersSpecCLI');
+    EOF
 
-    meta = with lib; {
-      homepage = "https://containers.dev";
-      description = "A reference implementation for the specification that \
+    chmod +x $out/bin/devcontainer
+  '';
+
+  meta = with lib; {
+    homepage = "https://containers.dev";
+    description = "A reference implementation for the specification that \
        can create and configure a dev container from a devcontainer.json";
-      license = licenses.mit;
-      platforms = lib.intersectLists (lib.platforms.linux) (lib.platforms.x86_64);
-      maintainers = with maintainers; [ mr360 ];
-    };
-  }
+    license = licenses.mit;
+    platforms = lib.intersectLists (lib.platforms.linux) (lib.platforms.x86_64);
+    maintainers = with maintainers; [ mr360 ];
+  };
+}
