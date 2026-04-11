@@ -12,11 +12,11 @@ let
   gid = toString config.users.groups.users.gid;
   user = "${config.builderOptions.user.name}";
   containerUIDs = {
-    redis   = "999";
+    redis = "999";
   };
 
   containerGIDs = {
-    redis   = "999";
+    redis = "999";
   };
 
   credentialPath = "${flakePath}/dotfile/.cred";
@@ -202,9 +202,6 @@ in
                   rule = "Host(`${r.route}.${serverUrl}`)";
                   entryPoints = [ r.entry ];
                   service = r.service;
-                  #tls = {
-                  #  certResolver = "letsencrypt";
-                  #};
                 };
               }) config.builderOptions.container.traefik.routes
             );
@@ -268,8 +265,7 @@ in
                 cmd = [
                   "--api.dashboard=true"
                   "--providers.docker=true"
-                  "--providers.file.directory=/dynamic"
-                  "--providers.file.watch=true"
+                  "--providers.file.filename=/dynamic/traefik.yaml"
                   "--entrypoints.web.address=:80"
 
                   # DNS Challenge 01
@@ -297,6 +293,7 @@ in
                   "traefik.http.routers.dashboard.rule" = "Host(`route.${serverUrl}`)";
                   "traefik.http.routers.dashboard.entrypoints" = "websecure";
                   "traefik.http.routers.dashboard.service" = "api@internal";
+		  "traefik.http.routers.dashboard.middlewares" = "authelia@docker";
 
                   # TLS Certificate
                   "traefik.http.routers.r0.entrypoints" = "websecure";
@@ -340,6 +337,34 @@ in
                   "${resolvConf}:/etc/coredns/resolv.conf"
                 ];
               };
+              authelia = {
+                autoStart = true;
+                image = "authelia/authelia:4.39";
+                ports = [
+                ];
+                cmd = [
+                ];
+              environment = {
+                TZ = config.time.timeZone;
+		X_AUTHELIA_CONFIG_FILTERS="template";
+              };
+                labels = {
+                  "traefik.enable" = "true";
+                  "traefik.http.routers.authelia.rule" = "Host(`auth.${serverUrl}`)";
+                  "traefik.http.routers.authelia.entrypoints" = "websecure";
+
+		  "traefik.http.middlewares.authelia.forwardAuth.address" = "http://authelia:9091/api/authz/forward-auth";
+      		  "traefik.http.middlewares.authelia.forwardAuth.trustForwardHeader" = "true";
+                  "traefik.http.middlewares.authelia.forwardAuth.maxResponseBodySize" = "8192";
+                  "traefik.http.middlewares.authelia.forwardAuth.authResponseHeaders" = "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
+                };
+                extraOptions = [
+                  "--network=${internalNetwork}"
+                ];
+                volumes = [
+                  "${credentialPath}/authelia:/config"
+                ];
+              };
             };
           };
         };
@@ -372,13 +397,18 @@ in
                 JELLYFIN_CONFIG_DIR = "/config";
                 JELLYFIN_CACHE_DIR = "/cache";
               };
+              environmentFiles = [
+                "${credentialPath}/env/jellyfin.env"
+              ];
               labels = {
                 "traefik.enable" = "true";
                 "traefik.http.routers.jellyfin.rule" = "Host(`media.${serverUrl}`)";
                 "traefik.http.services.jellyfin.loadbalancer.server.port" = "8096";
                 "traefik.http.routers.jellyfin.entrypoints" = "websecure";
+		#"traefik.http.routers.jellyfin.middlewares" = "authelia@docker";
               };
               volumes = [
+                "${flakePath}/dotfile/.config/jellyfin:/installer"
                 "${containerStoragePath}/jellyfin/config:/config"
                 "${containerStoragePath}/jellyfin/data:/data"
                 "${containerStoragePath}/jellyfin/cache:/cache"
@@ -421,6 +451,9 @@ in
               environmentFiles = [
                 "${credentialPath}/env/onlyoffice.env"
               ];
+                labels = {
+                  "traefik.enable" = "false";
+		  };
               volumes = [
                 "${containerStoragePath}/onlyoffice/mysql/conf.d:/etc/mysql/conf.d"
                 "${containerStoragePath}/onlyoffice/mysql/data:/var/lib/mysql"
@@ -497,20 +530,12 @@ in
     })
 
     (lib.mkIf (config.builderOptions.container.nextcloud) {
-      # Required: [TODO: create custom dockerfile]
-      # ---------------------------------------------------------
-      # => run Nextcloud Installer
-      # => sudo docker container exec -it <63f6a18eb605> bash
-      # ==> ./occ app:enable files_external
-      # ==> ./occ app:install files_archive
-      # ==> ./occ app:install onlyoffice
-
       systemd.tmpfiles.rules = [
         "d ${containerStoragePath}/nextcloud         0755 ${uid} ${gid} -"
-        "d ${containerStoragePath}/nextcloud/config  0755 ${uid} ${gid} -"
-        "d ${containerStoragePath}/nextcloud/data    0755 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/config  0777 ${uid} ${gid} -"
+        "d ${containerStoragePath}/nextcloud/data    0777 ${uid} ${gid} -"
         "d ${containerStoragePath}/nextcloud/db      0755 ${uid} ${gid} -"
-        "d ${containerStoragePath}/nextcloud/redis   0755 ${containerUIDs.redis} ${containerGIDs.redis}  -"
+        "d ${containerStoragePath}/nextcloud/redis   0777 ${containerUIDs.redis} ${containerGIDs.redis}  -"
       ];
 
       virtualisation = {
@@ -524,14 +549,18 @@ in
               environment = {
                 PUID = "1000";
                 PGID = "100";
-                TZ = "Australia/Melbourne";
+                TZ = config.time.timeZone;
 
-                PHP_UPLOAD_LIMIT = "6G";
+                PHP_UPLOAD_LIMIT = "4G";
                 PHP_MEMORY_LIMIT = "16192M";
 
                 MYSQL_HOST = "nextcloud-mariadb:3306";
                 REDIS_HOST = "nextcloud-redis";
                 MYSQL_DATABASE = "nextcloud";
+
+                ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER = "https://internal-onlyoffice-ds.${serverUrl}/";
+                ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver/";
+                NEXTCLOUD_INTERNAL = "http://nextcloud/";
 
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "imagemagick";
@@ -546,6 +575,7 @@ in
                 "traefik.http.routers.nextcloud.entrypoints" = "websecure";
               };
               volumes = [
+                "${flakePath}/dotfile/.config/nextcloud:/installer"
                 "${containerStoragePath}/nextcloud/config:/config"
                 "${containerStoragePath}/nextcloud/data:/data"
                 "${storageMediaPath}:${storageMediaPath}"
@@ -559,15 +589,63 @@ in
               ];
             };
 
+            nextcloud-cron = {
+              autoStart = true;
+              image = "linuxserver/nextcloud:33.0.1";
+
+              environment = {
+                PUID = "1000";
+                PGID = "100";
+                TZ = config.time.timeZone;
+
+                MYSQL_HOST = "nextcloud-mariadb:3306";
+                REDIS_HOST = "nextcloud-redis";
+                MYSQL_DATABASE = "nextcloud";
+              };
+                labels = {
+                  "traefik.enable" = "false";
+		  };
+
+              environmentFiles = [
+                "${credentialPath}/env/nextcloud.env"
+              ];
+
+              volumes = [
+                "${containerStoragePath}/nextcloud/config:/config"
+                "${containerStoragePath}/nextcloud/data:/data"
+              ];
+
+              dependsOn = [ "nextcloud" ];
+
+              extraOptions = [
+                "--network=${internalNetwork}"
+              ];
+
+              cmd = [
+                "sh"
+                "-c"
+                ''
+                  echo "Starting Nextcloud cron loop"
+                  while true; do
+                    su -s /bin/sh abc -c "php -f /app/www/public/cron.php"
+                    sleep 300
+                  done
+                ''
+              ];
+            };
+
             nextcloud-mariadb = {
               image = "linuxserver/mariadb:11.4.9";
               autoStart = true;
               environment = {
                 PUID = "1000";
                 PGID = "100";
-                TZ = "Australia/Melbourne";
+                TZ = config.time.timeZone;
                 MYSQL_DATABASE = "nextcloud";
               };
+                labels = {
+                  "traefik.enable" = "false";
+		  };
               volumes = [
                 "${containerStoragePath}/nextcloud/db:/config"
                 "${containerStoragePath}/nextcloud/db/custom.cnf:/config/custom.cnf"
@@ -592,6 +670,9 @@ in
                 "--maxmemory-policy"
                 "allkeys-lru"
               ];
+                labels = {
+                  "traefik.enable" = "false";
+		  };
               volumes = [
                 "${containerStoragePath}/nextcloud/redis:/data"
               ];
@@ -623,6 +704,9 @@ in
               environment = {
                 POSTGRES_DB = "coder";
               };
+                labels = {
+                  "traefik.enable" = "false";
+		  };
 
               volumes = [
                 "${containerStoragePath}/coder/database:/var/lib/postgresql/data"
@@ -640,12 +724,17 @@ in
               environment = {
                 CODER_HTTP_ADDRESS = "0.0.0.0:2080";
                 CODER_ACCESS_URL = "https://code.${serverUrl}";
+		CODER_OIDC_ISSUER_URL="https://auth.${serverUrl}";
+                CODER_OIDC_EMAIL_DOMAIN="${serverUrl}";
+		CODER_DISABLE_PASSWORD_AUTH="true";
+		CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE="false";
               };
               labels = {
                 "traefik.enable" = "true";
                 "traefik.http.routers.coder.rule" = "Host(`code.${serverUrl}`)";
                 "traefik.http.services.coder.loadbalancer.server.port" = "2080";
                 "traefik.http.routers.coder.entrypoints" = "websecure";
+		"traefik.http.routers.coder.middlewares" = "authelia@docker";
               };
               volumes = [
                 "/var/run/docker.sock:/var/run/docker.sock:rw"
@@ -666,7 +755,18 @@ in
       };
     })
 
-    (lib.mkIf (config.builderOptions.container.qbittorrent) {
+    (lib.mkIf (config.builderOptions.container.qbittorrent) (
+    let 
+        qBittorrentConfigFile = pkgs.writeText "qBittorrent.conf" ''
+           [Preferences]
+           WebUI\AuthSubnetWhitelist=172.17.0.0/16, 172.18.0.0/16
+           WebUI\AuthSubnetWhitelistEnabled=true
+           WebUI\CSRFProtection=false
+           WebUI\LocalHostAuth=false
+           WebUI\ServerDomains=*.${serverUrl}
+        '';
+    in 
+    {
       virtualisation = {
         docker.enable = true;
         oci-containers = {
@@ -685,14 +785,17 @@ in
                 TZ = config.time.timeZone;
                 WEBUI_PORT = "8480";
                 TORRENTING_PORT = "6881";
+		BYPASS_DOCKER_ADDRESS = "172.17.0.0/16";
               };
               labels = {
                 "traefik.enable" = "true";
                 "traefik.http.routers.qbittorrent.rule" = "Host(`torrent.${serverUrl}`)";
                 "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8480";
+		"traefik.http.routers.qbittorrent.middlewares" = "authelia@docker";
                 "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
               };
               volumes = [
+                "${qBittorrentConfigFile}:/config/qBittorrent/qBittorrent.conf"
                 "${containerStoragePath}/qbittorrent/config:/config"
                 "/home/${user}/Downloads:/downloads"
               ];
@@ -703,7 +806,7 @@ in
           };
         };
       };
-    })
+    }))
 
     (lib.mkIf (config.builderOptions.container.minipaint) {
       virtualisation = {
@@ -722,6 +825,7 @@ in
                 "traefik.enable" = "true";
                 "traefik.http.routers.minipaint.rule" = "Host(`paint.${serverUrl}`)";
                 "traefik.http.services.minipaint.loadbalancer.server.port" = "80";
+		"traefik.http.routers.minipaint.middlewares" = "authelia@docker";
                 "traefik.http.routers.minipaint.entrypoints" = "websecure";
               };
               volumes = [
@@ -765,6 +869,7 @@ in
 
                 "traefik.http.services.ferdium.loadbalancer.serverstransport" = "ignorecert@file";
                 "traefik.http.services.ferdium.loadbalancer.server.scheme" = "https";
+		"traefik.http.routers.ferdium.middlewares" = "authelia@docker";
                 "traefik.http.routers.ferdium.tls" = "true";
               };
               volumes = [
@@ -812,7 +917,7 @@ in
             containers = {
               ytdlp = {
                 autoStart = true;
-                image = "marcobaobao/yt-dlp-webui:sha256-41be2e1ed6fbee5278039f09d6116c5f5f6c587f219ae75ceb11234522bee5bc.sig";
+                image = "marcobaobao/yt-dlp-webui:latest";
                 cmd = [
                   "-conf"
                   "/etc/config.yml"
@@ -824,6 +929,7 @@ in
                   "traefik.http.routers.ytdlp.rule" = "Host(`ytdlp.${serverUrl}`)";
                   "traefik.http.services.ytdlp.loadbalancer.server.port" = "3033";
                   "traefik.http.routers.ytdlp.entrypoints" = "websecure";
+		  "traefik.http.routers.ytdlp.middlewares" = "authelia@docker";
                 };
                 volumes = [
                   "/home/${user}/Downloads:/downloads"

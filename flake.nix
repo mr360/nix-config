@@ -75,7 +75,7 @@
                 coder = true;
                 qbittorrent = true;
                 minipaint = true;
-                ferdium = true;
+                ferdium = false;
                 ytdlp = true;
               };
             };
