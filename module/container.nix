@@ -396,6 +396,13 @@ in
                 JELLYFIN_DATA_DIR = "/data";
                 JELLYFIN_CONFIG_DIR = "/config";
                 JELLYFIN_CACHE_DIR = "/cache";
+
+		AUTH_SERVER_URL = "https://auth.${serverUrl}";
+		JELLYFIN_SERVER_URL = "https://media.${serverUrl}";
+		JELLYFIN_SERVER_NAME = "jellyfin-media-server-r710";
+
+                DOCKER_MODS = "linuxserver/mods:universal-package-install";
+                INSTALL_PACKAGES = "unzip";
               };
               environmentFiles = [
                 "${credentialPath}/env/jellyfin.env"
