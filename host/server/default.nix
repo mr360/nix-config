@@ -3,6 +3,7 @@
   pkgs,
   specialArgs,
   home-manager,
+  flakePath,
   ...
 }:
 
@@ -26,6 +27,7 @@
       home-manager.useUserPackages = true;
       home-manager.extraSpecialArgs = {
         inherit (config) networking;
+	inherit flakePath;
       };
       home-manager.users.${specialArgs.builderOptions.user.name} = import ../../home-manager/common.nix;
     }
