@@ -574,9 +574,10 @@ in
                 REDIS_HOST = "nextcloud-redis";
                 MYSQL_DATABASE = "nextcloud";
 
-                ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER = "https://internal-onlyoffice-ds.${serverUrl}/";
-                ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver/";
-                NEXTCLOUD_INTERNAL = "http://nextcloud/";
+                ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER = "https://internal-onlyoffice-ds.${serverUrl}";
+                ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver";
+                NEXTCLOUD_INTERNAL = "http://nextcloud";
+		NEXTCLOUD_EXTERNAL = "https://cloud.${serverUrl}";
 
 		OID_AUTH_URL = "https://${OIDC_AUTH_URL}";
 
@@ -584,6 +585,7 @@ in
                 INSTALL_PACKAGES = "imagemagick";
 		
                 BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_INTERNAL;
+
               };
               environmentFiles = [
                 "${credentialPath}/env/nextcloud.env"

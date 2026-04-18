@@ -49,14 +49,13 @@ fi
 echo "⚙️ Applying configuration..."
 
 # Trusted domains
-occ config:system:set trusted_domains 0 --value="cloud.mr360.me"
-occ config:system:set trusted_domains 1 --value="nextcloud"
-occ config:system:set trusted_domains 2 --value="localhost"
-occ config:system:set trusted_domains 3 --value="onlyoffice-documentserver"
+occ config:system:set trusted_domains 0 --value="${NEXTCLOUD_EXTERNAL#https://}"
+occ config:system:set trusted_domains 1 --value="${NEXTCLOUD_INTERNAL#http://}"
+occ config:system:set trusted_domains 2 --value="${ONLYOFFICE_INTERNAL_DOCUMENT_SERVER#http://}"
 
 # Proxy + URL settings
 occ config:system:set trusted_proxies 0 --value="${BYPASS_DOCKER_ADDRESS}"
-occ config:system:set overwrite.cli.url --value="https://cloud.mr360.me"
+occ config:system:set overwrite.cli.url --value="${NEXTCLOUD_EXTERNAL}"
 occ config:system:set overwriteprotocol --value="https"
 
 # Redis config
@@ -136,9 +135,9 @@ occ app:enable files_external
 occ app:enable previewgenerator
 
 echo "⚙️ Setting up application settings..."
-occ config:app:set onlyoffice DocumentServerUrl --value="${ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER}"
-occ config:app:set onlyoffice DocumentServerInternalUrl --value="${ONLYOFFICE_INTERNAL_DOCUMENT_SERVER}"
-occ config:app:set onlyoffice StorageUrl --value="${NEXTCLOUD_INTERNAL}"
+occ config:app:set onlyoffice DocumentServerUrl --value="${ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER}/"
+occ config:app:set onlyoffice DocumentServerInternalUrl --value="${ONLYOFFICE_INTERNAL_DOCUMENT_SERVER}/"
+occ config:app:set onlyoffice StorageUrl --value="${NEXTCLOUD_INTERNAL}/"
 occ config:app:set onlyoffice jwt_secret --value="${ONLYOFFICE_JWT_TOKEN}"  
 
 echo "⚙️ Setting OID settings..."
