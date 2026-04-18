@@ -16,8 +16,8 @@ let
   webUIPort = 9116;
   sharePort = 55555;
 
-  dockerHostGateway = "172.17.0.1";
-  dockerInternalNetworkSubnet = "172.18.0.0/16";
+  dockerHostGateway = config.builderOptions.container.network.dockerBridgeAddress;
+  dockerInternalNetworkSubnet = config.builderOptions.container.network.dockerInternalSubnet;
 
 in
 {

@@ -11,6 +11,7 @@ AUTH_SERVER="$AUTH_SERVER_URL"
 JELLYFIN_SERVER_NAME="$JELLYFIN_SERVER_NAME"
 OID_ID="$JELLYFIN_OID_ID"
 OID_SECRET="$JELLYFIN_OID_SECRET"
+BYPASS_DOCKER_ADDRESS="$BYPASS_DOCKER_ADDRESS"
 
 {
   echo "Waiting for Jellyfin to start listening on port 8096..."
@@ -65,7 +66,7 @@ OID_SECRET="$JELLYFIN_OID_SECRET"
   curl -v -X POST -H 'Authorization: MediaBrowser Client="Installer", Device="Docker", DeviceId="a1a2a3", Version="1.0", Token="'${TOKEN}'"' -H 'Content-Type: application/json' -d '{"oidEndpoint": "'${AUTH_SERVER}'", "oidClientId": "'${OID_ID}'", "oidSecret": "'${OID_SECRET}'", "enabled": true, "enableAuthorization": true, "enableAllFolders": true, "enabledFolders": [], "adminRoles": ["admin"], "roles": [], "enableFolderRoles": false, "folderRoleMapping": [],"disablePushedAuthorization": true, "roleClaim": "groups", "oidScopes" : ["groups"]}' "${JELLYFIN_SERVER}/sso/OID/Add/authelia?api_key=${TOKEN}"
 
 echo "Setting up networking settings"
-curl -v -X POST -H 'Authorization: MediaBrowser Client="Installer", Device="Docker", DeviceId="a1a2a3", Version="1.0", Token="'${TOKEN}'"' -H 'Content-Type: application/json' -d '{"AutoDiscovery":false,"EnableUPnP":false,"EnableRemoteAccess":false,"KnownProxies":["172.18.0.0/16"]}' "${JELLYFIN_SERVER}/System/Configuration/Network"
+curl -v -X POST -H 'Authorization: MediaBrowser Client="Installer", Device="Docker", DeviceId="a1a2a3", Version="1.0", Token="'${TOKEN}'"' -H 'Content-Type: application/json' -d '{"AutoDiscovery":false,"EnableUPnP":false,"EnableRemoteAccess":false,"KnownProxies":["'${BYPASS_DOCKER_ADDRESS}'"]}' "${JELLYFIN_SERVER}/System/Configuration/Network"
 
 curl "${JELLYFIN_SERVER}/System/Configuration/Branding" \
     -H 'Authorization: MediaBrowser Client="Installer", Device="Docker", DeviceId="a1a2a3", Version="1.0", Token="'${TOKEN}'"' \

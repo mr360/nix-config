@@ -23,6 +23,10 @@ let
   containerStoragePath = "/mnt/storage/container";
   storageMediaPath = "/mnt/storage/drive";
   internalNetwork = "internal-container-network";
+
+  OIDC_AUTH_URL = "auth.${serverUrl}";
+  DOCKER_SUBNET_BRIDGE = config.builderOptions.container.network.dockerBridgeSubnet; 
+  DOCKER_SUBNET_INTERNAL= config.builderOptions.container.network.dockerInternalSubnet;
 in
 {
   options.builderOptions.container = {
@@ -130,6 +134,39 @@ in
                   Enable yt-dlp web interface docker image
         	  Please note that this requuires yt-dlp to be installed
       '';
+    };
+
+    network = lib.mkOption {
+      description = "Docker and/or Podman configuration";
+      default = { };
+      type = lib.types.submodule {
+        options = {
+          dockerBridgeAddress = lib.mkOption {
+            default = "172.17.0.1";
+            example = "127.17.0.1";
+            type = lib.types.str;
+            description = ''
+    		Docker0 or Bridge network entrypoint ip address 
+          '';
+          };
+          dockerBridgeSubnet = lib.mkOption {
+            default = "172.17.0.0/16";
+            example = "127.17.0.0/16";
+            type = lib.types.str;
+            description = ''
+    		Docker0 or Bridge network gateway
+          '';
+          };
+          dockerInternalSubnet = lib.mkOption {
+            default = "172.18.0.0/16";
+            example = "127.18.0.0/16";
+            type = lib.types.str;
+            description = ''
+    		Custom docker internal network	
+          '';
+          };
+	};
+      };
     };
   };
 
@@ -376,7 +413,7 @@ in
                 };
                 labels = {
                   "traefik.enable" = "true";
-                  "traefik.http.routers.authelia.rule" = "Host(`auth.${serverUrl}`)";
+                  "traefik.http.routers.authelia.rule" = "Host(`${OIDC_AUTH_URL}`)";
                   "traefik.http.routers.authelia.entrypoints" = "websecure";
 
                   "traefik.http.middlewares.authelia.forwardAuth.address" =
@@ -425,12 +462,14 @@ in
                 JELLYFIN_CONFIG_DIR = "/config";
                 JELLYFIN_CACHE_DIR = "/cache";
 
-                AUTH_SERVER_URL = "https://auth.${serverUrl}";
+                AUTH_SERVER_URL = "https://${OIDC_AUTH_URL}";
                 JELLYFIN_SERVER_URL = "https://media.${serverUrl}";
                 JELLYFIN_SERVER_NAME = "jellyfin-media-server-r710";
 
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "unzip";
+
+                BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_INTERNAL;
               };
               environmentFiles = [
                 "${credentialPath}/env/jellyfin.env"
@@ -476,63 +515,6 @@ in
         oci-containers = {
           backend = "docker";
           containers = {
-            onlyoffice-mysql = {
-              image = "mysql:9.6.0";
-              autoStart = true;
-              environment = {
-                MYSQL_DATABASE = "onlyoffice";
-              };
-              environmentFiles = [
-                "${credentialPath}/env/onlyoffice.env"
-              ];
-              labels = {
-                
-              };
-              volumes = [
-                "${containerStoragePath}/onlyoffice/mysql/conf.d:/etc/mysql/conf.d"
-                "${containerStoragePath}/onlyoffice/mysql/data:/var/lib/mysql"
-                "${containerStoragePath}/onlyoffice/mysql/initdb:/docker-entrypoint-initdb.d"
-              ];
-              extraOptions = [
-                "--network=${internalNetwork}"
-              ];
-            };
-            # TODO: Fix issue with systemd hard requirement
-            # no easy way to get this running
-            # manually have to override entrypoint and run scripts without
-            # systemd
-            onlyoffice-community = {
-              image = "onlyoffice/communityserver:12.7.1.1942";
-              autoStart = true;
-              environment = {
-                MYSQL_SERVER_DB_NAME = "onlyoffice";
-                MYSQL_SERVER_HOST = "onlyoffice-mysql";
-                DOCUMENT_SERVER_PORT_80_TCP_ADDR = "onlyoffice-documentserver";
-              };
-              environmentFiles = [
-                "${credentialPath}/env/onlyoffice.env"
-              ];
-              volumes = [
-                "${containerStoragePath}/onlyoffice/CommunityServer/data:/var/www/onlyoffice/Data"
-                "${containerStoragePath}/onlyoffice/CommunityServer/logs:/var/log/onlyoffice"
-                "${containerStoragePath}/onlyoffice/CommunityServer/letsencrypt:/etc/letsencrypt"
-                "/sys/fs/cgroup:/sys/fs/cgroup:ro"
-              ];
-              labels = {
-                "traefik.enable" = "true";
-                "traefik.http.routers.onlyoffice-community.rule" = "Host(`office.${serverUrl}`)";
-                "traefik.http.services.onlyoffice-community.loadbalancer.server.port" = "80";
-                "traefik.http.routers.onlyoffice-community.entrypoints" = "websecure";
-              };
-              extraOptions = [
-                "--network=${internalNetwork}"
-              ];
-              dependsOn = [
-                "onlyoffice-mysql"
-                "onlyoffice-documentserver"
-              ];
-            };
-
             onlyoffice-documentserver = {
               image = "onlyoffice/documentserver:9.3";
               autoStart = true;
@@ -596,10 +578,12 @@ in
                 ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver/";
                 NEXTCLOUD_INTERNAL = "http://nextcloud/";
 
-		OID_AUTH_URL = "https://auth.${serverUrl}";
+		OID_AUTH_URL = "https://${OIDC_AUTH_URL}";
 
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "imagemagick";
+		
+                BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_INTERNAL;
               };
               environmentFiles = [
                 "${credentialPath}/env/nextcloud.env"
@@ -761,7 +745,7 @@ in
               environment = {
                 CODER_HTTP_ADDRESS = "0.0.0.0:2080";
                 CODER_ACCESS_URL = "https://code.${serverUrl}";
-                CODER_OIDC_ISSUER_URL = "https://auth.${serverUrl}";
+                CODER_OIDC_ISSUER_URL = "https://${OIDC_AUTH_URL}";
                 CODER_OIDC_EMAIL_DOMAIN = "${serverUrl}";
                 CODER_DISABLE_PASSWORD_AUTH = "true";
                 CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE = "false";
@@ -796,7 +780,7 @@ in
       let
         qBittorrentConfigFile = pkgs.writeText "qBittorrent.conf" ''
           [Preferences]
-          WebUI\AuthSubnetWhitelist=172.17.0.0/16, 172.18.0.0/16
+          WebUI\AuthSubnetWhitelist=${DOCKER_SUBNET_BRIDGE}, ${DOCKER_SUBNET_INTERNAL} 
           WebUI\AuthSubnetWhitelistEnabled=true
           WebUI\CSRFProtection=false
           WebUI\LocalHostAuth=false
@@ -822,7 +806,7 @@ in
                   TZ = config.time.timeZone;
                   WEBUI_PORT = "8480";
                   TORRENTING_PORT = "6881";
-                  BYPASS_DOCKER_ADDRESS = "172.17.0.0/16";
+                  BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_BRIDGE;
                 };
                 labels = {
                   "traefik.enable" = "true";
@@ -890,9 +874,9 @@ in
                 PUID = uid;
                 PGID = gid;
                 TZ = config.time.timeZone;
-                PIXELFLUX_WAYLAND = "true";
-                DRINODE = "/dev/dri/renderD128";
-                DRI_NODE = "/dev/dri/renderD128";
+                PIXELFLUX_WAYLAND = "false";
+                #DRINODE = "/dev/dri/renderD128";
+                #DRI_NODE = "/dev/dri/renderD128";
                 NO_DECOR = "true";
                 HARDEN_DESKTOP = "true";
                 HARDEN_OPENBOX = "true";
@@ -914,7 +898,7 @@ in
               extraOptions = [
                 "--network=${internalNetwork}"
                 "--shm-size=1gb"
-                "--device=/dev/dri:/dev/dri"
+                #"--device=/dev/dri:/dev/dri"
               ];
             };
           };

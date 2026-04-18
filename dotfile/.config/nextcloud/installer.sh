@@ -12,6 +12,7 @@ set -e
 : "${OID_ID:?OID_ID is required}"
 : "${OID_SECRET:?OID_SECRET is required}"
 : "${OID_AUTH_URL:?OID_AUTH_URL is required}"
+: "${BYPASS_DOCKER_ADDRESS:?BYPASS_DOCKER_ADDRESS is required}"
 
 # Optional admin credentials
 ADMIN_USER="${NEXTCLOUD_ADMIN_USER:-admin}"
@@ -54,7 +55,7 @@ occ config:system:set trusted_domains 2 --value="localhost"
 occ config:system:set trusted_domains 3 --value="onlyoffice-documentserver"
 
 # Proxy + URL settings
-occ config:system:set trusted_proxies 0 --value="172.18.0.0/16"
+occ config:system:set trusted_proxies 0 --value="${BYPASS_DOCKER_ADDRESS}"
 occ config:system:set overwrite.cli.url --value="https://cloud.mr360.me"
 occ config:system:set overwriteprotocol --value="https"
 
