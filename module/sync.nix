@@ -10,9 +10,15 @@
 let
   user = config.builderOptions.user.name;
   keyFile = "${flakePath}/dotfile/.cred/licence/btsync.btskey";
+  credentials = builtins.fromJSON (builtins.readFile  
+     "${flakePath}/dotfile/.cred/services/btsync/credentials.json");
   syncDataPath = "/mnt/storage/service/resilio-sync";
   webUIPort = 9116;
   sharePort = 55555;
+
+  dockerHostGateway = "172.17.0.1";
+  dockerInternalNetworkSubnet = "172.18.0.0/16";
+
 in
 {
   options.builderOptions.sync = {
@@ -49,11 +55,11 @@ in
   config = lib.mkIf config.builderOptions.sync.enable {
     users.users.${user}.extraGroups = lib.mkAfter [ "rslsync" ];
 
-    networking.firewall.allowedTCPPorts = lib.mkAfter [
-      sharePort
-      webUIPort
-    ];
+    networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
+    networking.firewall.extraCommands = ''
+      iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
+    '';
 
     systemd.tmpfiles.rules = [
       "d ${syncDataPath}                   0777 ${user} users -"
@@ -65,11 +71,11 @@ in
       checkForUpdates = false;
       enableWebUI = config.builderOptions.sync.folders == [ ];
       httpListenPort = webUIPort;
-      httpListenAddr = "0.0.0.0";
+      httpListenAddr = dockerHostGateway;
       storagePath = syncDataPath;
       listeningPort = sharePort;
-      httpPass = "";
-      httpLogin = "";
+      httpPass = credentials.password;
+      httpLogin = credentials.username;
       deviceName = config.networking.hostName;
       sharedFolders = map (folder: {
         secret = folder.secret;
@@ -89,6 +95,7 @@ in
         route = "sync";
         entry = "websecure";
         loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
+	headers = [ "Authorization:Basic ${credentials.authToken}" ];
       }
     ];
   };

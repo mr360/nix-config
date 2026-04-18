@@ -9,6 +9,9 @@ set -e
 : "${MYSQL_DATABASE:?MYSQL_DATABASE is required}"
 : "${MYSQL_HOST:?MYSQL_HOST is required}"
 : "${REDIS_HOST:?REDIS_HOST is required}"
+: "${OID_ID:?OID_ID is required}"
+: "${OID_SECRET:?OID_SECRET is required}"
+: "${OID_AUTH_URL:?OID_AUTH_URL is required}"
 
 # Optional admin credentials
 ADMIN_USER="${NEXTCLOUD_ADMIN_USER:-admin}"
@@ -108,6 +111,7 @@ occ config:system:set upgrade.disable-web --value=true --type=boolean
 echo "⚙️ Installing applications..."
 #occ app:install files_archive
 occ app:install onlyoffice
+occ app:install user_oidc
 
 # List all installed apps
 occ app:list
@@ -125,7 +129,7 @@ occ app:disable tasks
 occ app:enable dav
 occ app:enable files
 occ app:enable activity
-occ app:enable onlyoffice
+#occ app:enable onlyoffice
 #occ app:enable files_archive
 occ app:enable files_external
 occ app:enable previewgenerator
@@ -135,6 +139,14 @@ occ config:app:set onlyoffice DocumentServerUrl --value="${ONLYOFFICE_EXTERNAL_D
 occ config:app:set onlyoffice DocumentServerInternalUrl --value="${ONLYOFFICE_INTERNAL_DOCUMENT_SERVER}"
 occ config:app:set onlyoffice StorageUrl --value="${NEXTCLOUD_INTERNAL}"
 occ config:app:set onlyoffice jwt_secret --value="${ONLYOFFICE_JWT_TOKEN}"  
+
+echo "⚙️ Setting OID settings..."
+occ user_oidc:provider Authelia --clientid="${OID_ID}" --clientsecret="${OID_SECRET}" --discoveryuri="${OID_AUTH_URL}/.well-known/openid-configuration" --unique-uid=0 --group-provisioning=1
+occ config:system:set user_oidc default_token_endpoint_auth_method --value=client_secret_post --type=string
+occ config:app:set --type=string --value=0 user_oidc allow_multiple_user_backends
+occ config:system:set user_oidc  auto_redirect --value=true --type=boolean
+occ config:system:set user_oidc  disable_login_form --value=true --type=boolean
+occ config:system:set allow_local_remote_servers --value=true --type=boolean
 
 echo "⚙️ Tuning PHP settings..."
 cat <<EOF >> /config/php/www2.conf

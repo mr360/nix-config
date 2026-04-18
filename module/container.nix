@@ -48,6 +48,7 @@ in
                     default = "web";
                   };
                   loadBalancerServer = lib.mkOption { type = lib.types.str; };
+                  headers = lib.mkOption { type = lib.types.listOf(lib.types.str); };
                 };
               }
             );
@@ -189,7 +190,29 @@ in
                   };
                 };
               };
+            }
+	    //
+	     lib.listToAttrs (
+        map (r: {
+          name = "${r.service}";
+          value = {
+            headers = {
+              customRequestHeaders =
+                lib.listToAttrs (
+                  map (h:
+                    let
+                      parts = lib.splitString ":" h;
+                    in {
+                      name = builtins.elemAt parts 0;
+                      value = builtins.elemAt parts 1;
+                    }
+                  ) r.headers
+                );
             };
+          };
+        })
+        (lib.filter (r: r ? headers) config.builderOptions.container.traefik.routes)
+      );
             serversTransports = {
               ignorecert = {
                 insecureSkipVerify = "true";
@@ -202,7 +225,10 @@ in
                   rule = "Host(`${r.route}.${serverUrl}`)";
                   entryPoints = [ r.entry ];
                   service = r.service;
-                };
+
+		  middlewares =
+		    lib.optional (r ? headers) r.service;
+                  };
               }) config.builderOptions.container.traefik.routes
             );
 
@@ -265,6 +291,7 @@ in
                 cmd = [
                   "--api.dashboard=true"
                   "--providers.docker=true"
+		  "--providers.docker.exposedbydefault=false"
                   "--providers.file.filename=/dynamic/traefik.yaml"
                   "--entrypoints.web.address=:80"
 
@@ -278,7 +305,7 @@ in
                   "--entrypoints.web.http.redirections.entrypoint.to=websecure"
                   "--entrypoints.web.http.redirections.entrypoint.scheme=https"
                   "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-                  "--entrypoints.websecure.http.middlewares=common-header@file"
+                  "--entrypoints.websecure.http.middlewares=common-header@file, authelia@docker"
                   "--entrypoints.websecure.address=:443"
                   "--entrypoints.websecure.http.tls=true"
 
@@ -293,7 +320,6 @@ in
                   "traefik.http.routers.dashboard.rule" = "Host(`route.${serverUrl}`)";
                   "traefik.http.routers.dashboard.entrypoints" = "websecure";
                   "traefik.http.routers.dashboard.service" = "api@internal";
-                  "traefik.http.routers.dashboard.middlewares" = "authelia@docker";
 
                   # TLS Certificate
                   "traefik.http.routers.r0.entrypoints" = "websecure";
@@ -327,7 +353,7 @@ in
                   "/etc/coredns/Corefile"
                 ];
                 labels = {
-                  "traefik.enable" = "false";
+                  
                 };
                 extraOptions = [
                   "--network=${internalNetwork}"
@@ -414,7 +440,6 @@ in
                 "traefik.http.routers.jellyfin.rule" = "Host(`media.${serverUrl}`)";
                 "traefik.http.services.jellyfin.loadbalancer.server.port" = "8096";
                 "traefik.http.routers.jellyfin.entrypoints" = "websecure";
-                #"traefik.http.routers.jellyfin.middlewares" = "authelia@docker";
               };
               volumes = [
                 "${flakePath}/dotfile/.config/jellyfin:/installer"
@@ -461,7 +486,7 @@ in
                 "${credentialPath}/env/onlyoffice.env"
               ];
               labels = {
-                "traefik.enable" = "false";
+                
               };
               volumes = [
                 "${containerStoragePath}/onlyoffice/mysql/conf.d:/etc/mysql/conf.d"
@@ -571,6 +596,8 @@ in
                 ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver/";
                 NEXTCLOUD_INTERNAL = "http://nextcloud/";
 
+		OID_AUTH_URL = "https://auth.${serverUrl}";
+
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "imagemagick";
               };
@@ -612,7 +639,7 @@ in
                 MYSQL_DATABASE = "nextcloud";
               };
               labels = {
-                "traefik.enable" = "false";
+                
               };
 
               environmentFiles = [
@@ -653,7 +680,7 @@ in
                 MYSQL_DATABASE = "nextcloud";
               };
               labels = {
-                "traefik.enable" = "false";
+                
               };
               volumes = [
                 "${containerStoragePath}/nextcloud/db:/config"
@@ -680,7 +707,7 @@ in
                 "allkeys-lru"
               ];
               labels = {
-                "traefik.enable" = "false";
+                
               };
               volumes = [
                 "${containerStoragePath}/nextcloud/redis:/data"
@@ -714,10 +741,11 @@ in
                 POSTGRES_DB = "coder";
               };
               labels = {
-                "traefik.enable" = "false";
+                
               };
 
               volumes = [
+                "${flakePath}/dotfile/.config/coder:/bootstrap"
                 "${containerStoragePath}/coder/database:/var/lib/postgresql/data"
               ];
               environmentFiles = [
@@ -743,7 +771,7 @@ in
                 "traefik.http.routers.coder.rule" = "Host(`code.${serverUrl}`)";
                 "traefik.http.services.coder.loadbalancer.server.port" = "2080";
                 "traefik.http.routers.coder.entrypoints" = "websecure";
-                "traefik.http.routers.coder.middlewares" = "authelia@docker";
+                
               };
               volumes = [
                 "/var/run/docker.sock:/var/run/docker.sock:rw"
@@ -800,7 +828,6 @@ in
                   "traefik.enable" = "true";
                   "traefik.http.routers.qbittorrent.rule" = "Host(`torrent.${serverUrl}`)";
                   "traefik.http.services.qbittorrent.loadbalancer.server.port" = "8480";
-                  "traefik.http.routers.qbittorrent.middlewares" = "authelia@docker";
                   "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
                 };
                 volumes = [
@@ -835,7 +862,6 @@ in
                 "traefik.enable" = "true";
                 "traefik.http.routers.minipaint.rule" = "Host(`paint.${serverUrl}`)";
                 "traefik.http.services.minipaint.loadbalancer.server.port" = "80";
-                "traefik.http.routers.minipaint.middlewares" = "authelia@docker";
                 "traefik.http.routers.minipaint.entrypoints" = "websecure";
               };
               volumes = [
@@ -876,10 +902,9 @@ in
                 "traefik.http.routers.ferdium.rule" = "Host(`inbox.${serverUrl}`)";
                 "traefik.http.services.ferdium.loadbalancer.server.port" = "3001";
                 "traefik.http.routers.ferdium.entrypoints" = "websecure";
-
                 "traefik.http.services.ferdium.loadbalancer.serverstransport" = "ignorecert@file";
                 "traefik.http.services.ferdium.loadbalancer.server.scheme" = "https";
-                "traefik.http.routers.ferdium.middlewares" = "authelia@docker";
+                
                 "traefik.http.routers.ferdium.tls" = "true";
               };
               volumes = [
@@ -939,7 +964,6 @@ in
                   "traefik.http.routers.ytdlp.rule" = "Host(`ytdlp.${serverUrl}`)";
                   "traefik.http.services.ytdlp.loadbalancer.server.port" = "3033";
                   "traefik.http.routers.ytdlp.entrypoints" = "websecure";
-                  "traefik.http.routers.ytdlp.middlewares" = "authelia@docker";
                 };
                 volumes = [
                   "/home/${user}/Downloads:/downloads"
