@@ -9,14 +9,16 @@
 {
   programs.git = {
     enable = true;
-    userName = "mr360";
-    userEmail = "mr360@users.noreply.github.com";
-    extraConfig = {
-      init.defaultBranch = "main";
-      core = {
-        editor = "nvim";
-        autocrlf = "input";
-      };
+    settings = {
+    	user.name = "mr360";
+    	user.email = "mr360@users.noreply.github.com";
+        extraConfig = {
+           init.defaultBranch = "main";
+           core = {
+              editor = "nvim";
+              autocrlf = "input";
+           };
+        };
     };
   };
 
@@ -62,6 +64,6 @@ programs.readline = {
   #   recursive = true;
   # };
 
-  home.stateVersion = "25.05";
+  home.stateVersion = "25.11";
   programs.home-manager.enable = true;
 }
