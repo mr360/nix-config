@@ -764,7 +764,7 @@ in
               environmentFiles = [
                 "${credentialPath}/env/coder.env"
               ];
-              dependsOn = [ "coder-postgresdb" ];
+              dependsOn = [ "coder-postgresdb"  "authelia" ];
               extraOptions = [
                 "--network=${internalNetwork}"
                 "--privileged" # allows Docker in Docker
