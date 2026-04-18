@@ -10,8 +10,9 @@
 let
   user = config.builderOptions.user.name;
   keyFile = "${flakePath}/dotfile/.cred/licence/btsync.btskey";
-  credentials = builtins.fromJSON (builtins.readFile  
-     "${flakePath}/dotfile/.cred/services/btsync/credentials.json");
+  credentials = builtins.fromJSON (
+    builtins.readFile "${flakePath}/dotfile/.cred/services/btsync/credentials.json"
+  );
   syncDataPath = "/mnt/storage/service/resilio-sync";
   webUIPort = 9116;
   sharePort = 55555;
@@ -95,7 +96,7 @@ in
         route = "sync";
         entry = "websecure";
         loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
-	headers = [ "Authorization:Basic ${credentials.authToken}" ];
+        headers = [ "Authorization:Basic ${credentials.authToken}" ];
       }
     ];
   };

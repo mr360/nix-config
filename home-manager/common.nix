@@ -10,15 +10,15 @@
   programs.git = {
     enable = true;
     settings = {
-    	user.name = "mr360";
-    	user.email = "mr360@users.noreply.github.com";
-        extraConfig = {
-           init.defaultBranch = "main";
-           core = {
-              editor = "nvim";
-              autocrlf = "input";
-           };
+      user.name = "mr360";
+      user.email = "mr360@users.noreply.github.com";
+      extraConfig = {
+        init.defaultBranch = "main";
+        core = {
+          editor = "nvim";
+          autocrlf = "input";
         };
+      };
     };
   };
 
@@ -42,16 +42,16 @@
     };
   };
 
-programs.readline = {
-  enable = true;
+  programs.readline = {
+    enable = true;
 
-  bindings = {};
+    bindings = { };
 
-  extraConfig = ''
-    set editing-mode vi
-    set keymap vi-command
-  '';
-};
+    extraConfig = ''
+      set editing-mode vi
+      set keymap vi-command
+    '';
+  };
 
   home.file = {
     ".tmux.conf" = {

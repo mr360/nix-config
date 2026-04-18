@@ -27,7 +27,7 @@
       home-manager.useUserPackages = true;
       home-manager.extraSpecialArgs = {
         inherit (config) networking;
-	inherit flakePath;
+        inherit flakePath;
       };
       home-manager.users.${specialArgs.builderOptions.user.name} = import ../../home-manager/common.nix;
     }

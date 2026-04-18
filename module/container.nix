@@ -25,8 +25,8 @@ let
   internalNetwork = "internal-container-network";
 
   OIDC_AUTH_URL = "auth.${serverUrl}";
-  DOCKER_SUBNET_BRIDGE = config.builderOptions.container.network.dockerBridgeSubnet; 
-  DOCKER_SUBNET_INTERNAL= config.builderOptions.container.network.dockerInternalSubnet;
+  DOCKER_SUBNET_BRIDGE = config.builderOptions.container.network.dockerBridgeSubnet;
+  DOCKER_SUBNET_INTERNAL = config.builderOptions.container.network.dockerInternalSubnet;
 in
 {
   options.builderOptions.container = {
@@ -52,7 +52,7 @@ in
                     default = "web";
                   };
                   loadBalancerServer = lib.mkOption { type = lib.types.str; };
-                  headers = lib.mkOption { type = lib.types.listOf(lib.types.str); };
+                  headers = lib.mkOption { type = lib.types.listOf (lib.types.str); };
                 };
               }
             );
@@ -146,26 +146,26 @@ in
             example = "127.17.0.1";
             type = lib.types.str;
             description = ''
-    		Docker0 or Bridge network entrypoint ip address 
-          '';
+              		Docker0 or Bridge network entrypoint ip address 
+            '';
           };
           dockerBridgeSubnet = lib.mkOption {
             default = "172.17.0.0/16";
             example = "127.17.0.0/16";
             type = lib.types.str;
             description = ''
-    		Docker0 or Bridge network gateway
-          '';
+              		Docker0 or Bridge network gateway
+            '';
           };
           dockerInternalSubnet = lib.mkOption {
             default = "172.18.0.0/16";
             example = "127.18.0.0/16";
             type = lib.types.str;
             description = ''
-    		Custom docker internal network	
-          '';
+              		Custom docker internal network	
+            '';
           };
-	};
+        };
       };
     };
   };
@@ -228,28 +228,27 @@ in
                 };
               };
             }
-	    //
-	     lib.listToAttrs (
-        map (r: {
-          name = "${r.service}";
-          value = {
-            headers = {
-              customRequestHeaders =
-                lib.listToAttrs (
-                  map (h:
-                    let
-                      parts = lib.splitString ":" h;
-                    in {
-                      name = builtins.elemAt parts 0;
-                      value = builtins.elemAt parts 1;
-                    }
-                  ) r.headers
-                );
-            };
-          };
-        })
-        (lib.filter (r: r ? headers) config.builderOptions.container.traefik.routes)
-      );
+            // lib.listToAttrs (
+              map (r: {
+                name = "${r.service}";
+                value = {
+                  headers = {
+                    customRequestHeaders = lib.listToAttrs (
+                      map (
+                        h:
+                        let
+                          parts = lib.splitString ":" h;
+                        in
+                        {
+                          name = builtins.elemAt parts 0;
+                          value = builtins.elemAt parts 1;
+                        }
+                      ) r.headers
+                    );
+                  };
+                };
+              }) (lib.filter (r: r ? headers) config.builderOptions.container.traefik.routes)
+            );
             serversTransports = {
               ignorecert = {
                 insecureSkipVerify = "true";
@@ -263,9 +262,8 @@ in
                   entryPoints = [ r.entry ];
                   service = r.service;
 
-		  middlewares =
-		    lib.optional (r ? headers) r.service;
-                  };
+                  middlewares = lib.optional (r ? headers) r.service;
+                };
               }) config.builderOptions.container.traefik.routes
             );
 
@@ -328,7 +326,7 @@ in
                 cmd = [
                   "--api.dashboard=true"
                   "--providers.docker=true"
-		  "--providers.docker.exposedbydefault=false"
+                  "--providers.docker.exposedbydefault=false"
                   "--providers.file.filename=/dynamic/traefik.yaml"
                   "--entrypoints.web.address=:80"
 
@@ -390,7 +388,7 @@ in
                   "/etc/coredns/Corefile"
                 ];
                 labels = {
-                  
+
                 };
                 extraOptions = [
                   "--network=${internalNetwork}"
@@ -577,13 +575,13 @@ in
                 ONLYOFFICE_EXTERNAL_DOCUMENT_SERVER = "https://internal-onlyoffice-ds.${serverUrl}";
                 ONLYOFFICE_INTERNAL_DOCUMENT_SERVER = "http://onlyoffice-documentserver";
                 NEXTCLOUD_INTERNAL = "http://nextcloud";
-		NEXTCLOUD_EXTERNAL = "https://cloud.${serverUrl}";
+                NEXTCLOUD_EXTERNAL = "https://cloud.${serverUrl}";
 
-		OID_AUTH_URL = "https://${OIDC_AUTH_URL}";
+                OID_AUTH_URL = "https://${OIDC_AUTH_URL}";
 
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "imagemagick";
-		
+
                 BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_INTERNAL;
 
               };
@@ -625,7 +623,7 @@ in
                 MYSQL_DATABASE = "nextcloud";
               };
               labels = {
-                
+
               };
 
               environmentFiles = [
@@ -666,7 +664,7 @@ in
                 MYSQL_DATABASE = "nextcloud";
               };
               labels = {
-                
+
               };
               volumes = [
                 "${containerStoragePath}/nextcloud/db:/config"
@@ -693,7 +691,7 @@ in
                 "allkeys-lru"
               ];
               labels = {
-                
+
               };
               volumes = [
                 "${containerStoragePath}/nextcloud/redis:/data"
@@ -727,7 +725,7 @@ in
                 POSTGRES_DB = "coder";
               };
               labels = {
-                
+
               };
 
               volumes = [
@@ -757,7 +755,7 @@ in
                 "traefik.http.routers.coder.rule" = "Host(`code.${serverUrl}`)";
                 "traefik.http.services.coder.loadbalancer.server.port" = "2080";
                 "traefik.http.routers.coder.entrypoints" = "websecure";
-                
+
               };
               volumes = [
                 "/var/run/docker.sock:/var/run/docker.sock:rw"
@@ -766,7 +764,10 @@ in
               environmentFiles = [
                 "${credentialPath}/env/coder.env"
               ];
-              dependsOn = [ "coder-postgresdb"  "authelia" ];
+              dependsOn = [
+                "coder-postgresdb"
+                "authelia"
+              ];
               extraOptions = [
                 "--network=${internalNetwork}"
                 "--privileged" # allows Docker in Docker
@@ -890,7 +891,7 @@ in
                 "traefik.http.routers.ferdium.entrypoints" = "websecure";
                 "traefik.http.services.ferdium.loadbalancer.serverstransport" = "ignorecert@file";
                 "traefik.http.services.ferdium.loadbalancer.server.scheme" = "https";
-                
+
                 "traefik.http.routers.ferdium.tls" = "true";
               };
               volumes = [
