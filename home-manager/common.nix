@@ -39,6 +39,18 @@
     };
   };
 
+programs.readline = {
+  enable = true;
+
+  # vi mode is the key improvement
+  bindings = {};
+
+  extraConfig = ''
+    set editing-mode vi
+    set keymap vi-command
+  '';
+};
+
   home.file = {
     ".tmux.conf" = {
       text = (builtins.readFile ../dotfile/.config/.tmux.conf);
