@@ -30,7 +30,7 @@
       hexedit
       tmux
       pcalc
-      neovim
+      unstable.neovim
       unrar
       localpkgs.devcontainer-cli
     ];
