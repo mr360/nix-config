@@ -44,13 +44,17 @@
 
   programs.readline = {
     enable = true;
-
     bindings = { };
-
     extraConfig = ''
       set editing-mode vi
       set keymap vi-command
     '';
+  };
+
+  home.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    GIT_EDITOR = "nvim";
   };
 
   home.file = {
@@ -59,10 +63,9 @@
     };
   };
 
-  # configFile."nvim" = {
-  #   source = config.lib.file.mkOutOfStoreSymlink ../../dotfile/.config/nvim;
-  #   recursive = true;
-  # };
+  xdg.configFile."nvim/init.lua" = {
+    source = config.lib.file.mkOutOfStoreSymlink ../dotfile/.config/nvim/init.lua;
+  };
 
   home.stateVersion = "25.11";
   programs.home-manager.enable = true;

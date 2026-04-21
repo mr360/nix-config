@@ -88,8 +88,8 @@
                 nixpkgs.overlays = [
                   (final: prev: {
                     unstable = import unstable {
-		      system = prev.stdenv.hostPlatform.system;
-		    };
+                      system = prev.stdenv.hostPlatform.system;
+                    };
                   })
                 ];
               }

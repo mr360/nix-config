@@ -2,37 +2,21 @@
 	"name": "[_HERE_] Development Container",
 	"build": { "dockerfile": "Dockerfile" },
 
-	// "features": {},
-	// "forwardPorts": [],
-	// "remoteUser": "root"
-
-	"customizations": {
-		"vscode": {
-			"settings": {
-				"editor.fontSize": 13,
-				"editor.fontFamily": "'FreeMono', 'FreeMono', 'FreeMono'",
-				"editor.fontWeight": "600"
-			},
-			"extensions": [
-				"streetsidesoftware.code-spell-checker"
-			]
-		}
-	},
-	"postCreateCommand": [
-		],
+	//"features": {},
+	//"forwardPorts": [],
+	//"remoteUser": ""
+	//"containerUser": "",
+	//"customizations": {},
+	//"postCreateCommand": [ ],
+	//"postStartCommand": [ ],
 	"mounts": [
-		"source=${localEnv:HOME}/.config/nvim,target=/home/vscode/.config/nvim,type=bind,consistency=cached",   // Allow mounting of VIM config
+   	"source=${localEnv:HOME}/.config/nvim/init.lua,target=/home/vscode/.config/nvim/init.lua,type=bind,consistency=cached",   // Allow mounting of VIM config
 		"source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",                   // Allow SSH passthrough for git
-		"source=${localEnv:HOME}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",       // Assume git identity
-		"source=/dev/dri/,target=/dev/dri/,type=bind,consistency=cached",                                       // Allow X11 passthrough access to GPU
-		"source=${localEnv:HOME}/.Xauthority,target=/tmp/.Xauthority,type=bind,consistency=cached"              // Allow X11 access to XServer token
+		"source=${localEnv:HOME}/.config/git/config,target=/home/vscode/.gitconfig,type=bind,consistency=cached",       // Assume git identity
+		"source=${localEnv:HOME}/.inputrc,target=/home/vscode/.inputrc,type=bind,consistency=cached",           // Set terminal input style 
 	],
-
-	"containerEnv": {
-		    "DISPLAY": "${localEnv:DISPLAY}",   // Allow X11 passthrough of GUI applications within container to current X11 display
-		    "XAUTHORITY": "/tmp/.Xauthority"    // Allow X11 passthrough of GUI applications within container
-    },
-	"runArgs": [
-    	"--net", "host"                     // Allow remote connection to XServer for GUI applications within container
-  	]
+  "containerEnv": {
+    "NVIM_DEVCONTAINER_CONFIG": "${containerWorkspaceFolder}/.devcontainer/neovim.lua"
+  }
+	//"runArgs": []
 }
