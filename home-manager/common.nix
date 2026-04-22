@@ -36,9 +36,9 @@
     shellAliases = {
       devcontainer_init = "cp -rf ${flakePath}/dotfile/.template/. .";
       devcontainer_start = "devcontainer up --workspace-folder .  --remove-existing-container";
-      devcontainer_nvim = "devcontainer exec --workspace-folder . nvim .";
-      devcontainer_bash = "devcontainer exec --workspace-folder . bash";
       devcontainer_tunnel = "devcontainer exec --workspace-folder . code tunnel --accept-server-license-terms --name ${networking.hostName}";
+      dvim = "devcontainer exec --workspace-folder . nvim .";
+      dbash = "devcontainer exec --workspace-folder . bash";
     };
   };
 
