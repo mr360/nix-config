@@ -33,3 +33,5 @@ EOF
 RUN mkdir ~/nix
 RUN curl -L https://nixos.org/nix/install > ~/nix/nix_installer.sh
 RUN bash -i ~/nix/nix_installer.sh --no-daemon 
+
+RUN curl -fsSL https://claude.ai/install.sh | bash
