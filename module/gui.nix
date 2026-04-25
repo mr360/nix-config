@@ -23,12 +23,12 @@
   };
 
   config = lib.mkIf config.builderOptions.gui.enable {
-    services= {
-      displayManager.lightdm.enable = true;
+    services = {
+      displayManager.sddm.enable = true;
+      displayManager.sddm.wayland.enable = true;
       desktopManager.pantheon.enable = true;
       # excludePackages = with pkgs; [
       # ];
-      xkb.layout = "us";
     };
 
     # # Remove DE bundled apps
@@ -46,7 +46,10 @@
         flameshot
         popcorntime
         qalculate-qt
+        localsend
       ];
+
+    services.gnome.gcr-ssh-agent.enable = false;
 
     # Enable network applet in tray
     programs.nm-applet.enable = true;
