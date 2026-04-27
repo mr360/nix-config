@@ -24,9 +24,8 @@
 
   config = lib.mkIf config.builderOptions.gui.enable {
     services = {
-      displayManager.sddm.enable = true;
-      displayManager.sddm.wayland.enable = true;
-      desktopManager.pantheon.enable = true;
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
       # excludePackages = with pkgs; [
       # ];
     };
@@ -42,8 +41,6 @@
         wl-clipboard  
         firefox
         vlc
-        feh
-        flameshot
         popcorntime
         qalculate-qt
         localsend
@@ -53,16 +50,6 @@
 
     # Enable network applet in tray
     programs.nm-applet.enable = true;
-
-    # Start systemd services for GUI packages
-    systemd.user.services.flameshot = {
-      wantedBy = [ "graphical-session.target" ];
-
-      serviceConfig = {
-        ExecStart = "${pkgs.flameshot}/bin/flameshot";
-        Restart = "on-abort";
-      };
-    };
 
     # Enable sound and printing
     services.printing.enable = true;
