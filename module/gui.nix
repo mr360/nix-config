@@ -29,7 +29,7 @@
     };
 
     # # Remove DE bundled apps
-    environment.gnome.excludePackages = with pkgs.gnome; [
+    environment.gnome.excludePackages = with pkgs; [
       baobab
       epiphany
       simple-scan
@@ -45,6 +45,7 @@
       gnome-system-monitor
       gnome-photos
       gnome-tour
+      gnome-calendar
       hitori # sudoku game
       iagno # go game
       tali # poker game
