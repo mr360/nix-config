@@ -14,6 +14,7 @@ let
     builtins.readFile "${flakePath}/dotfile/.cred/services/btsync/credentials.json"
   );
   syncDataPath = "/mnt/storage/service/resilio-sync";
+  syncStoragePath = "/mnt/sync";
   webUIPort = 9116;
   sharePort = 55555;
 
@@ -64,8 +65,9 @@ in
     '' else '''';
 
     systemd.tmpfiles.rules = [
-      "d ${syncDataPath}                   0777 ${user} users -"
-      "C ${syncDataPath}/licence.btskey    0777 ${user} users - ${builtins.path { path = keyFile; }}"
+      "Z ${syncDataPath}                   0755 rslsync rslsync -"
+      "Z ${syncDataPath}/licence.btskey    0755 rslsync rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncStoragePath}                0755 rslsync rslsync -"
     ];
 
     services.resilio = {
