@@ -8,7 +8,7 @@
 
 let
   home = "/home/${config.builderOptions.user.name}";
-  isSyncEnabled = config.builderOptions.sync == true;
+  isSyncEnabled = config.builderOptions.sync.enable == true;
 in
 {
   options.builderOptions.user = {

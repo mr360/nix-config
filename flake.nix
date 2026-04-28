@@ -109,7 +109,10 @@
               cmdpkgs.enable = true;
               powersaver.enable = false;
               sync = {
-                enable = false;
+                enable = true;
+                folders = [
+                  { directory = "/home/shady/sync"; secret = "sync_folder_secret"; }
+                ];
               };
               ssh = {
                 enable_agent = true;

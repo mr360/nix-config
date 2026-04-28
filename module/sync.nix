@@ -42,7 +42,7 @@ in
 
               secret = lib.mkOption {
                 type = lib.types.str;
-                description = "Secret used for syncing.";
+                description = "Secret key to query secret value used for syncing.";
               };
             };
           }
@@ -58,9 +58,10 @@ in
 
     networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
-    networking.firewall.extraCommands = ''
-      iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
-    '';
+    networking.firewall.extraCommands = if config.builderOptions.sync.folders != [ ] then
+    ''
+        iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
+    '' else '''';
 
     systemd.tmpfiles.rules = [
       "d ${syncDataPath}                   0777 ${user} users -"
@@ -79,9 +80,9 @@ in
       httpLogin = credentials.username;
       deviceName = config.networking.hostName;
       sharedFolders = map (folder: {
-        secret = folder.secret;
+        secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
-        knownHosts = [ "${serverUrl}:${sharePort}" ];
+        knownHosts = [ "${serverUrl}:${toString sharePort}" ];
         useRelayServer = false;
         useTracker = false;
         useDHT = false;
