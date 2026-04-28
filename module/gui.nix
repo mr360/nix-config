@@ -39,7 +39,9 @@
         popcorntime
         qalculate-qt
         localsend
+
         alacritty
+        nautilus
       ];
 
     services.gnome.gcr-ssh-agent.enable = false;
