@@ -65,12 +65,12 @@ in
     '' else '''';
 
     systemd.tmpfiles.rules = [
-      "d ${syncDataPath}                   0755 rslsync rslsync -"
-      "Z ${syncDataPath}                   0755 rslsync rslsync -"
-      "C ${syncDataPath}/licence.btskey    0755 rslsync rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncDataPath}                   0775 ${user} rslsync -"
+      "Z ${syncDataPath}                   0775 ${user} rslsync -"
+      "C ${syncDataPath}/licence.btskey    0775 ${user} rslsync - ${builtins.path { path = keyFile; }}"
       "d ${syncStoragePath}                0775 ${user} rslsync -"
       "Z ${syncStoragePath}                0775 ${user} rslsync -"
-      "a /home/${user}                     -    -       -       - u:rslsync:x"
+      "a /home/${user}                     -    -       -       - u:rslsync:rwx"
     ] ++ map (folder: "Z ${folder.directory} 0775 ${user} rslsync -") config.builderOptions.sync.folders;
 
     services.resilio = {
@@ -87,12 +87,12 @@ in
       sharedFolders = map (folder: {
         secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
-        knownHosts = [ "${serverUrl}:${toString sharePort}" ];
+        knownHosts = [ "192.168.20.23:${toString sharePort}" ];
         useRelayServer = false;
-        useTracker = false;
-        useDHT = false;
+        useTracker = true;
+        useDHT = true;
         searchLAN = true;
-        useSyncTrash = true;
+        useSyncTrash = false;
       }) config.builderOptions.sync.folders;
     };
 
