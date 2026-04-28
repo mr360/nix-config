@@ -29,37 +29,6 @@
       gnome.core-apps.enable = false;
     };
 
-    # # Remove DE bundled apps
-    environment.gnome.excludePackages = with pkgs; [
-      baobab
-      epiphany
-      simple-scan
-      totem
-      yelp
-      evince
-      geary
-      gnome-calculator
-      gnome-contacts
-      gnome-logs
-      gnome-maps
-      gnome-music
-      gnome-system-monitor
-      gnome-photos
-      gnome-tour
-      gnome-calendar
-      hitori # sudoku game
-      iagno # go game
-      tali # poker game
-      gedit # text editor
-      gnome-characters
-      atomix # puzzle game
-      gnome-font-viewer
-      gnome-disk-utility
-      gnome-text-editor
-      seahorse
-      gnome-software
-    ];
-
     # Install stateless global GUI applications
     environment.systemPackages =
       with pkgs;
@@ -70,6 +39,7 @@
         popcorntime
         qalculate-qt
         localsend
+        alacritty
       ];
 
     services.gnome.gcr-ssh-agent.enable = false;
