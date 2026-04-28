@@ -65,9 +65,11 @@ in
     '' else '''';
 
     systemd.tmpfiles.rules = [
+      "d ${syncDataPath}                   0755 rslsync rslsync -"
       "Z ${syncDataPath}                   0755 rslsync rslsync -"
-      "Z ${syncDataPath}/licence.btskey    0755 rslsync rslsync - ${builtins.path { path = keyFile; }}"
-      "d ${syncStoragePath}                0755 rslsync rslsync -"
+      "C ${syncDataPath}/licence.btskey    0755 rslsync rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncStoragePath}                0775 ${user} rslsync -"
+      "Z ${syncStoragePath}                0775 ${user} rslsync -"
     ] ++ map (folder: "Z ${folder.directory} 0775 ${user} rslsync -") config.builderOptions.sync.folders;
 
     services.resilio = {
