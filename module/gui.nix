@@ -26,6 +26,7 @@
     services = {
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
+      gnome.core-apps.enable = false;
     };
 
     # # Remove DE bundled apps
@@ -52,6 +53,11 @@
       gedit # text editor
       gnome-characters
       atomix # puzzle game
+      gnome-font-viewer
+      gnome-disk-utility
+      gnome-text-editor
+      seahorse
+      gnome-software
     ];
 
     # Install stateless global GUI applications
