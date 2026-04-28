@@ -26,13 +26,32 @@
     services = {
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
-      # excludePackages = with pkgs; [
-      # ];
     };
 
     # # Remove DE bundled apps
-    # environment.pantheon.excludePackages = with pkgs.lxqt; [
-    # ];
+    environment.gnome.excludePackages = with pkgs.gnome; [
+      baobab
+      epiphany
+      simple-scan
+      totem
+      yelp
+      evince
+      geary
+      gnome-calculator
+      gnome-contacts
+      gnome-logs
+      gnome-maps
+      gnome-music
+      gnome-system-monitor
+      gnome-photos
+      gnome-tour
+      hitori # sudoku game
+      iagno # go game
+      tali # poker game
+      gedit # text editor
+      gnome-characters
+      atomix # puzzle game
+    ];
 
     # Install stateless global GUI applications
     environment.systemPackages =
