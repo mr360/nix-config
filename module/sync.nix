@@ -80,8 +80,8 @@ in
       "Z ${syncStoragePath}                0770 ${user} rslsync -"
     ] ++ map (folder: "Z ${folder.directory} 0770 ${user} rslsync -") config.builderOptions.sync.folders;
 
-    systemd.services.resilio.serviceConfig.ExecStart = lib.mkForce ''
-      ${lib.getExe config.services.resilio.package} --nodaemon --config /run/rslsync/config.json --identity ${config.networking.hostName} --storage ${syncDataPath} --license ${syncDataPath}/licence.btskey
+    systemd.services.resilio.preStart = ''
+      ${lib.getExe config.services.resilio.package} --identity ${config.networking.hostName} --license ${syncDataPath}/licence.btskey --storage ${syncDataPath}
     '';
 
     services.resilio = {
