@@ -64,14 +64,21 @@ in
         iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
     '' else '''';
 
+    system.activationScripts.setHomeGroupPerms = lib.mkIf (config.builderOptions.sync.folders != [ ]) {
+      deps = [ "users" ];
+      text = ''
+        chown ${user}:rslsync /home/${user}
+        chmod 0770 /home/${user}
+      '';
+    };
+
     systemd.tmpfiles.rules = [
-      "d ${syncDataPath}                   0775 ${user} rslsync -"
-      "Z ${syncDataPath}                   0775 ${user} rslsync -"
-      "C ${syncDataPath}/licence.btskey    0775 ${user} rslsync - ${builtins.path { path = keyFile; }}"
-      "d ${syncStoragePath}                0775 ${user} rslsync -"
-      "Z ${syncStoragePath}                0775 ${user} rslsync -"
-      "a /home/${user}                     -    -       -       - u:rslsync:rwx"
-    ] ++ map (folder: "Z ${folder.directory} 0775 ${user} rslsync -") config.builderOptions.sync.folders;
+      "d ${syncDataPath}                   0770 ${user} rslsync -"
+      "Z ${syncDataPath}                   0770 ${user} rslsync -"
+      "C ${syncDataPath}/licence.btskey    0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncStoragePath}                0770 ${user} rslsync -"
+      "Z ${syncStoragePath}                0770 ${user} rslsync -"
+    ] ++ map (folder: "Z ${folder.directory} 0770 ${user} rslsync -") config.builderOptions.sync.folders;
 
     services.resilio = {
       enable = true;
@@ -87,10 +94,10 @@ in
       sharedFolders = map (folder: {
         secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
-        knownHosts = [ "192.168.20.23:${toString sharePort}" ];
+        knownHosts = [ "192.168.20.23:${toString sharePort}" "${serverUrl}:${toString sharePort}" ];
         useRelayServer = false;
         useTracker = true;
-        useDHT = true;
+        useDHT = false;
         searchLAN = true;
         useSyncTrash = false;
       }) config.builderOptions.sync.folders;
