@@ -80,6 +80,10 @@ in
       "Z ${syncStoragePath}                0770 ${user} rslsync -"
     ] ++ map (folder: "Z ${folder.directory} 0770 ${user} rslsync -") config.builderOptions.sync.folders;
 
+    systemd.services.resilio.serviceConfig.ExecStart = lib.mkForce ''
+      ${lib.getExe config.services.resilio.package} --nodaemon --config /run/rslsync/config.json --identity ${config.networking.hostName} --storage ${syncDataPath} --license ${syncDataPath}/licence.btskey
+    '';
+
     services.resilio = {
       enable = true;
       checkForUpdates = false;
