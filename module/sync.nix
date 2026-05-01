@@ -14,7 +14,7 @@ let
     builtins.readFile "${flakePath}/dotfile/.cred/services/btsync/credentials.json"
   );
   syncDataPath = "/mnt/storage/service/resilio-sync";
-  syncStoragePath = "/mnt/sync";
+  syncDownloadPath = "/mnt/sync";
   webUIPort = 9116;
   sharePort = 55555;
 
@@ -73,20 +73,18 @@ in
     };
 
     systemd.tmpfiles.rules = [
-      "d ${syncDataPath}                   0770 ${user} rslsync -"
-      "Z ${syncDataPath}                   0770 ${user} rslsync -"
-      "C ${syncDataPath}/licence.btskey    0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
-      "d ${syncStoragePath}                0770 ${user} rslsync -"
-      "Z ${syncStoragePath}                0770 ${user} rslsync -"
+      "d ${syncDataPath}                     0770 ${user} rslsync -"
+      "Z ${syncDataPath}                     0770 ${user} rslsync -"
+      "C ${syncDataPath}/licence.btskey      0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncDownloadPath}                 0770 ${user} rslsync -"
+      "Z ${syncDownloadPath}                 0770 ${user} rslsync -"
     ] ++ map (folder: "Z ${folder.directory} 2770 ${user} rslsync -") config.builderOptions.sync.folders;
 
     systemd.services.resilio.preStart = ''
       if [ ! -f ${syncDataPath}/setup_done ]; then 
-        echo "[sd1rps] Setting up Resilio Identity and Licence details...."
         ${lib.getExe config.services.resilio.package} --nodaemon --identity ${config.networking.hostName} --storage ${syncDataPath}
         ${lib.getExe config.services.resilio.package} --nodaemon --license ${syncDataPath}/licence.btskey --storage ${syncDataPath}
         touch ${syncDataPath}/setup_done 
-        echo "[sd1rps] Done!"
       fi 
     '';
 
@@ -101,6 +99,7 @@ in
       httpPass = credentials.password;
       httpLogin = credentials.username;
       deviceName = config.networking.hostName;
+      directoryRoot = syncDownloadPath;
       sharedFolders = map (folder: {
         secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
