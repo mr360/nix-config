@@ -78,10 +78,16 @@ in
       "C ${syncDataPath}/licence.btskey    0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
       "d ${syncStoragePath}                0770 ${user} rslsync -"
       "Z ${syncStoragePath}                0770 ${user} rslsync -"
-    ] ++ map (folder: "Z ${folder.directory} 0770 ${user} rslsync -") config.builderOptions.sync.folders;
+    ] ++ map (folder: "Z ${folder.directory} 2770 ${user} rslsync -") config.builderOptions.sync.folders;
 
     systemd.services.resilio.preStart = ''
-      ${lib.getExe config.services.resilio.package} --nodaemon --identity ${config.networking.hostName} --license ${syncDataPath}/licence.btskey --storage ${syncDataPath}
+      if [ ! -f ${syncDataPath}/setup_done ]; then 
+        echo "[sd1rps] Setting up Resilio Identity and Licence details...."
+        ${lib.getExe config.services.resilio.package} --nodaemon --identity ${config.networking.hostName} --storage ${syncDataPath}
+        ${lib.getExe config.services.resilio.package} --nodaemon --license ${syncDataPath}/licence.btskey --storage ${syncDataPath}
+        touch ${syncDataPath}/setup_done 
+        echo "[sd1rps] Done!"
+      fi 
     '';
 
     services.resilio = {
