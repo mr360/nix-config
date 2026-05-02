@@ -99,7 +99,6 @@ in
       httpPass = credentials.password;
       httpLogin = credentials.username;
       deviceName = config.networking.hostName;
-      directoryRoot = syncDownloadPath;
       sharedFolders = map (folder: {
         secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
