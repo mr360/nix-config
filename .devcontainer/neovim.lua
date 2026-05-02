@@ -1,0 +1,51 @@
+vim.cmd.colorscheme("habamax")
+
+vim.pack.add({
+ { src="https://github.com/stevearc/conform.nvim", version="v9.1.0" },
+ { src="https://github.com/neovim/nvim-lspconfig", version="v2.8.0" },
+ { src="https://github.com/nvim-treesitter/nvim-treesitter", branch="main" },
+})
+
+treesitter = require("nvim-treesitter").setup({
+  ensure_installed = { "nix" }, defaults = {
+  highlight = { enable = true },
+}})
+
+linter = require("conform").setup({
+    "stevearc/conform.nvim",
+    opts = {
+      formatters_by_ft = {
+        nix = { "nixfmt" },
+      },
+
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+    },
+  })
+
+
+require("lspconfig") 
+vim.lsp.config('nil_ls', {
+  settings = {
+    ['nil'] = {
+      formatting = {
+        command = { "nixfmt" },
+      },
+    },
+  },
+})
+vim.lsp.enable('nil_ls')
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local opts = { buffer = args.buf }
+
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+  end,
+})

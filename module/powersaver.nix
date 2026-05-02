@@ -1,19 +1,22 @@
-{config, lib, pkgs, ...}: 
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  options.builderOptions.powersaver =
-  {
-      enable = lib.mkOption {
+  options.builderOptions.powersaver = {
+    enable = lib.mkOption {
       default = false;
       example = true;
       type = lib.types.bool;
       description = ''
-          Enable powersaving features.
+        Enable powersaving features.
       '';
-      };
+    };
   };
 
-  config = lib.mkIf config.builderOptions.powersaver.enable
-  {
+  config = lib.mkIf config.builderOptions.powersaver.enable {
   };
 }

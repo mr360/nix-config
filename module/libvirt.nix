@@ -1,8 +1,12 @@
-{ config, lib, pkgs, ... }@args: 
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}@args:
 
 {
-  options.builderOptions.libvirt =
-  {
+  options.builderOptions.libvirt = {
     enable = lib.mkOption {
       default = false;
       example = true;
@@ -29,85 +33,84 @@
       description = ''
         Define CPU vendor e.g Intel or AMD
       '';
-    };  
+    };
   };
 
   config = lib.mkMerge [
-  (lib.mkIf (config.builderOptions.libvirt.pci_e_devices != null)
-  {
-    boot.initrd.availableKernelModules = [ 
-      "vfio-pci" 
+    (lib.mkIf (config.builderOptions.libvirt.pci_e_devices != null) {
+      boot.initrd.availableKernelModules = [
+        "vfio-pci"
       ];
 
-    boot.initrd.preDeviceCommands = ''
-      DEVS="${config.builderOptions.libvirt.pci_e_devices}"
-      for DEV in $DEVS; do
-        echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
-      done
-      modprobe -i vfio-pci
-    '';
-    
-    boot.kernelParams = [ 
-    "kvm.ignore_msrs=1"
-    "pcie_aspm=off"
-    "${config.builderOptions.libvirt.vendor}_iommu=on"
-    ];
+      boot.initrd.preDeviceCommands = ''
+        DEVS="${config.builderOptions.libvirt.pci_e_devices}"
+        for DEV in $DEVS; do
+          echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
+        done
+        modprobe -i vfio-pci
+      '';
 
-    systemd.tmpfiles.rules = [
-      "f /dev/shm/looking-glass 0660 ${config.builderOptions.user.name} qemu-libvirtd -"
-    ];
-
-    environment.systemPackages = lib.mkBefore [
-      pkgs.looking-glass-client 
-    ];
-  })
-
-
-  (lib.mkIf (config.builderOptions.libvirt.enable)
-  {
-    boot.kernelModules = [ 
-      "kvm-${config.builderOptions.libvirt.vendor}" 
+      boot.kernelParams = [
+        "kvm.ignore_msrs=1"
+        "pcie_aspm=off"
+        "${config.builderOptions.libvirt.vendor}_iommu=on"
       ];
 
-    virtualisation.libvirtd = {
-      enable = true;
-      qemu.ovmf.enable = true;
-      qemu.runAsRoot = false;
-      onBoot = "ignore";
-      onShutdown = "shutdown";
-    };
+      systemd.tmpfiles.rules = [
+        "f /dev/shm/looking-glass 0660 ${config.builderOptions.user.name} qemu-libvirtd -"
+      ];
 
-    virtualisation.spiceUSBRedirection.enable = true;
+      environment.systemPackages = lib.mkBefore [
+        pkgs.looking-glass-client
+      ];
+    })
 
-    # Required for virtmanager settings tostick
-    programs.dconf.enable = true; 
-    
-    environment.systemPackages = with pkgs; [
-      virt-manager          
-      virtiofsd
-    ];
+    (lib.mkIf (config.builderOptions.libvirt.enable) {
+      boot.kernelModules = [
+        "kvm-${config.builderOptions.libvirt.vendor}"
+      ];
 
-    users.users.${config.builderOptions.user.name} = {
-      extraGroups = [
-        "libvirtd"
-        "qemu-libvirtd" 
-        "kvm"
-        ]; 
-    };
+      virtualisation.libvirtd = {
+        enable = true;
+        qemu.ovmf.enable = true;
+        qemu.runAsRoot = false;
+        onBoot = "ignore";
+        onShutdown = "shutdown";
+      };
 
-    # Allow VM to run as non-root without ulimit 
-    security.pam.loginLimits = [{
-      domain = "${config.builderOptions.user.name}";
-      type = "soft";
-      item = "memlock";
-      value = "20000000";
-    }
-    {
-      domain = "${config.builderOptions.user.name}";
-      type = "hard";
-      item = "memlock";
-      value = "20000000";
-    }];
-  })
-];
+      virtualisation.spiceUSBRedirection.enable = true;
+
+      # Required for virtmanager settings tostick
+      programs.dconf.enable = true;
+
+      environment.systemPackages = with pkgs; [
+        virt-manager
+        virtiofsd
+      ];
+
+      users.users.${config.builderOptions.user.name} = {
+        extraGroups = [
+          "libvirtd"
+          "qemu-libvirtd"
+          "kvm"
+        ];
+      };
+
+      # Allow VM to run as non-root without ulimit
+      security.pam.loginLimits = [
+        {
+          domain = "${config.builderOptions.user.name}";
+          type = "soft";
+          item = "memlock";
+          value = "20000000";
+        }
+        {
+          domain = "${config.builderOptions.user.name}";
+          type = "hard";
+          item = "memlock";
+          value = "20000000";
+        }
+      ];
+    })
+  ];
 }

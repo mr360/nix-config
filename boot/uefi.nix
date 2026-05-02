@@ -1,8 +1,10 @@
-({lib, pkgs, ...}: {
-  # ==============================================================
-  # Use the systemd-boot EFI boot loader.
-  # ==============================================================
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.supportedFilesystems = [ "ntfs-3g" ];
-})
+(
+  { lib, pkgs, ... }:
+  {
+    # ==============================================================
+    # Use the systemd-boot EFI boot loader.
+    # ==============================================================
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+  }
+)

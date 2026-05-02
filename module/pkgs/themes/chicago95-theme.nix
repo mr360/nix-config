@@ -14,7 +14,7 @@ stdenvNoCC.mkDerivation {
     rev = "e9d250b2fa9e4853571b877f6584a33a2f0e9f75";
     hash = "sha256-9KxkkhHS+mq6yoF3+jaThNATJ+IGsohB3PIZN4PQq/A=";
   };
-  propagatedUserEnvPkgs = [gtk-engine-murrine];
+  propagatedUserEnvPkgs = [ gtk-engine-murrine ];
 
   installPhase = ''
     mkdir -p $out/share/themes/

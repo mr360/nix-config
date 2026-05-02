@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.task;
@@ -26,39 +31,53 @@ let
     };
   };
 
-  mkService = name:
-    { script, path, user, ... }: {
+  mkService =
+    name:
+    {
+      script,
+      path,
+      user,
+      ...
+    }:
+    {
       serviceConfig.Type = "oneshot";
       serviceConfig.User = user;
       script = script;
       path = path;
     };
 
-  mkTimer = name:
-    { onCalendar, ... }: {
+  mkTimer =
+    name:
+    { onCalendar, ... }:
+    {
       wantedBy = [ "timers.target" ];
       partOf = [ "${name}.service" ];
       timerConfig.OnCalendar = onCalendar;
     };
 
-in {
+in
+{
   options.task = mkOption {
     type = types.attrsOf taskSpec;
     description = { };
     default = { };
   };
 
-  config.systemd.services = let
-    units = mapAttrs' (name: info: {
-      name = "${name}";
-      value = (mkService name info);
-    }) cfg;
-  in units;
+  config.systemd.services =
+    let
+      units = mapAttrs' (name: info: {
+        name = "${name}";
+        value = (mkService name info);
+      }) cfg;
+    in
+    units;
 
-  config.systemd.timers = let
-    timers = mapAttrs' (name: info: {
-      name = "${name}";
-      value = (mkTimer name info);
-    }) cfg;
-  in timers;
+  config.systemd.timers =
+    let
+      timers = mapAttrs' (name: info: {
+        name = "${name}";
+        value = (mkTimer name info);
+      }) cfg;
+    in
+    timers;
 }

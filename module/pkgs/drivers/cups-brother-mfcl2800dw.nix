@@ -1,20 +1,24 @@
-{ lib
-, stdenv
-, fetchurl
-, dpkg
-, autoPatchelfHook
-, makeWrapper
-, perl
-, gnused
-, ghostscript
-, file
-, coreutils
-, gnugrep
-, which
+{
+  lib,
+  stdenv,
+  fetchurl,
+  dpkg,
+  autoPatchelfHook,
+  makeWrapper,
+  perl,
+  gnused,
+  ghostscript,
+  file,
+  coreutils,
+  gnugrep,
+  which,
 }:
 
 let
-  arches = [ "x86_64" "i686" ];
+  arches = [
+    "x86_64"
+    "i686"
+  ];
 
   runtimeDeps = [
     ghostscript
@@ -31,7 +35,11 @@ stdenv.mkDerivation rec {
   version = "4.1.0-1";
   dlf = "dlf106048";
 
-  nativeBuildInputs = [ dpkg makeWrapper autoPatchelfHook ];
+  nativeBuildInputs = [
+    dpkg
+    makeWrapper
+    autoPatchelfHook
+  ];
   buildInputs = [ perl ];
 
   dontUnpack = true;
@@ -48,41 +56,43 @@ stdenv.mkDerivation rec {
     dpkg-deb -x $src $out
 
     # delete unnecessary files for the current architecture
-  '' + lib.concatMapStrings (arch: ''
+  ''
+  + lib.concatMapStrings (arch: ''
     echo Deleting files for ${arch}
     rm -r "$out/opt/brother/Printers/MFCL2800DW/lpd/${arch}"
-  '') (builtins.filter (arch: arch != stdenv.hostPlatform.linuxArch) arches) + ''
+  '') (builtins.filter (arch: arch != stdenv.hostPlatform.linuxArch) arches)
+  + ''
 
-      # bundled scripts don't understand the arch subdirectories for some reason
-      ln -s \
-        "$out/opt/brother/Printers/MFCL2800DW/lpd/${stdenv.hostPlatform.linuxArch}/"* \
-        "$out/opt/brother/Printers/MFCL2800DW/lpd/"
+    # bundled scripts don't understand the arch subdirectories for some reason
+    ln -s \
+      "$out/opt/brother/Printers/MFCL2800DW/lpd/${stdenv.hostPlatform.linuxArch}/"* \
+      "$out/opt/brother/Printers/MFCL2800DW/lpd/"
 
-      # Fix global references and replace auto discovery mechanism with hardcoded values
-      substituteInPlace $out/opt/brother/Printers/MFCL2800DW/lpd/lpdfilter \
-        --replace /opt "$out/opt" \
-        --replace "my \$BR_PRT_PATH =" "my \$BR_PRT_PATH = \"$out/opt/brother/Printers/MFCL2800DW\"; #" \
-        --replace "PRINTER =~" "PRINTER = \"MFCL2800DW\"; #"
+    # Fix global references and replace auto discovery mechanism with hardcoded values
+    substituteInPlace $out/opt/brother/Printers/MFCL2800DW/lpd/lpdfilter \
+      --replace /opt "$out/opt" \
+      --replace "my \$BR_PRT_PATH =" "my \$BR_PRT_PATH = \"$out/opt/brother/Printers/MFCL2800DW\"; #" \
+      --replace "PRINTER =~" "PRINTER = \"MFCL2800DW\"; #"
 
-      # Make sure all executables have the necessary runtime dependencies available
-      find "$out" -executable -and -type f | while read file; do
-        wrapProgram "$file" --prefix PATH : "${lib.makeBinPath runtimeDeps}"
-      done
+    # Make sure all executables have the necessary runtime dependencies available
+    find "$out" -executable -and -type f | while read file; do
+      wrapProgram "$file" --prefix PATH : "${lib.makeBinPath runtimeDeps}"
+    done
 
-      # Symlink filter and ppd into a location where CUPS will discover it
-      mkdir -p $out/lib/cups/filter
-      mkdir -p $out/share/cups/model
+    # Symlink filter and ppd into a location where CUPS will discover it
+    mkdir -p $out/lib/cups/filter
+    mkdir -p $out/share/cups/model
 
-      ln -s \
-        $out/opt/brother/Printers/MFCL2800DW/lpd/lpdfilter \
-        $out/lib/cups/filter/brother_lpdwrapper_MFCL2800DW
+    ln -s \
+      $out/opt/brother/Printers/MFCL2800DW/lpd/lpdfilter \
+      $out/lib/cups/filter/brother_lpdwrapper_MFCL2800DW
 
-      ln -s \
-        $out/opt/brother/Printers/MFCL2800DW/cupswrapper/brother-MFCL2800DW-cups-en.ppd \
-        $out/share/cups/model/
+    ln -s \
+      $out/opt/brother/Printers/MFCL2800DW/cupswrapper/brother-MFCL2800DW-cups-en.ppd \
+      $out/share/cups/model/
 
-      runHook postInstall
-    '';
+    runHook postInstall
+  '';
 
   meta = with lib; {
     homepage = "http://www.brother.com/";
