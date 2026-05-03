@@ -21,6 +21,7 @@
     ../../module/utility
     ../../module/container.nix
     ../../module/sync.nix
+    ../../module/waypipe.nix
     home-manager.nixosModules.home-manager
     {
       home-manager.useGlobalPkgs = true;

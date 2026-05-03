@@ -65,6 +65,7 @@
                 enable_agent = true;
                 enable_server = true;
               };
+              waypipe.enable = true;
               container = {
                 traefik = {
                   enable = true;

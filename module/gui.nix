@@ -33,7 +33,8 @@
     environment.systemPackages =
       with pkgs;
       [
-        wl-clipboard  
+        wl-clipboard
+        waypipe
         firefox
         vlc
         popcorntime
