@@ -58,6 +58,7 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
+              waypipe.enable = true;
               sync = {
                 enable = true;
               };
@@ -65,7 +66,6 @@
                 enable_agent = true;
                 enable_server = true;
               };
-              waypipe.enable = true;
               container = {
                 traefik = {
                   enable = true;
