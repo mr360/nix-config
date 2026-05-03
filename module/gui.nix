@@ -35,6 +35,7 @@
       [
         wl-clipboard
         waypipe
+
         firefox
         vlc
         popcorntime
