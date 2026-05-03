@@ -11,6 +11,15 @@
     environment.systemPackages = with pkgs; [
       waypipe
       cage
+      foot
     ];
+
+    users.users.${config.builderOptions.user.name}.extraGroups = [
+      "video"
+      "render"
+    ];
+
+    # Allow software rendering on headless servers with no GPU
+    environment.variables.WLR_RENDERER_ALLOW_SOFTWARE = "1";
   };
 }
