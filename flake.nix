@@ -58,6 +58,7 @@
               gui.enable = false;
               cmdpkgs.enable = true;
               powersaver.enable = false;
+              waypipe.enable = true;
               sync = {
                 enable = true;
               };

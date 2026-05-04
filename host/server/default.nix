@@ -4,6 +4,7 @@
   specialArgs,
   home-manager,
   flakePath,
+  serverUrl,
   ...
 }:
 
@@ -21,13 +22,14 @@
     ../../module/utility
     ../../module/container.nix
     ../../module/sync.nix
+    ../../module/waypipe.nix
     home-manager.nixosModules.home-manager
     {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.extraSpecialArgs = {
         inherit (config) networking;
-        inherit flakePath;
+        inherit flakePath serverUrl;
       };
       home-manager.users.${specialArgs.builderOptions.user.name} = import ../../home-manager/common.nix;
     }
