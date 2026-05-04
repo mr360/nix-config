@@ -15,6 +15,7 @@ let
   );
   syncDataPath = "/mnt/storage/service/resilio-sync";
   syncDownloadPath = "/mnt/sync";
+  syncHomePath = "/home/${user}/sync";
   webUIPort = 9116;
   sharePort = 55555;
 
@@ -59,12 +60,12 @@ in
 
     networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
-    networking.firewall.extraCommands = if config.builderOptions.sync.folders != [ ] then
+    networking.firewall.extraCommands = if config.builderOptions.sync.folders == [ ] then
     ''
         iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
     '' else '''';
 
-    system.activationScripts.setHomeGroupPerms = lib.mkIf (config.builderOptions.sync.folders != [ ]) {
+    system.activationScripts.setHomeGroupPerms = {
       deps = [ "users" ];
       text = ''
         chown ${user}:rslsync /home/${user}
@@ -75,9 +76,10 @@ in
     systemd.tmpfiles.rules = [
       "d ${syncDataPath}                     0770 ${user} rslsync -"
       "Z ${syncDataPath}                     0770 ${user} rslsync -"
-      "C ${syncDataPath}/licence.btskey      0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
-      "d ${syncDownloadPath}                 0770 ${user} rslsync -"
-      "Z ${syncDownloadPath}                 0770 ${user} rslsync -"
+      "C ${syncDataPath}/licence.btskey      0770 ${user} rslsync -   ${builtins.path { path = keyFile; }}"
+      # Expose ~/sync at /mnt/sync via symlink; setgid on ~/sync so new files inherit rslsync group
+      "L ${syncDownloadPath}                 -    -       -       -   ${syncHomePath}"
+      "Z ${syncHomePath}                     2770 ${user} rslsync -"
     ] ++ map (folder: "Z ${folder.directory} 2770 ${user} rslsync -") config.builderOptions.sync.folders;
 
     systemd.services.resilio.preStart = ''
