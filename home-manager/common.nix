@@ -3,6 +3,7 @@
   pkgs,
   networking,
   flakePath,
+  serverUrl,
   ...
 }:
 
@@ -39,6 +40,7 @@
       devcontainer_tunnel = "devcontainer exec --workspace-folder . code tunnel --accept-server-license-terms --name ${networking.hostName}";
       dvim = "devcontainer exec --workspace-folder . nvim .";
       dbash = "devcontainer exec --workspace-folder . bash";
+      wyp = "waypipe ssh foxskis@${serverUrl} --";
     };
   };
 

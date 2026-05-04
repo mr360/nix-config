@@ -102,7 +102,7 @@ in
       sharedFolders = map (folder: {
         secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
-        knownHosts = [ "192.168.20.23:${toString sharePort}" "${serverUrl}:${toString sharePort}" ];
+        knownHosts = [ "${serverUrl}:${toString sharePort}" ];
         useRelayServer = false;
         useTracker = true;
         useDHT = false;
