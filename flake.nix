@@ -96,6 +96,46 @@
             )
           ];
         };
+        # sudo nixos-rebuild switch --flake .#laptop
+        "laptop" = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = {
+            inherit home-manager;
+            serverUrl = "mr360.me";
+            flakePath = "/home/shady/nix-config";
+            builderOptions = {
+              user.name = "shady";
+              gui.enable = true;
+              cmdpkgs.enable = true;
+              powersaver.enable = false;
+              sync = {
+                enable = true;
+                folders = [
+                  { directory = "/home/shady/sync"; secret = "sync_folder_secret"; }
+                ];
+              };
+              ssh = {
+                enable_agent = true;
+                enable_server = false;
+              };
+            };
+          };
+          modules = [
+            ./host/laptop/default.nix
+            (
+              { config, pkgs, ... }:
+              {
+                nixpkgs.overlays = [
+                  (final: prev: {
+                    unstable = import unstable {
+                      system = prev.stdenv.hostPlatform.system;
+                    };
+                  })
+                ];
+              }
+            )
+          ];
+        };
       };
     };
 }

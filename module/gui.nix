@@ -17,139 +17,48 @@
       example = true;
       type = lib.types.bool;
       description = ''
-        Enable LQXT GUI and associated apps.
+        Enable GUI and associated apps.
       '';
     };
   };
 
   config = lib.mkIf config.builderOptions.gui.enable {
-    services.xserver = {
-      # Enable the X11 windowing system.
-      enable = true;
-
-      # Enable display manager
-      displayManager.lightdm = {
-        enable = true;
-        background = ../wallpaper/wallpapersden.com_island-4k_2560x1080.jpg;
-        greeters.gtk = with pkgs; {
-          theme.name = "Raleigh-Reloaded";
-          theme.package = localpkgs.themes.raleigh-reloaded;
-          extraConfig = ''
-            user-background=false
-          '';
-        };
-      };
-
-      # Enable LXQT desktop (excl xserver apps)
-      desktopManager.lxqt.enable = true;
-      excludePackages = with pkgs; [
-        xterm
-      ];
-
-      # Configure keymap in X11
-      xkb.layout = "us";
-    };
-
-    # Remove LXQT bundled apps
-    environment.lxqt.excludePackages = with pkgs.lxqt; [
-      lximage-qt
-      screengrab
-    ];
-
-    # Enable network applet in tray
-    programs.nm-applet.enable = true;
-
-    # Enable styling for QT applications to follow GTK2.0
-    qt = {
-      enable = true;
-      style = "cleanlooks";
+    services = {
+      displayManager.gdm.enable = true;
+      desktopManager.gnome.enable = true;
+      gnome.core-apps.enable = false;
     };
 
     # Install stateless global GUI applications
     environment.systemPackages =
       with pkgs;
       [
-        xcompmgr
-        xclip
-
-        lite-xl
+        wl-clipboard  
         firefox
         vlc
-        gimp
-        feh
-        flameshot
-        qbittorrent
         popcorntime
         qalculate-qt
-        simplescreenrecorder
-        ferdium
-        scrcpy
-        drawio
-        freecad
-      ]
-      ++ (if config.services.syncthing.enable then [ pkgs.syncthingtray ] else [ ]);
+        localsend
 
-    # Resolve Password Init Failure
-    security.pam.services.xscreensaver.enable = true;
+        alacritty
+        nautilus
+      ];
 
-    # Install VirtualBox
-    virtualisation.virtualbox.host.enable = true;
-    virtualisation.virtualbox.host.enableExtensionPack = true;
+    services.gnome.gcr-ssh-agent.enable = false;
 
-    # Start syncthingtray as a service if syncthing is enabled
-    systemd.user.services.syncthingtray =
-      if config.services.syncthing.enable then
-        {
-          wantedBy = [ "graphical-session.target" ];
-
-          serviceConfig = {
-            ExecStart = "${pkgs.syncthingtray}/bin/syncthingtray --connection '${config.networking.hostName}' --wait";
-            Restart = "on-failure";
-          };
-        }
-      else
-        { };
-
-    # Start ferdium as a service
-    systemd.user.services.ferdium = {
-      wantedBy = [ "graphical-session.target" ];
-
-      serviceConfig = {
-        ExecStart = "${pkgs.ferdium}/bin/ferdium";
-        Restart = "on-failure";
-      };
-    };
-
-    # Start xcompmgr as a service
-    systemd.user.services.startXcompmgr = {
-      wantedBy = [ "graphical-session.target" ];
-
-      serviceConfig = {
-        ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr";
-        Restart = "on-failure";
-      };
-    };
-
-    # Start systemd services for GUI packages
-    systemd.user.services.flameshot = {
-      wantedBy = [ "graphical-session.target" ];
-
-      serviceConfig = {
-        ExecStart = "${pkgs.flameshot}/bin/flameshot";
-        Restart = "on-abort";
-      };
-    };
+    # Enable network applet in tray
+    programs.nm-applet.enable = true;
 
     # Enable sound and printing
     services.printing.enable = true;
+    services.printing.drivers = with pkgs; [
+      localpkgs.drivers.cups-brother-mfcl2800dw
+    ];
     services.avahi = {
       enable = true;
       nssmdns4 = true;
       openFirewall = true;
     };
-    services.printing.drivers = with pkgs; [
-      localpkgs.drivers.cups-brother-mfcl2800dw
-    ];
     services.pipewire = {
       enable = true;
       audio.enable = true;

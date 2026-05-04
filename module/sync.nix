@@ -14,6 +14,7 @@ let
     builtins.readFile "${flakePath}/dotfile/.cred/services/btsync/credentials.json"
   );
   syncDataPath = "/mnt/storage/service/resilio-sync";
+  syncDownloadPath = "/mnt/sync";
   webUIPort = 9116;
   sharePort = 55555;
 
@@ -42,7 +43,7 @@ in
 
               secret = lib.mkOption {
                 type = lib.types.str;
-                description = "Secret used for syncing.";
+                description = "Secret key to query secret value used for syncing.";
               };
             };
           }
@@ -58,14 +59,34 @@ in
 
     networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
-    networking.firewall.extraCommands = ''
-      iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
-    '';
+    networking.firewall.extraCommands = if config.builderOptions.sync.folders != [ ] then
+    ''
+        iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
+    '' else '''';
+
+    system.activationScripts.setHomeGroupPerms = lib.mkIf (config.builderOptions.sync.folders != [ ]) {
+      deps = [ "users" ];
+      text = ''
+        chown ${user}:rslsync /home/${user}
+        chmod 0770 /home/${user}
+      '';
+    };
 
     systemd.tmpfiles.rules = [
-      "d ${syncDataPath}                   0777 ${user} users -"
-      "C ${syncDataPath}/licence.btskey    0777 ${user} users - ${builtins.path { path = keyFile; }}"
-    ];
+      "d ${syncDataPath}                     0770 ${user} rslsync -"
+      "Z ${syncDataPath}                     0770 ${user} rslsync -"
+      "C ${syncDataPath}/licence.btskey      0770 ${user} rslsync - ${builtins.path { path = keyFile; }}"
+      "d ${syncDownloadPath}                 0770 ${user} rslsync -"
+      "Z ${syncDownloadPath}                 0770 ${user} rslsync -"
+    ] ++ map (folder: "Z ${folder.directory} 2770 ${user} rslsync -") config.builderOptions.sync.folders;
+
+    systemd.services.resilio.preStart = ''
+      if [ ! -f ${syncDataPath}/setup_done ]; then 
+        ${lib.getExe config.services.resilio.package} --nodaemon --identity ${config.networking.hostName} --storage ${syncDataPath}
+        ${lib.getExe config.services.resilio.package} --nodaemon --license ${syncDataPath}/licence.btskey --storage ${syncDataPath}
+        touch ${syncDataPath}/setup_done 
+      fi 
+    '';
 
     services.resilio = {
       enable = true;
@@ -79,14 +100,14 @@ in
       httpLogin = credentials.username;
       deviceName = config.networking.hostName;
       sharedFolders = map (folder: {
-        secret = folder.secret;
+        secret = credentials.secrets.${folder.secret};
         directory = folder.directory;
-        knownHosts = [ "${serverUrl}:${sharePort}" ];
+        knownHosts = [ "192.168.20.23:${toString sharePort}" "${serverUrl}:${toString sharePort}" ];
         useRelayServer = false;
-        useTracker = false;
+        useTracker = true;
         useDHT = false;
         searchLAN = true;
-        useSyncTrash = true;
+        useSyncTrash = false;
       }) config.builderOptions.sync.folders;
     };
 

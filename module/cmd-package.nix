@@ -8,6 +8,7 @@
 {
   imports = [
     ./pkgs
+    ./cmt.nix
   ];
 
   options.builderOptions.cmdpkgs = {
@@ -22,6 +23,8 @@
   };
 
   config = lib.mkIf config.builderOptions.cmdpkgs.enable {
+    builderOptions.cmt.docker.enable = true;
+
     environment.systemPackages = with pkgs; [
       git
       tree

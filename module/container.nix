@@ -29,6 +29,8 @@ let
   DOCKER_SUBNET_INTERNAL = config.builderOptions.container.network.dockerInternalSubnet;
 in
 {
+  imports = [ ./cmt.nix ];
+
   options.builderOptions.container = {
     traefik = lib.mkOption {
       description = "Traefik configuration";
@@ -172,6 +174,8 @@ in
 
   config = lib.mkMerge [
     {
+      builderOptions.cmt.docker.enable = true;
+
       systemd.tmpfiles.rules = [
         "d ${containerStoragePath}  0755 ${user} users -"
       ];
@@ -190,29 +194,6 @@ in
       systemd.services.docker.serviceConfig.ExecStartPost = [
         "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect ${internalNetwork} >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create ${internalNetwork}'"
       ];
-
-      virtualisation = {
-        docker = {
-          enable = lib.mkDefault false;
-          enableOnBoot = true;
-        };
-
-        podman = {
-          enable = lib.mkDefault false;
-          dockerCompat = true;
-          dockerSocket.enable = true;
-          defaultNetwork.settings = {
-            dns_enabled = true;
-          };
-          autoPrune = {
-            enable = true;
-            dates = "weekly";
-            flags = [ "--all" ];
-          };
-        };
-      };
-
-      users.extraGroups.docker.members = [ "${user}" ];
     }
 
     (lib.mkIf (config.builderOptions.container.traefik.enable) (
@@ -312,7 +293,6 @@ in
           "f ${containerStoragePath}/traefik/acme.json 0600 ${uid} ${gid} -"
         ];
         virtualisation = {
-          docker.enable = true;
           oci-containers = {
             backend = "docker";
             containers = {
@@ -444,7 +424,6 @@ in
       ];
 
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -509,7 +488,6 @@ in
       ];
 
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -553,7 +531,6 @@ in
       ];
 
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -713,7 +690,6 @@ in
       ];
 
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -792,7 +768,6 @@ in
       in
       {
         virtualisation = {
-          docker.enable = true;
           oci-containers = {
             backend = "docker";
             containers = {
@@ -834,7 +809,6 @@ in
 
     (lib.mkIf (config.builderOptions.container.minipaint) {
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -864,7 +838,6 @@ in
 
     (lib.mkIf (config.builderOptions.container.ferdium) {
       virtualisation = {
-        docker.enable = true;
         oci-containers = {
           backend = "docker";
           containers = {
@@ -933,7 +906,6 @@ in
       in
       {
         virtualisation = {
-          docker.enable = true;
           oci-containers = {
             backend = "docker";
             containers = {
