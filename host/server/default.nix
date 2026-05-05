@@ -38,13 +38,7 @@
   builderOptions = specialArgs.builderOptions;
 
   networking.hostName = "storage-r710";
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      80
-      443 # internet
-    ];
-  };
+  networking.firewall.enable = true;
 
   nix.settings = {
     experimental-features = [

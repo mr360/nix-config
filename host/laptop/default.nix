@@ -37,13 +37,7 @@
   builderOptions = specialArgs.builderOptions;
 
   networking.hostName = "laptop";
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [
-      80
-      443
-    ];
-  };
+  networking.firewall.enable = true;
 
   nix.settings = {
     experimental-features = [

@@ -776,9 +776,6 @@ in
         '';
       in
       {
-        networking.firewall.allowedTCPPorts = [ 6881 ];
-        networking.firewall.allowedUDPPorts = [ 6881 ];
-
         virtualisation = {
           oci-containers = {
             backend = "docker";
