@@ -62,6 +62,7 @@
 
   services.tailscale.enable = true;
   services.tailscale.useRoutingFeatures = "server";
+  services.tailscale.interfaceName = "tailscale0";
 
   system.autoUpgrade = {
     enable = true;

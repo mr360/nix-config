@@ -58,8 +58,8 @@ in
   config = lib.mkIf config.builderOptions.sync.enable {
     users.users.${user}.extraGroups = lib.mkAfter [ "rslsync" ];
 
-    networking.firewall.allowedTCPPorts = lib.mkAfter [ sharePort ];
-    networking.firewall.allowedUDPPorts = lib.mkAfter [ sharePort ];
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = lib.mkAfter [ sharePort ];
+    networking.firewall.interfaces.tailscale0.allowedUDPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.extraCommands = if config.builderOptions.sync.folders == [ ] then
     ''
         iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
