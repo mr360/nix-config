@@ -27,6 +27,7 @@ let
   OIDC_AUTH_URL = "auth.${serverUrl}";
   DOCKER_SUBNET_BRIDGE = config.builderOptions.container.network.dockerBridgeSubnet;
   DOCKER_SUBNET_INTERNAL = config.builderOptions.container.network.dockerInternalSubnet;
+  TAILSCALE_IP = config.builderOptions.container.network.tailscaleIp;
 in
 {
   imports = [ ./cmt.nix ];
@@ -164,7 +165,15 @@ in
             example = "127.18.0.0/16";
             type = lib.types.str;
             description = ''
-              		Custom docker internal network	
+              		Custom docker internal network
+            '';
+          };
+          tailscaleIp = lib.mkOption {
+            default = "100.94.62.12";
+            example = "100.64.0.1";
+            type = lib.types.str;
+            description = ''
+              Tailscale interface IP; CoreDNS binds to this so only Tailscale peers can query it.
             '';
           };
         };
@@ -272,7 +281,7 @@ in
           ${serverUrl}:53 {
               template IN A {
                   match ".*"
-                  answer "{{ .Name }} 60 IN A 100.94.62.12"
+                  answer "{{ .Name }} 60 IN A ${TAILSCALE_IP}"
               }
 
               log
@@ -320,7 +329,7 @@ in
                   "--entrypoints.web.http.redirections.entrypoint.to=websecure"
                   "--entrypoints.web.http.redirections.entrypoint.scheme=https"
                   "--entrypoints.web.http.redirections.entrypoint.permanent=true"
-                  "--entrypoints.websecure.http.middlewares=common-header@file, authelia@docker"
+                  "--entrypoints.websecure.http.middlewares=common-header@file,authelia@docker"
                   "--entrypoints.websecure.address=:443"
                   "--entrypoints.websecure.http.tls=true"
 
@@ -360,8 +369,8 @@ in
                 autoStart = true;
                 image = "coredns/coredns:1.14.2";
                 ports = [
-                  "53:53/udp"
-                  "53:53/tcp"
+                  "${TAILSCALE_IP}:53:53/udp"
+                  "${TAILSCALE_IP}:53:53/tcp"
                 ];
                 cmd = [
                   "-conf"
