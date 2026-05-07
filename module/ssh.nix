@@ -63,6 +63,7 @@ in
     (lib.mkIf (config.builderOptions.ssh.enable_server) {
       services.openssh = {
         enable = true;
+        openFirewall = false;
         settings.PasswordAuthentication = false;
         settings.KbdInteractiveAuthentication = false;
       };
@@ -71,9 +72,7 @@ in
         "${sshPath}/authorized_keys"
       ];
 
-      networking.firewall = {
-        allowedTCPPorts = lib.mkAfter [ port ];
-      };
+      networking.firewall.interfaces.tailscale0.allowedTCPPorts = lib.mkAfter [ port ];
     })
   ];
 }

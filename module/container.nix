@@ -22,12 +22,36 @@ let
   credentialPath = "${flakePath}/dotfile/.cred";
   containerStoragePath = "/mnt/storage/container";
   storageMediaPath = "/mnt/storage/drive";
-  internalNetwork = "internal-container-network";
+
+  netCoredns     = "net-coredns";
+  netProxy       = "net-proxy";
+  netMedia       = "net-media";
+  netMinipaint   = "net-minipaint";
+  netYtdlp       = "net-ytdlp";
+  netFerdium     = "net-ferdium";
+  netQbittorrent = "net-qbittorrent";
+  netCoder       = "net-coder";
+  netNextcloud   = "net-nextcloud";
+
+  allNetworks = [
+    netCoredns netProxy netMedia netMinipaint
+    netYtdlp netFerdium netQbittorrent netCoder netNextcloud
+  ];
+
+  # App networks traefik must join (everything except net-proxy and net-coredns)
+  traefikAppNetworks = [
+    netMedia netMinipaint netYtdlp netFerdium netQbittorrent netCoder netNextcloud
+  ];
 
   OIDC_AUTH_URL = "auth.${serverUrl}";
-  DOCKER_SUBNET_BRIDGE = config.builderOptions.container.network.dockerBridgeSubnet;
-  DOCKER_SUBNET_INTERNAL = config.builderOptions.container.network.dockerInternalSubnet;
+  DOCKER_SUBNET_INTERNAL  = config.builderOptions.container.network.dockerInternalSubnet;
+  DOCKER_GATEWAY_INTERNAL = config.builderOptions.container.network.dockerInternalAddress;
   TAILSCALE_IP = config.builderOptions.container.network.tailscaleIp;
+
+  DOCKER_SUBNET_MEDIA         = "172.22.0.0/16";
+  DOCKER_GATEWAY_MEDIA        = "172.22.0.1";
+  DOCKER_SUBNET_QBITTORRENT   = "172.26.0.0/16";
+  DOCKER_GATEWAY_QBITTORRENT  = "172.26.0.1";
 in
 {
   imports = [ ./cmt.nix ];
@@ -134,8 +158,8 @@ in
       example = true;
       type = lib.types.bool;
       description = ''
-                  Enable yt-dlp web interface docker image
-        	  Please note that this requuires yt-dlp to be installed
+                Enable yt-dlp web interface docker image
+      	  Please note that this requuires yt-dlp to be installed
       '';
     };
 
@@ -144,20 +168,15 @@ in
       default = { };
       type = lib.types.submodule {
         options = {
-          dockerBridgeAddress = lib.mkOption {
-            default = "172.17.0.1";
-            example = "127.17.0.1";
+         dockerInternalAddress = lib.mkOption {
+            default = "172.18.0.1";
+            example = "172.18.0.1";
             type = lib.types.str;
             description = ''
-              		Docker0 or Bridge network entrypoint ip address 
-            '';
-          };
-          dockerBridgeSubnet = lib.mkOption {
-            default = "172.17.0.0/16";
-            example = "127.17.0.0/16";
-            type = lib.types.str;
-            description = ''
-              		Docker0 or Bridge network gateway
+              Host-side gateway address of the pinned net-proxy network; must be
+              the first host address of dockerInternalSubnet. Used by host
+              services (e.g. resilio) that Docker containers reach via
+              host.docker.internal.
             '';
           };
           dockerInternalSubnet = lib.mkOption {
@@ -189,20 +208,35 @@ in
         "d ${containerStoragePath}  0755 ${user} users -"
       ];
 
-      systemd.services.create-docker-network = {
-        description = "container shared docker network";
+      systemd.services.create-docker-networks = {
+        description = "Create isolated Docker networks";
         after = [ "docker.service" ];
         requires = [ "docker.service" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect ${internalNetwork} >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create ${internalNetwork}'";
+          RemainAfterExit = true;
+          ExecStart = pkgs.writeShellScript "create-docker-networks" (
+            # Pinned networks have fixed subnets so downstream configs (firewall
+            # rules, WebUI whitelists) can reference predictable CIDR ranges.
+            lib.concatStrings (map (n: ''
+              ${pkgs.docker}/bin/docker network inspect ${n.name} >/dev/null 2>&1 || \
+                ${pkgs.docker}/bin/docker network create \
+                  --subnet=${n.subnet} \
+                  --gateway=${n.gateway} \
+                  ${n.name}
+            '') [
+              { name = netProxy;       subnet = DOCKER_SUBNET_INTERNAL;    gateway = DOCKER_GATEWAY_INTERNAL;   }
+              { name = netMedia;       subnet = DOCKER_SUBNET_MEDIA;       gateway = DOCKER_GATEWAY_MEDIA;      }
+              { name = netQbittorrent; subnet = DOCKER_SUBNET_QBITTORRENT; gateway = DOCKER_GATEWAY_QBITTORRENT;}
+            ]) +
+            lib.concatMapStrings (net: ''
+              ${pkgs.docker}/bin/docker network inspect ${net} >/dev/null 2>&1 || \
+                ${pkgs.docker}/bin/docker network create ${net}
+            '') (lib.subtractLists [ netProxy netMedia netQbittorrent ] allNetworks)
+          );
         };
       };
-
-      systemd.services.docker.serviceConfig.ExecStartPost = [
-        "${pkgs.bash}/bin/bash -c '${pkgs.docker}/bin/docker network inspect ${internalNetwork} >/dev/null 2>&1 || ${pkgs.docker}/bin/docker network create ${internalNetwork}'"
-      ];
     }
 
     (lib.mkIf (config.builderOptions.container.traefik.enable) (
@@ -301,6 +335,34 @@ in
           "d ${containerStoragePath}/traefik           0755 ${uid} ${gid} -"
           "f ${containerStoragePath}/traefik/acme.json 0600 ${uid} ${gid} -"
         ];
+
+        # Connect Traefik to every app network after it starts so it can
+        # reach backends that live in their own isolated networks.
+        systemd.services.traefik-network-connect = {
+          description = "Connect Traefik to app networks";
+          after = [ "docker-traefik.service" "create-docker-networks.service" ];
+          bindsTo = [ "docker-traefik.service" ];
+          wantedBy = [ "docker-traefik.service" ];
+          startLimitIntervalSec = 60;
+          startLimitBurst = 5;
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+            Restart = "on-failure";
+            RestartSec = "5s";
+            ExecStart = pkgs.writeShellScript "traefik-network-connect" ''
+              until ${pkgs.docker}/bin/docker inspect traefik --format '{{.State.Running}}' 2>/dev/null | grep -q true; do
+                sleep 1
+              done
+              for net in ${lib.concatStringsSep " " traefikAppNetworks}; do
+                ${pkgs.docker}/bin/docker network inspect "$net" --format '{{range .Containers}}{{.Name}} {{end}}' 2>/dev/null \
+                  | grep -qw traefik \
+                  || ${pkgs.docker}/bin/docker network connect "$net" traefik
+              done
+            '';
+          };
+        };
+
         virtualisation = {
           oci-containers = {
             backend = "docker";
@@ -354,7 +416,7 @@ in
                 };
                 extraOptions = [
                   "--add-host=host.docker.internal:host-gateway"
-                  "--network=${internalNetwork}"
+                  "--network=${netProxy}"
                 ];
                 environmentFiles = [
                   "${credentialPath}/env/cfToken.env"
@@ -380,7 +442,7 @@ in
 
                 };
                 extraOptions = [
-                  "--network=${internalNetwork}"
+                  "--network=${netCoredns}"
                 ];
                 volumes = [
                   "${corefile}:/etc/coredns/Corefile"
@@ -411,7 +473,7 @@ in
                     "Remote-User,Remote-Groups,Remote-Email,Remote-Name";
                 };
                 extraOptions = [
-                  "--network=${internalNetwork}"
+                  "--network=${netProxy}"
                 ];
                 volumes = [
                   "${credentialPath}/authelia:/config"
@@ -455,7 +517,7 @@ in
                 DOCKER_MODS = "linuxserver/mods:universal-package-install";
                 INSTALL_PACKAGES = "unzip";
 
-                BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_INTERNAL;
+                BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_MEDIA;
               };
               environmentFiles = [
                 "${credentialPath}/env/jellyfin.env"
@@ -475,7 +537,7 @@ in
                 "${storageMediaPath}/Media/Movie_Shows:/media/library"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netMedia}"
               ];
             };
           };
@@ -522,7 +584,7 @@ in
                 "traefik.http.routers.onlyoffice-documentserver.entrypoints" = "websecure";
               };
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netNextcloud}"
               ];
             };
           };
@@ -591,7 +653,7 @@ in
                 "nextcloud-redis"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netNextcloud}"
               ];
             };
 
@@ -624,7 +686,7 @@ in
               dependsOn = [ "nextcloud" ];
 
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netNextcloud}"
               ];
 
               cmd = [
@@ -660,7 +722,7 @@ in
                 "${credentialPath}/env/nextcloud.env"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netNextcloud}"
               ];
             };
 
@@ -683,7 +745,7 @@ in
                 "${containerStoragePath}/nextcloud/redis:/data"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netNextcloud}"
               ];
             };
           };
@@ -721,7 +783,7 @@ in
                 "${credentialPath}/env/coder.env"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netCoder}"
               ];
             };
             coder = {
@@ -754,7 +816,7 @@ in
                 "authelia"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netCoder}"
                 "--privileged" # allows Docker in Docker
                 "--group-add=992"
               ];
@@ -768,7 +830,7 @@ in
       let
         qBittorrentConfigFile = pkgs.writeText "qBittorrent.conf" ''
           [Preferences]
-          WebUI\AuthSubnetWhitelist=${DOCKER_SUBNET_BRIDGE}, ${DOCKER_SUBNET_INTERNAL} 
+          WebUI\AuthSubnetWhitelist=${DOCKER_SUBNET_QBITTORRENT}
           WebUI\AuthSubnetWhitelistEnabled=true
           WebUI\CSRFProtection=false
           WebUI\LocalHostAuth=false
@@ -793,7 +855,7 @@ in
                   TZ = config.time.timeZone;
                   WEBUI_PORT = "8480";
                   TORRENTING_PORT = "6881";
-                  BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_BRIDGE;
+                  BYPASS_DOCKER_ADDRESS = DOCKER_SUBNET_QBITTORRENT;
                 };
                 labels = {
                   "traefik.enable" = "true";
@@ -802,12 +864,12 @@ in
                   "traefik.http.routers.qbittorrent.entrypoints" = "websecure";
                 };
                 volumes = [
-                  "${qBittorrentConfigFile}:/config/qBittorrent/qBittorrent.conf"
                   "${containerStoragePath}/qbittorrent/config:/config"
+                  "${qBittorrentConfigFile}:/config/qBittorrent/qBittorrent.conf"
                   "/home/${user}/Downloads:/downloads"
                 ];
                 extraOptions = [
-                  "--network=${internalNetwork}"
+                  "--network=${netQbittorrent}"
                 ];
               };
             };
@@ -837,7 +899,7 @@ in
               volumes = [
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netMinipaint}"
               ];
             };
           };
@@ -881,7 +943,7 @@ in
                 "/home/${user}/sync:/sync"
               ];
               extraOptions = [
-                "--network=${internalNetwork}"
+                "--network=${netFerdium}"
                 "--shm-size=1gb"
                 #"--device=/dev/dri:/dev/dri"
               ];
@@ -939,7 +1001,7 @@ in
                   "${ytdlp}/bin/yt-dlp:/usr/local/bin/yt-dlp"
                 ];
                 extraOptions = [
-                  "--network=${internalNetwork}"
+                  "--network=${netYtdlp}"
                 ];
               };
             };

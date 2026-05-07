@@ -19,7 +19,7 @@ let
   webUIPort = 9116;
   sharePort = 55555;
 
-  dockerHostGateway = config.builderOptions.container.network.dockerBridgeAddress;
+  dockerHostGateway = config.builderOptions.container.network.dockerInternalAddress;
   dockerInternalNetworkSubnet = config.builderOptions.container.network.dockerInternalSubnet;
 
 in
@@ -60,10 +60,10 @@ in
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = lib.mkAfter [ sharePort ];
     networking.firewall.interfaces.tailscale0.allowedUDPPorts = lib.mkAfter [ sharePort ];
-    networking.firewall.extraCommands = if config.builderOptions.sync.folders == [ ] then
-    ''
-        iptables -A INPUT -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
-    '' else '''';
+    networking.firewall.extraCommands = lib.mkIf (config.builderOptions.sync.folders == [ ]) ''
+      iptables -C nixos-fw -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT 2>/dev/null || \
+        iptables -A nixos-fw -p tcp -s ${dockerInternalNetworkSubnet} --dport ${toString webUIPort} -j ACCEPT
+    '';
 
     system.activationScripts.setHomeGroupPerms = {
       deps = [ "users" ];
@@ -118,7 +118,7 @@ in
         service = "rslsync";
         route = "sync";
         entry = "websecure";
-        loadBalancerServer = "http://host.docker.internal:${toString webUIPort}";
+        loadBalancerServer = "http://${dockerHostGateway}:${toString webUIPort}";
         headers = [ "Authorization:Basic ${credentials.authToken}" ];
       }
     ];
