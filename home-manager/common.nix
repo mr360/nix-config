@@ -43,7 +43,7 @@
 
       wyp = "waypipe ssh foxskis@${serverUrl} --";
 
-      gdf = "tmux popup -h 95% -w 99% -y 55% git diff";
+      gd = "tmux popup -d \"$(pwd)\" -h 95% -w 99% -y 55% -E \"nix run github:agavra/tuicr -- --theme dark\"";
     };
   };
 

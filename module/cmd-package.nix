@@ -36,6 +36,7 @@
       unstable.neovim
       unrar
       localpkgs.devcontainer-cli
+      gh
     ];
   };
 }
