@@ -38,9 +38,12 @@
       devcontainer_init = "cp -rf ${flakePath}/dotfile/.template/. .";
       devcontainer_start = "devcontainer up --workspace-folder .  --remove-existing-container";
       devcontainer_tunnel = "devcontainer exec --workspace-folder . code tunnel --accept-server-license-terms --name ${networking.hostName}";
-      dvim = "devcontainer exec --workspace-folder . nvim .";
-      dbash = "devcontainer exec --workspace-folder . bash";
+      devcontainer_vim = "devcontainer exec --workspace-folder . nvim .";
+      devcontainer_bash = "devcontainer exec --workspace-folder . bash";
+
       wyp = "waypipe ssh foxskis@${serverUrl} --";
+
+      gdf = "tmux popup -h 95% -w 99% -y 55% git diff";
     };
   };
 
