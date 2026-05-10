@@ -38,8 +38,6 @@
 
         firefox
         vlc
-        popcorntime
-        qalculate-qt
         localsend
 
         alacritty
